@@ -1,0 +1,24 @@
+{
+  "name": "webpack-lab",
+  "version": "1.0.0",
+  "description": "webpack 练习",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --config webpack-config.js --colors"
+  },
+  "keywords": [
+    "test"
+  ],
+  "author": "tb",
+  "license": "ISC",
+  "dependencies": {
+    "css-loader": "^0.23.0",
+    "file-loader": "^0.8.5",
+    "handlebars": "^4.0.5",
+    "handlebars-loader": "^1.1.4",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.9"
+  }
+}
