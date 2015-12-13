@@ -237,6 +237,7 @@ a.js文件内容如下：
 
 ### 打包静态资源 ###
 - css/sass/less
+
 安装css-loader和style-loader
 	
 	npm install css-loader --save -dev
@@ -265,12 +266,14 @@ config配置：
 style-loader会把css文件嵌入到html的style标签里，css-loader会把css里@import的文件导入进来。打包完成的文件，引用执行后，会发现css的内容都插入到了head里的一个style标签里。
 
 - images
+
 可以通过url-loader把较小的图片转换成base64的字符串内嵌在生成的文件里。
 安装：
 	
 	npm install url-loader --save -dev
 
 config配置:
+
 	var config = {
 		entry:path.resolve(__dirname,'src/main.js'),
 		resolve:{
@@ -300,6 +303,7 @@ css文件内容：
 	}
 
 - iconfont
+
 内嵌iconfont的使用方法其实和上述处理png图片的方法一致。通过url-loader来处理。
 
 config配置：
