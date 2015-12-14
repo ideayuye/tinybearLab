@@ -52,11 +52,9 @@ a.js文件内容如下：
 		console.log('it is a ');
 	}
 
-
 然后我们执行如下的命令：
 	
 	webpack --config webpack-config.js --colors
-
 
 这样我们就能在目录里面看到一个新生成的目录build，目录结构如下：
 	
@@ -70,7 +68,8 @@ a.js文件内容如下：
 
 
 ###介绍webpack config文件###
-接着我们来解释下config文件中的节点分别代表什么意思
+
+webpack是根据config里面描述的内容对一个项目进行打包的。接着我们来解释下config文件中的节点分别代表什么意思。一个config文件，基本都是由以下几个配置项组成的。
 
 - entry
 
@@ -84,9 +83,20 @@ a.js文件内容如下：
 	
 配置输出文件的路径，文件名等。
 
-- module
-	
+- module(loaders)
+
 配置要使用的loader。对文件进行一些相应的处理。比如babel-loader可以把es6的文件转换成es5。
+大部分的对文件的处理的功能都是通过loader实现的。loader就相当于gulp里的task。loader可以用来处理在入口文件中require的和其他方式引用进来的文件。loader一般是一个独立的node模块，要单独安装。
+
+loader配置项：
+
+		test: /\.(js|jsx)$/,//注意是正则表达式，不要加引号，匹配要处理的文件
+	    loader: 'eslint-loader',//要使用的loader，"-loader"可以省略
+	    include: [path.resolve(__dirname, "src/app")],//把要处理的目录包括进来
+	    exclude: [nodeModulesPath]//排除不处理的目录
+
+目前已有的loader列表：
+[https://webpack.github.io/docs/list-of-loaders.html](https://webpack.github.io/docs/list-of-loaders.html "目前已有的loader列表")	
 
 一个module的例子:
 
@@ -129,7 +139,8 @@ a.js文件内容如下：
 	    ], path.resolve(__dirname,"src"))
   	]
 
-一个config文件，基本都是由这几个配置项组成的。
+目前已有的plugins列表：
+[http://webpack.github.io/docs/list-of-plugins.html](http://webpack.github.io/docs/list-of-plugins.html "现有的插件列表")
 
 ### 如何压缩输出的文件 ###
 
@@ -142,25 +153,14 @@ a.js文件内容如下：
 	      }
 	    })]
 
-
 ### 如何copy目录下的文件到输出目录 ###
-
+		
 	plugins: [
 	    //把指定文件夹下的文件复制到指定的目录
 	    new TransferWebpackPlugin([
 	      {from: 'www'}
 	    ], path.resolve(__dirname,"src"))
   	]
-
-###配置loader###
-大部分的对文件的处理的功能都是通过loader实现的。
-
-- 安装loader
-
-- 配置loader
-
-目前已有的loader列表：
-[https://webpack.github.io/docs/list-of-loaders.html](https://webpack.github.io/docs/list-of-loaders.html "目前已有的loader列表")
 
 
 ###打包javascript模块###
@@ -406,15 +406,50 @@ config配置：
 	}
 
 ###webpack-dev-server###
+在开发的过程中个，我们肯定不希望，每次修改完都手动执行webpack命令来调试程序。所以我们可以用webpack-dev-server这个模块来取代烦人的执行命令。它会监听文件，在文件修改后，自动编译、刷新浏览器的页面。另外，编译的结果是保存在内存中的，而不是实体的文件，所以是看不到的，因为这样会编译的更快。它就想到与一个轻量的express服务器。
+安装：
+	
+	npm install webpack-dev-server --save -dev
 
+config配置：
+	
+	var config = {
+		entry:path.resolve(__dirname,'src/main.js'),
+		resolve:{
+			extentions:["","js"]
+		},
+		//Server Configuration options
+	    devServer:{
+		    contentBase: '',  //静态资源的目录 相对路径,相对于当前路径
+		    devtool: 'eval',
+		    hot: true,        //自动刷新
+		    inline: true,    
+		    port: 3005        
+	    },
+	    devtool: 'eval',
+		output:{
+			path:buildPath,
+			filename:"app.js"
+		},
+		plugins: [
+		    new webpack.HotModuleReplacementPlugin(),//这个好像也是必须的，虽然我还没搞懂它的作用
+		    new webpack.NoErrorsPlugin()
+	    ]
+	}
 
+执行命令：
+	
+	webpack-dev-server --config webpack-dev-config.js  --inline --colors
+
+详细文档在这里查看：
+[http://webpack.github.io/docs/webpack-dev-server.html](http://webpack.github.io/docs/webpack-dev-server.html "webpack-dev-server 文档")
 
 ###webpack plugin 开发###
-待完善
+研究中 待完善
 
 
 ###webpack loader 开发###
-待完善
+研究中 待完善
 
 
 
