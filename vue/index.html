@@ -1,0 +1,43 @@
+<html>
+
+<head>
+    <title>vue start</title>
+    <script type="text/javascript" src="vue.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        {{ message }}
+    </div>
+
+	<hr>
+    <div id="app1">
+	  <ul>
+	    <li v-for="todo in todos">
+	      {{ todo.text }}
+	    </li>
+	  </ul>
+	</div>
+
+    <script type="text/javascript">
+    	new Vue({
+		  el: '#app',
+		  data: {
+		    message: 'Hello Vue.js!'
+		  }
+		});
+
+		new Vue({
+		  el: '#app1',
+		  data: {
+		    todos: [
+		      { text: 'Learn JavaScript' },
+		      { text: 'Learn Vue.js' },
+		      { text: 'Build Something Awesome' }
+		    ]
+		  }
+		})
+    </script>
+</body>
+
+</html>
