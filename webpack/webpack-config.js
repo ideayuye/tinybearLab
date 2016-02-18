@@ -4,6 +4,8 @@ var path = require('path');
 var buildPath = path.resolve(__dirname,"build");
 var nodemodulesPath = path.resolve(__dirname,'node_modules');
 var pathToHandlebars = path.resolve(nodemodulesPath, 'handlebars/dist/handlebars.min.js');
+var autoprefixer = require('autoprefixer');
+var precss       = require('precss');
 
 var config = {
 	entry:{app:path.resolve(__dirname,'src/main.js'),vendor: ["./src/js/common"]},
@@ -22,7 +24,7 @@ var config = {
 	module:{
 		loaders:[{
 			test:/\.css$/,
-			loader:'style!css',
+			loader:'style!css!postcss',
 			exclude:nodemodulesPath
 		},
 		{ test:/\.(png|woff|svg|ttf|eot)$/,loader:'url-loader?limit=10000'},
@@ -30,6 +32,9 @@ var config = {
 		{ test: /\.html$/, loader: "handlebars-loader" }
 		]
 	},
+	postcss: function () {
+		    return [autoprefixer, precss];
+		},
 	plugins:[
 		// new webpack.optimize.UglifyJsPlugin({
 		//     compress: {
