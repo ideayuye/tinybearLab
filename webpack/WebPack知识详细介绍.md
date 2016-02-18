@@ -1,4 +1,4 @@
-## WebPack系列知识介绍 ##
+## WebPack常用功能介绍 ##
 
 ###概述###
 Webpack是一款用户打包前端模块的工具。主要是用来打包在浏览器端使用的javascript的。同时也能转换、捆绑、打包其他的静态资源，包括css、image、font file、template等。这里就尽量详细的来介绍下一些基本功能的使用。
@@ -154,7 +154,17 @@ loader配置项：
 	    })]
 
 ### 如何copy目录下的文件到输出目录 ###
-		
+
+copy文件需要通过插件"transfer-webpack-plugin"来完成。
+
+安装：
+
+	npm install transfer-webpack-plugin  -save
+
+配置:
+
+	var TransferWebpackPlugin = require('transfer-webpack-plugin');
+	//其他节点省略	
 	plugins: [
 	    //把指定文件夹下的文件复制到指定的目录
 	    new TransferWebpackPlugin([
@@ -257,13 +267,14 @@ config配置：
 		module:{
 			loaders:[{
 				test:/\.css$/,
-				loader:'style!css',//
+				loader:'style!css',
 				exclude:nodemodulesPath
 			}]
 		}
 	}
 
-style-loader会把css文件嵌入到html的style标签里，css-loader会把css里@import的文件导入进来。打包完成的文件，引用执行后，会发现css的内容都插入到了head里的一个style标签里。
+style-loader会把css文件嵌入到html的style标签里，css-loader会把css按字符串导出，这两个基本都是组合使用的。打包完成的文件，引用执行后，会发现css的内容都插入到了head里的一个style标签里。
+如果是sass或less配置方式与上面类似。
 
 - images
 
@@ -385,7 +396,53 @@ main.js中调用模块的代码如下：
 	document.getElementById('tmpl_container').innerHTML = html; 		
 
 ###公用的模块分开打包###
+这需要通过插件“CommonsChunkPlugin”来实现。这个插件不需要安装，因为webpack已经把他包含进去了。
+接着我们来看配置文件：
 
+	var config = {
+		entry:{app:path.resolve(__dirname,'src/main.js'),
+				vendor: ["./src/js/common"]},//【1】注意这里
+		resolve:{
+			extentions:["","js"]
+		},
+		output:{
+			path:buildPath,
+			filename:"app.js"
+		},
+		module:{
+			loaders:[{
+				test:/\.css$/,
+				loader:'style!css',
+				exclude:nodemodulesPath
+			}
+			]
+		},
+		plugins:[
+			new webpack.optimize.UglifyJsPlugin({
+			     compress: {
+			        warnings: false
+			     }
+			}),
+			//【2】注意这里  这两个地方市用来配置common.js模块单独打包的
+			new webpack.optimize.CommonsChunkPlugin({
+				name: "vendor",//和上面配置的入口对应
+				filename: "vendor.js"//导出的文件的名称
+			})
+		]
+	}
+
+目录结构现在是这样的：
+	
+	webpack
+	  |---index.html
+	  |---webpack-config.js
+	  |---src
+		 |---main.js
+		 |---js
+			  |---a.js	//a里面require了common
+			  |---common.js
+
+执行webpack会生成app.js和common.js两个文件.
 
 
 ###多个入口####
@@ -420,7 +477,7 @@ config配置：
 		},
 		//Server Configuration options
 	    devServer:{
-		    contentBase: '',  //静态资源的目录 相对路径,相对于当前路径
+		    contentBase: '',  //静态资源的目录 相对路径,相对于当前路径 默认为当前config所在的目录
 		    devtool: 'eval',
 		    hot: true,        //自动刷新
 		    inline: true,    
@@ -437,20 +494,31 @@ config配置：
 	    ]
 	}
 
+我的目录结构:
+	
+	webpack
+	  |---index.html
+	  |---webpack-config.js//我把静态资源目录配置在了这里
+	  |---src
+		 |---main.js
+		 |---js
+			  |---a.js
+			  |---common.js
+
+
 执行命令：
 	
 	webpack-dev-server --config webpack-dev-config.js  --inline --colors
 
+默认访问地址：http://localhost:3000/index.html(根据配置会不一样)
+
+有一点需要声明，在index.html（引用导出结果的html文件）里直接引用“app.js”，不要加父级目录,因为此时app.js在内存里与output配置的目录无关：
+
+	<script type="text/javascript" src="app.js"></script>
+
+
 详细文档在这里查看：
 [http://webpack.github.io/docs/webpack-dev-server.html](http://webpack.github.io/docs/webpack-dev-server.html "webpack-dev-server 文档")
-
-###webpack plugin 开发###
-研究中 待完善
-
-
-###webpack loader 开发###
-研究中 待完善
-
 
 
 
