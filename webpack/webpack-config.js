@@ -4,6 +4,8 @@ var path = require('path');
 var buildPath = path.resolve(__dirname,"build");
 var nodemodulesPath = path.resolve(__dirname,'node_modules');
 var pathToHandlebars = path.resolve(nodemodulesPath, 'handlebars/dist/handlebars.min.js');
+var autoprefixer = require('autoprefixer');
+var precss       = require('precss');
 
 var config = {
 	// entry:{app:path.resolve(__dirname,'src/main.js'),vendor: ["./src/js/common"]},
@@ -18,6 +20,7 @@ var config = {
 	output:{
 		path:buildPath,
 		filename:"app.js"
+<<<<<<< HEAD
 	}
 	// module:{
 	// 	loaders:[{
@@ -42,6 +45,35 @@ var config = {
 	// 		// (the commons chunk name)
 	// 		filename: "vendor.js",
 	// 		// (the filename of the commons chunk)
+=======
+	},
+	module:{
+		loaders:[{
+			test:/\.css$/,
+			loader:'style!css!postcss',
+			exclude:nodemodulesPath
+		},
+		{ test:/\.(png|woff|svg|ttf|eot)$/,loader:'url-loader?limit=10000'},
+		{ test: /\.jpg$/, loader: "file-loader?name=[sha512:hash:base64:7].[ext]" },
+		{ test: /\.html$/, loader: "handlebars-loader" }
+		]
+	},
+	postcss: function () {
+		    return [autoprefixer, precss];
+		},
+	plugins:[
+		// new webpack.optimize.UglifyJsPlugin({
+		//     compress: {
+		//        //supresses warnings, usually from module minification
+		//        warnings: false
+		//     }
+		// }),
+		new webpack.optimize.CommonsChunkPlugin({
+			name: "vendor",
+			// (the commons chunk name)
+			filename: "vendor.js",
+			// (the filename of the commons chunk)
+>>>>>>> 447b3b5cfd3806d57ba9779455c4de53f3080fad
 
 	// 		// minChunks: 3,
 	// 		// (Modules must be shared between 3 entries)
