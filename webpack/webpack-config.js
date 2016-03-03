@@ -20,32 +20,6 @@ var config = {
 	output:{
 		path:buildPath,
 		filename:"app.js"
-<<<<<<< HEAD
-	}
-	// module:{
-	// 	loaders:[{
-	// 		test:/\.css$/,
-	// 		loader:'style!css',
-	// 		exclude:nodemodulesPath
-	// 	},
-	// 	{ test:/\.(png|woff|svg|ttf|eot)$/,loader:'url-loader?limit=10000'},
-	// 	{ test: /\.jpg$/, loader: "file-loader?name=[sha512:hash:base64:7].[ext]" },
-	// 	{ test: /\.html$/, loader: "handlebars-loader" }
-	// 	]
-	// },
-	// plugins:[
-	// 	// new webpack.optimize.UglifyJsPlugin({
-	// 	//     compress: {
-	// 	//        //supresses warnings, usually from module minification
-	// 	//        warnings: false
-	// 	//     }
-	// 	// }),
-	// 	new webpack.optimize.CommonsChunkPlugin({
-	// 		name: "vendor",
-	// 		// (the commons chunk name)
-	// 		filename: "vendor.js",
-	// 		// (the filename of the commons chunk)
-=======
 	},
 	module:{
 		loaders:[{
@@ -73,15 +47,13 @@ var config = {
 			// (the commons chunk name)
 			filename: "vendor.js",
 			// (the filename of the commons chunk)
->>>>>>> 447b3b5cfd3806d57ba9779455c4de53f3080fad
+			// minChunks: 3,
+			// (Modules must be shared between 3 entries)
 
-	// 		// minChunks: 3,
-	// 		// (Modules must be shared between 3 entries)
-
-	// 		// chunks: ["pageA", "pageB"],
-	// 		// (Only use these entries)
-	// 	})
-	// ]
+			// chunks: ["pageA", "pageB"],
+			// (Only use these entries)
+		})
+	]
 	
 }
 
