@@ -61,7 +61,7 @@ function co(fn) {
 }
 
 var fs = require('fs');
-//Ò»¸ö thunk º¯Êý
+//thunk
 function read(file) {
   return function(fn){
     fs.readFile(file, 'utf8', fn);

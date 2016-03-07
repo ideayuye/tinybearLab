@@ -34,13 +34,21 @@ var pfn1 = function(t){
     }
 };
 
-co(function*(){
-    console.log("go:");
-    var a = yield pfn1('x1');
-    console.log(a);
-    var b = yield pfn1('x2');
-    console.log(b);
-    console.log("game over");
+//co(function*(){
+//    console.log("go:");
+//    var a = yield pfn1('x1');
+//    console.log(a);
+//    var b = yield pfn1('x2');
+//    console.log(b);
+//    console.log("game over");
+//});
+
+var fx = function () {
+    console.log('tx');
+};
+
+co(function *() {
+    yield fx();
 });
 
 

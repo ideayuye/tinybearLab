@@ -23,15 +23,71 @@ var user = {
     hello:"hi"
 };
 
+
+//mysql操作
+var mysql      = require('mysql');
+
+var connection = mysql.createConnection({
+    host     : '10.27.101.3',
+    port: 3306,
+    user     : 'devuser',
+    password : 'devuser',
+    database : 'vss'
+});
+
+var connectp = ()=>{
+    return new Promise((resolve,reject)=>{
+        connection.connect((err)=>{
+            if(err)
+                reject(err);
+            resolve();
+        });
+    });
+};
+
+var queryp = (sql) =>{
+    return new Promise((resolve,reject)=>{
+        connection.query(sql,(err,rows)=>{
+            if(err)
+                reject(err);
+            else
+                resolve(rows);
+        });
+    });
+};
+
+var sql = 'SELECT count(0) as c from ue_advice';
+
+function* mysqlTest(){
+    yield connectp();
+    var d = yield queryp(sql);
+    return d[0].c;
+    //var data;
+    //connection.connect();
+    //    connection.query(sql, function(err, rows, fields) {
+    //    if (err) throw err;
+    //    data = rows[0].c;
+    //    console.log(rows[0].c);
+    //});
+    //connection.end();
+    //return data;
+
+};
+
 app.use(route.get('/hello', function *(){
-    this.body = yield this.render('user',user);
+    var type = this.query.type;
+    if(type ==1) {
+        this.body = yield this.render('user', user);
+    }else{
+        this.redirect('/test');
+    }
 }));
 
 app.use(route.get('/test',function *(){
-    console.log(this.query);
-    console.log(this.search);
-
-    this.body = "get it";
+    //console.log(this.query);
+    //console.log(this.search);
+    var a = yield mysqlTest();
+    this.body = "get it:"+a;
 }));
 
 app.use(route.post('/post',function*(){
