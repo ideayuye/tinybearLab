@@ -16,6 +16,7 @@ var playLayer = cc.Layer.extend({
             //scale: 0.5,
             rotation: 180
         });
+        cc.spriteFrameCache.addSpriteFrames(res.Sushi_plist);
         this.addChild(this.bgSprite, 0);
         this.schedule(this.update,1,16*1024,1);
 
@@ -23,7 +24,8 @@ var playLayer = cc.Layer.extend({
     },
     addSushi : function() {
 
-        var sushi = new cc.Sprite(res.Sushi_png);
+        // var sushi = new cc.Sprite(res.Sushi_png);
+        var sushi = new SushiSprite(res.Sushi_png);
         var size = cc.winSize;
 
         var x = sushi.width/2+size.width/2*cc.random0To1();
@@ -45,9 +47,11 @@ var playLayer = cc.Layer.extend({
     removeSushi : function() {
         //移除到屏幕底部的sushi
         for (var i = 0; i < this.SushiSprites.length; i++) {
-            cc.log("removeSushi.........");
-            if(0 == this.SushiSprites[i].y) {
-                cc.log("==============remove:"+i);
+            
+            // cc.log("removeSushi.........");
+            cc.log(this.SushiSprites[i].y);
+            if( this.SushiSprites[i].y <-29) {
+                // cc.log("==============remove:"+i);
                 this.SushiSprites[i].removeFromParent();
                 this.SushiSprites[i] = undefined;
                 this.SushiSprites.splice(i,1);

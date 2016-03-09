@@ -23,7 +23,7 @@ var sushiLayer = cc.Layer.extend({
             res.Start_N_png,
             res.Start_S_png,
             function () {
-                cc.log("Menu is clicked!");
+                cc.log("Menu is clicked!xxxxx");
                 
 //                cc.director.runScene( cc.TransitionPageTurn(1, new playScene(), false) );
                 cc.director.runScene( new playScene() );
