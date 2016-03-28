@@ -169,12 +169,12 @@ html代码：
 	    },
 	    update:function(){
 	        if(this.a > .03){
-	            this.w += this.vw;
-	            this.h += this.vh;
+	            this.w += this.vw;//宽度增长
+	            this.h += this.vh;//高度增长
 	            if(this.w > 100){
-	                this.a *= this.va;
-	                this.vw *= .98;
-	                this.vh *= .98;
+	                this.a *= this.va;//当宽度超过100，涟漪逐渐变淡消失
+	                this.vw *= .98;//宽度增长变缓慢
+	                this.vh *= .98;//高度增长变缓慢
 	            }
 	        } else {
 	            this.init();

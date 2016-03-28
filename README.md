@@ -6,5 +6,8 @@
 
 - webpack打包js、css等练习
 - vue初尝试
-- canvas基本图形绘制
-- canvas动画基础
+- Canvas基本图形绘制
+- Canvas动画基础
+- Canvas动画霓虹雨
+- Cocos2D-js Hello World
+- Koa尝试
