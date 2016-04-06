@@ -4,6 +4,7 @@
 
 var Canvas   = require('./Canvas');
 var Line     = require('./Line');
+var dispatch = require('./dispatch');
 
 //初始环境
 var canvas   = document.getElementById('canvas');
@@ -13,6 +14,7 @@ var $canvas  = $('#canvas');
 
 //图形
 var cc   = new Canvas();
+dispatch.init(cc);
 var line = new Line(ctx);
 var design = {
     action:1,
@@ -25,23 +27,33 @@ var design = {
     bindDraw:function(){
         var that = this;
         $canvas.on('mousedown',function(e){
-
+            var data = {
+                mouseType:'mousedown',
+                x:e.x,
+                y:e.y,
+                action:this.action
+            };
+            dispatch.process(data);
         });
         $canvas.on('mouseup',function(e){
-
+            var data = {
+                mouseType:'mouseup',
+                x:e.x,
+                y:e.y,
+                action:this.action
+            };
+            dispatch.process(data);
         });
         $canvas.on('mousemove',function(e){
-            //console.log('trigger',e.x,e.y);
+            var data = {
+                mouseType:'mouseup',
+                x:e.x,
+                y:e.y,
+                action:this.action
+            };
+            dispatch.process(data);
         });
         $canvas.on('click',function(e){
-            var data = {
-                mouseType:'click',
-                x:e.x,
-                y:e.y
-            };
-            if(that.action == 1){
-                line.processInput(data);
-            }
         });
 
     },
