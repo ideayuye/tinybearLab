@@ -2,7 +2,10 @@
  * Created by tinybear on 2016/4/4.
  */
 
+var Path = require('./Path');
+
 var Line = function(ctx){
+    Path.call(this);
     this.ctx = ctx;
 };
 

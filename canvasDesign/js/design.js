@@ -44,7 +44,8 @@ var design = {
 
     },
     animate:function(){
-        //临时图形
+        //临时图层
+        //重绘页面
         line.draw();
         window.requestAnimationFrame(this.animate);
     }
