@@ -2,7 +2,8 @@
  * Created by tinybear on 2016/4/4.
  */
 
-var Line     = require('./line');
+var Canvas   = require('./Canvas');
+var Line     = require('./Line');
 
 //初始环境
 var canvas   = document.getElementById('canvas');
@@ -11,6 +12,7 @@ var cvsPanel = document.getElementsByClassName('c-canvas-panel')[0];
 var $canvas  = $('#canvas');
 
 //图形
+var cc   = new Canvas();
 var line = new Line(ctx);
 var design = {
     action:1,
@@ -44,9 +46,7 @@ var design = {
 
     },
     animate:function(){
-        //临时图层
         //重绘页面
-        line.draw();
         window.requestAnimationFrame(this.animate);
     }
 };
