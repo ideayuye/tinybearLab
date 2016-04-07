@@ -10,6 +10,14 @@ var dispatch = {
         this.canvas = cc;
     },
     process:function(data){
+        //根据action判断当前图形 图形的绘制进展
+        switch(data.action){
+            case 1:
+                this.canvas.
+                break;
+            case 2:
+                break;
+        }
         //mousedown
         //mouseup
         //mousemove

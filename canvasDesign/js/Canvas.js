@@ -1,7 +1,8 @@
 
 var Layer = require('./Layer');
 
-var Canvas = function(){
+var Canvas = function(ctx){
+    this.ctx = ctx;
     this.tempLayer = new Layer();
     this.layers    = [];
     this.curLayer = function(){

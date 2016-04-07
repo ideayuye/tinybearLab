@@ -13,9 +13,8 @@ var cvsPanel = document.getElementsByClassName('c-canvas-panel')[0];
 var $canvas  = $('#canvas');
 
 //图形
-var cc   = new Canvas();
+var cc   = new Canvas(ctx);
 dispatch.init(cc);
-var line = new Line(ctx);
 var design = {
     action:1,
     init:function(){
@@ -54,6 +53,13 @@ var design = {
             dispatch.process(data);
         });
         $canvas.on('click',function(e){
+            var data = {
+                mouseType:'click',
+                x:e.x,
+                y:e.y,
+                action:this.action
+            };
+            dispatch.process(data);
         });
 
     },
