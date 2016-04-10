@@ -16,11 +16,14 @@ var dispatch = {
             case 1:
                 if(!this.curPath && data.mouseType=="mousedown") {
                     this.curPath = new Line(this.canvas.ctx);
-                    this.canvas.tempLayer.paths.push(this.curPath);
+                    this.canvas.tempLayer.addPath(this.curPath);
                 }
                 if(this.curPath) {
                     this.curPath.process(data);
-                    if (this.curPath.isEnd) {
+                    if (this.curPath.isEnd()) {
+                        var id = this.curPath.id;
+                        this.canvas.tempLayer.remove(id);
+                        this.canvas.curLayer.addPath(this.curPath);
                         this.curPath = null;
                     }
                 }
@@ -29,10 +32,6 @@ var dispatch = {
 
                 break;
         }
-        //mousedown
-        //mouseup
-        //mousemove
-        //click
 
         //图形绘制中添加到临时图层
 

@@ -4,15 +4,18 @@
 **/
 
 var Layer = function(){
-};
-
-Layer.prototype = {
-    paths:[],//图层内的图形
-    draw:function(){
-        this.paths.forEach(function(p){
-            p.draw();
-        });
-    }
+    this.paths={};
+    this.addPath=function(p){
+        this.paths[p.id] = p;
+    };
+    this.remove=function(id){
+        delete this.paths[id];
+    };
+    this.draw=function() {
+        for (var p in this.paths) {
+            this.paths[p].draw();
+        }
+    };
 };
 
 module.exports = Layer;
