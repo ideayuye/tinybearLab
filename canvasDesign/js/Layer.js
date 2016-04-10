@@ -3,17 +3,17 @@
 *
 **/
 
-var Layer = funciton(){}
+var Layer = function(){
+};
 
 Layer.prototype = {
-    getCurPath:function(){
-        return this.paths[0];
-    },
     paths:[],//图层内的图形
     draw:function(){
-        
+        this.paths.forEach(function(p){
+            p.draw();
+        });
     }
 };
 
-
 module.exports = Layer;
+

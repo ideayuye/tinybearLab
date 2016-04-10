@@ -3,11 +3,11 @@
 *
 **/
 
-var Path = funciton(){
+var Path = function(){
     this.draw = function(){
         
     };
-}
+};
 
 
 module.exports = Path;
