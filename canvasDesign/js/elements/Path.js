@@ -3,6 +3,8 @@
 *
 **/
 
+var LineTo = require('./LineTo');
+
 var Path = function(ctx){
     this.ctx = ctx;
     this.id = "p_" + (new Date()).valueOf();
