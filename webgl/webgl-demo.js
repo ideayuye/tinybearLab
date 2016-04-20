@@ -5,6 +5,12 @@
 
 var canvas;
 var gl;
+var  squareVerticesBuffer;
+var mvMatrix;
+var shaderProgram;
+var vertexPositionAttribute;
+var perspectiveMatrix;
+
 //
 // start
 //
@@ -21,6 +27,12 @@ function start() {
         gl.enable(gl.DEPTH_TEST);           // Enable depth testing
         gl.depthFunc(gl.LEQUAL);            // Near things obscure far things
     }
+
+    initShaders();
+
+    initBufers();
+
+    drawScene();
 }
 //
 // initWebGL
@@ -99,15 +111,14 @@ function initShaders(){
 
     gl.useProgram(shaderProgram);
 
-    var vertexPositionAttribute = gl.getAttributeLocation(shaderProgram,"aVertexPosition");
+    var vertexPositionAttribute = gl.getAttribLocation(shaderProgram,"aVertexPosition");
     gl.enableVertexAttribArray(vertexPositionAttribute);
 
 }
 
-var horizAspect = 480.0/640.0;
 
 function initBufers(){
-    var squareVerticesBuffer = gl.createBuffer();
+    squareVerticesBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,squareVerticesBuffer);
 
     var vertices = [
@@ -124,7 +135,7 @@ function initBufers(){
 function drawScene(){
     gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
-    var perspectiveMatrix = makePerspective(45,640.0/480.0,0.1,100.0);
+    perspectiveMatrix = makePerspective(45,640.0/480.0,0.1,100.0);
 
     loadIdentity();
     mvTranslate([-0.0,0.0,-6.0]);
@@ -133,6 +144,8 @@ function drawScene(){
     gl.vertexAttribPointer(vertexPositionAttribute,3,gl.FLOAT,false,0,0);
     setMatrixUniforms();
     gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
+
+    window.requestAnimationFrame(drawScene);
 
 }
 
@@ -160,3 +173,4 @@ function setMatrixUniforms() {
 // gl.vertexAttribPointer //提取位置、颜色信息到着色器
 // gl.enableVertexAttribArray // 应用着色器里的 顶点信息
 
+window.onload = start();
