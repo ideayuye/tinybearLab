@@ -41,9 +41,6 @@ function initWebGL() {
     }
 }
 
-function initShaders(){
-
-}
 
 function getShader(gl,id){
     var shaderScript,theSource,currentChild,shader;
@@ -158,3 +155,8 @@ function setMatrixUniforms() {
     var mvUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
     gl.uniformMatrix4fv(mvUniform, false, new Float32Array(mvMatrix.flatten()));
 }
+
+// gl.uniformMatrix4fv 为顶点着色器赋投影矩阵、视图矩阵的值
+// gl.vertexAttribPointer //提取位置、颜色信息到着色器
+// gl.enableVertexAttribArray // 应用着色器里的 顶点信息
+
