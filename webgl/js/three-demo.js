@@ -43,7 +43,6 @@ function init() {
     // }
     // material = new THREE.MeshBasicMaterial({vertexColors:THREE.FaceColors,overdraw:0.5 });
     
-   //git test recommand pwd user
                 
     var loader = new THREE.TextureLoader();
     return Q.Promise(function(resolve,reject){
