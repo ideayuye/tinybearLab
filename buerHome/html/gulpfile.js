@@ -6,6 +6,7 @@ var cssnano = require('gulp-cssnano');
 var uglify = require('gulp-uglify');
 var useref = require('gulp-useref');
 var gulpif = require('gulp-if');
+var sass  = require('gulp-sass');
 
 gulp.task('image-min', () =>
     gulp.src('images/*')
@@ -34,4 +35,16 @@ gulp.task('html', function () {
 });
 
 gulp.task('build',['image-min','html']);
+
+gulp.task('sass',()=>{
+    gulp.src('css/resume.scss')
+        .pipe(sass().on('error', sass.logError))
+        .pipe(gulpif('*.css', cssnano({zIndex:false})))
+        .pipe(gulp.dest('dist/css'));
+});
+
+gulp.task('watch',()=>{
+    gulp.watch('css/resume.scss',['sass']);
+});
+
 
