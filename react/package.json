@@ -1,5 +1,5 @@
 {
-  "name": "react",
+  "name": "react-start",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,6 +12,10 @@
   "author": "tb",
   "license": "ISC",
   "dependencies": {
-    "redux": "^3.5.2"
+    "babel-polyfill": "^6.9.1",
+    "react": "^15.1.0",
+    "react-dom": "^15.1.0",
+    "redux": "^3.5.2",
+    "webpack": "^1.13.1"
   }
 }
