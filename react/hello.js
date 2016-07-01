@@ -1,19 +1,18 @@
 
-var t = "hello";
+// var t = "hello";
 
-var xo = ()=>{
-	console.log('xxx:'+t);
-}
+// var xo = ()=>{
+// 	console.log('xxx:'+t);
+// }
 
-xo();
+// xo();
 
-var react = require('react');
+// console.log("start");
+var React = require('react')
 var reactDom = require("react-dom");
+var HI = require('./HI');
 
 
-reactDom.render(
-	<div>
-	hello
-	</div>,
+reactDom.render(<HI />,
 	document.getElementById('container'));
 

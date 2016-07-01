@@ -46,6 +46,7 @@ process.stdin.on('end', () => {
 });
 
 const spawn = require('child_process').spawn;
+
 const bat = spawn('cmd.exe',['/c','my.bat']);
 
 bat.stdout.on('data',(data)=>{
@@ -53,7 +54,8 @@ bat.stdout.on('data',(data)=>{
 });
 
 
- 
+var m1 = require('./module');
+console.log(require.resolve('module'));
 
 
 
