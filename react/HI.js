@@ -1,11 +1,24 @@
 
 var React = require('react');
+import {connect} from "react-redux";
 
-var Hello = React.createClass({
-	render:()=>{
-		return (<h1>Hello xxxxx</h1>);
-	}
-});
+let HI = ({dispatch}) => {
+    
+    return (
+        <div onClick={(e)=>{
+            e.preventDefault();
+            dispatch({type:'ADD_X'});
+        }}>hello</div>
+    );
+}
 
-module.exports = Hello;
+HI = connect()(HI);
 
+// var HI = React.createClass({
+//     render:()=>{
+//         return <div>hello</div>;
+//     }
+// });
+
+
+module.exports = HI;
