@@ -1,11 +1,10 @@
 
-var todo = (state,action)=>{
+var todo = (state = {text:""},action)=>{
     switch (action.type) {
         case "ADD_X":
-            // return {
-            //     text:action.text    
-            // }
-            return status+"x";
+            return {
+                text: state.text += action.text
+            }
         default:
             return state;
     }

@@ -1,14 +1,15 @@
 
 var React = require('react');
 import {connect} from "react-redux";
+var Display = require('./display');
 
-let HI = ({dispatch}) => {
-    
+let HI = ({dispatch,state}) => {
     return (
         <div onClick={(e)=>{
             e.preventDefault();
-            dispatch({type:'ADD_X'});
-        }}>hello</div>
+            dispatch({type:'ADD_X',text:'1plus'});
+        }}>hello:</div>
+
     );
 }
 

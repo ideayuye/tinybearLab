@@ -5,11 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-<<<<<<< HEAD
-    "dev": "webpack-dev-sever --line"
-=======
     "dev": "webpack-dev-server --inline"
->>>>>>> 094790c4233d03b51fdd73d1d2a21e00b20a9ca6
   },
   "keywords": [
     "test"
