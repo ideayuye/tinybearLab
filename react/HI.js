@@ -3,15 +3,23 @@ var React = require('react');
 import {connect} from "react-redux";
 var Display = require('./display');
 
-let HI = ({dispatch,state}) => {
+let HI = ({state,dispatch}) => {
     return (
+        <div>
         <div onClick={(e)=>{
             e.preventDefault();
             dispatch({type:'ADD_X',text:'1plus'});
         }}>hello:</div>
-
+        <Display {...state}/>
+        </div>
     );
 }
+
+// const mapStateToProps = (state) =>{
+//     return {
+//         text: state.text
+//     }
+// }
 
 HI = connect()(HI);
 
@@ -21,5 +29,5 @@ HI = connect()(HI);
 //     }
 // });
 
-
 module.exports = HI;
+
