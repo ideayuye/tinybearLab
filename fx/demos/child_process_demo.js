@@ -3,6 +3,7 @@ var child_p = require('child_process');
 var spawn = child_p.spawn;
 
 var cp = spawn('echo',['hello']);
+// var cp = spawn('node',['hello.js']);
 
 cp.stdout.on('data',(data)=>{
     console.log(data.toString());

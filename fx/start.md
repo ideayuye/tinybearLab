@@ -7,6 +7,10 @@ theme: moon
 
 
 [slide]
+## 系统简介
+
+
+[slide]
 ## Node.js结构
 ![测试文件路径](/images/node_arc.jpg)
 * Node.js 标准库，这部分是由 Javascript 编写的，即我们使用过程中直接能调用的 API 
@@ -19,6 +23,15 @@ theme: moon
 
 [slide]
 ##异步、非阻塞I/O
+
+
+[slide]
+## 介绍http模块 顺带介绍stream eventEmitter
+
+    console.log('hi ok');{:&.fadeIn}
+
+[slide]
+## 介绍express
 
 [slide]
 ##v8内存&内存泄漏排查
@@ -33,17 +46,7 @@ theme: moon
 ## 集群&监控
 good{:&.moveIn}
 
-[slide]
-## 介绍http模块 顺带介绍stream eventEmitter
-
-    console.log('hi ok');{:&.fadeIn}
 
 [slide]
-## 介绍express
-
-[slide]
-## 介绍注意安全
-
-[slide]
-## 
+## 系统安全
 
