@@ -1,18 +1,28 @@
 
-title: nodeppt markdown 
-speaker: Theo Wang
-url: https://github.com/ksky521/nodePPT
+title: node 实践
+speaker: tb
 transition: zoomin
 theme: moon
 
 
 [slide]
 ## 系统简介
+### 用户体验提升计划系统
+随着node的流行，通过对开发用户体验提升计划系统来对node进行尝试。系统主要功能是收集用户提交的建议，后台流转到各个部门，促使用户反馈落实到系统，改善易购体验。
+
+### 线上地址
+- pc端：[http://s.suning.com/](http://s.suning.com/) 
+- app端：[http://s.suning.com/app.htm](http://s.suning.com/app.htm) 
+- 后台：[http://s.cnsuning.com/predo.htm](http://s.cnsuning.com/predo.htm) 
 
 
 [slide]
+##系统结构
+![vss结构](/images/vss.png)
+
+[slide]
 ## Node.js结构
-![测试文件路径](/images/node_arc.jpg)
+![node结构](/images/node_arc.jpg)
 * Node.js 标准库，这部分是由 Javascript 编写的，即我们使用过程中直接能调用的 API 
 * Node bindings，这一层是 Javascript 与底层 C/C++ 能够沟通的关键，前者通过 bindings 调用后者，相互交换数据。实现在 node.cc
 * 这一层是支撑 Node.js 运行的关键，由 C/C++ 实现
@@ -24,12 +34,29 @@ theme: moon
 
 
 [slide]
-## 介绍http模块 顺带介绍stream eventEmitter
+## 介绍http模块 
+    
+ ```
+    var http = require('http');
+    var server = http.createServer((req, res) => {
+        res.end('hello world');
+    });
+    server.listen(1202, '127.0.0.1');
+```
 
-    console.log('hi ok');{:&.fadeIn}
+- server-- http.Server http服务端
+- res   -- http.ServerResponse  可写流 实现了 stream.Writable
+- req   -- http.IncomingMessage 可读流 实现了 stream.Readable
+- http.Agent 管理http使用的sockets连接池
+- http.ClientRequest 可以发起http客户端请求
 
 [slide]
 ## 介绍express
+* 应用级中间件
+* 路由级中间件
+* 错误处理中间件
+* 内置中间件
+* 第三方中间件
 
 
 [slide]
@@ -47,17 +74,18 @@ devtool
 
 [slide ]
 ## 集群&监控
-good{:&.moveIn}
+* child_process
+* cluster
+* pm2
 
 [slide]
 ## 系统安全
-xss
-csrf
-文件上传
+* xss
+* csrf
+* 文件上传
 
 [slide]
 ## 实践总结
-＊ 总体来说node性能良好，而且稳定
-＊ 难以与公司现有的系统对接，比如接入日志收集系统、监控系统、中台服务等
-＊ 做好单元测试等保障系统稳定的基础
-
+* 总体来说node性能良好，而且稳定
+* 难以与公司现有的系统对接，比如接入日志收集系统、监控系统、中台服务等
+* 做好单元测试等保障系统稳定的基础
