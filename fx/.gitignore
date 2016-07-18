@@ -1,3 +1,4 @@
 output
 .vscode
 node_modules
+demos/cppAddons/build
