@@ -1,4 +1,5 @@
 output
+publish
 .vscode
 node_modules
 demos/cppAddons/build
