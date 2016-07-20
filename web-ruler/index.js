@@ -1,0 +1,1 @@
+window.opne('http://indus.site');
