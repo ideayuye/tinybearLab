@@ -1,8 +1,15 @@
 
-// alert("are you ok");
-// window.opne('http://indus.site');
  
-alert( chrome.runtime.getURL());
+chrome.browserAction.onClicked.addListener(function () {
+    // window.opne('http://indus.site');
+    chrome.desktopCapture.chooseDesktopMedia(["window"],
+        chrome.tabs.create({url:""}),function (streamId) {
+        console.log(streamId);
+    });
 
-var tab = chrome.tabs.query({'active': true}); //WRONG!!!
-chrome.tabs.update(tab.id, {url:newUrl});
+    chrome.tabs.create({url:"https://indus.site/"});
+
+});
+
+// var tab = chrome.tabs.query({'active': true}); //WRONG!!!
+// chrome.tabs.update(tab.id, {url:newUrl});
