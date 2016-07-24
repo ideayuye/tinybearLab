@@ -1,15 +1,17 @@
 
  
 chrome.browserAction.onClicked.addListener(function () {
-    // window.opne('http://indus.site');
-    chrome.desktopCapture.chooseDesktopMedia(["window"],
-        chrome.tabs.create({url:""}),function (streamId) {
-        console.log(streamId);
-    });
+    // chrome.desktopCapture.chooseDesktopMedia(["window"],
+    //     chrome.tabs.create({url:""}),function (streamId) {
+    //     console.log(streamId);
+    // });
 
-    chrome.tabs.create({url:"https://indus.site/"});
+    // chrome.tabs.create({url:"https://indus.site/"});
 
+    chrome.tabs.executeScript(null,{file:'content_script.js'});
+    chrome.tabs.insertCSS(null,{file:'content.css'});
+    
 });
 
-// var tab = chrome.tabs.query({'active': true}); //WRONG!!!
-// chrome.tabs.update(tab.id, {url:newUrl});
+
+
