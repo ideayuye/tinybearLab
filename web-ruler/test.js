@@ -13,8 +13,9 @@ chrome.browserAction.onClicked.addListener(function () {
 
     chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         chrome.tabs.captureVisibleTab(function (screenshotUrl) {
-            sendResponse('screen ok');
+            sendResponse({"words":'screen ok'});
         });
+        return true;
     });
     
 });
