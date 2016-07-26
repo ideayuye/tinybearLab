@@ -1,6 +1,5 @@
 
 // document.body.style.background = "green";
-console.log('hello');
 
 var sayHello = function (someone) {
     console.log(someone + ":say hello");
@@ -8,13 +7,11 @@ var sayHello = function (someone) {
 
 sayHello("xl");
 
-// var test = function () {
+var getScreenShot = function () {
+    chrome.runtime.sendMessage(null, { n: "sall" }, function (response) {
+        console.log("response");
+    });
+}
 
-// }
+getScreenShot();
 
-// test();
-
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    alert(message);
-    sendResponse('ok');
-});
