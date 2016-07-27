@@ -5,6 +5,10 @@ var button = document.createElement('button');
 button.innerText = "截图";
 document.body.appendChild(button);
 
+var canvas = document.createElement('canvas');
+canvas.setAttribute('id','ruler-panel');
+document.body.appendChild(canvas);
+
 var sayHello = function (someone) {
     console.log(someone + ":say hello");
 }
