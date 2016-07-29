@@ -14,8 +14,6 @@ getScreenShot();
 
 button.addEventListener('click',getScreenShot);
 
-var dw = require('./draw.js');
-
-dw.init();
-
+var draw = require('./draw');
+draw.init();
 

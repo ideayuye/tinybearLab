@@ -1,3 +1,4 @@
+
 /**
  * Created by tinybear on 2016/4/4.
  */
@@ -67,3 +68,4 @@ var Line = function(ctx){
 };
 
 module.exports = Line;
+
