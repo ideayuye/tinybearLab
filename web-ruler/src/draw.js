@@ -1,13 +1,14 @@
 
 var Line = require('./line.js');
+var Layer = require('./Layer.js');
 
-var dw = {};
-dw.lines = [];
-dw.action = 1;
-dw.curPath = null;
+var dw = {
+    action: 1,
+    curPath: null,
+    tempLayer: new Layer(),
+    curLayer: new Layer()
+};
 
-/*var ww = window.innerWidth;
-var wh = document.body.clientHeight;*/
 var ww = 500;
 var wh = 500;
 var ctx = null;
@@ -16,10 +17,14 @@ var canvas = null;
 dw.init = function () {
     canvas = document.createElement('canvas');
     canvas.setAttribute('id', 'ruler-panel');
+    document.body.appendChild(canvas);
+    ww = canvas.offsetWidth;
+    wh = canvas.offsetHeight;
     canvas.setAttribute('width', ww);
     canvas.setAttribute('height', wh);
-    document.body.appendChild(canvas);
     ctx = canvas.getContext('2d');
+
+    ctx.strokeStyle = "red";
 
     this.bindDraw();
     animate();
@@ -52,16 +57,18 @@ dw.bindDraw = function () {
 
 dw.process = function (data) {
     //根据action判断当前图形 图形的绘制进展
-    switch(data.action){
+    switch (data.action) {
         case 1:
-            if(!this.curPath && data.mouseType=="mousedown") {
+            if (!this.curPath && data.mouseType == "mousedown") {
                 this.curPath = new Line(ctx);
+                this.tempLayer.addPath(this.curPath);
             }
-            if(this.curPath) {
+            if (this.curPath) {
                 this.curPath.process(data);
                 if (this.curPath.isEnd()) {
                     var id = this.curPath.id;
-                    this.lines.push(this.curPath);
+                    this.tempLayer.remove(id);
+                    this.curLayer.addPath(this.curPath);
                     this.curPath = null;
                 }
             }
@@ -73,7 +80,9 @@ dw.process = function (data) {
 
 var animate = function () {
     //重绘页面
-    dw.lines.forEach(x=>{x.draw();});
+    ctx.clearRect(0, 0, ww, wh);
+    dw.curLayer.draw();
+    dw.tempLayer.draw();
     window.requestAnimationFrame(animate);
 };
 
