@@ -1,7 +1,7 @@
 
-
 var Line = require('./line.js');
 var Layer = require('./Layer.js');
+var LengthMark = require('./lengthMark.js');
 
 var dw = {
     action: 1,
@@ -61,7 +61,8 @@ dw.process = function (data) {
     switch (data.action) {
         case 1:
             if (!this.curPath && data.mouseType == "mousedown") {
-                this.curPath = new Line(ctx);
+                // this.curPath = new Line(ctx);
+                this.curPath = new LengthMark(ctx);
                 this.tempLayer.addPath(this.curPath);
             }
             if (this.curPath) {
