@@ -14,6 +14,8 @@ var ww = 500;
 var wh = 500;
 var ctx = null;
 var canvas = null;
+var screenShotUrl = "";
+var dpr = window.devicePixelRatio;
 
 dw.init = function () {
     canvas = document.createElement('canvas');
@@ -29,6 +31,12 @@ dw.init = function () {
 
     this.bindDraw();
     animate();
+}
+
+dw.setScreenShotUrl = function (screenShot) {
+    var image = new Image();
+    image.src = screenShot;
+    screenShotUrl = image;
 }
 
 dw.bindDraw = function () {
@@ -83,10 +91,16 @@ dw.process = function (data) {
 var animate = function () {
     //重绘页面
     ctx.clearRect(0, 0, ww, wh);
+    if(screenShotUrl){
+        ctx.drawImage(screenShotUrl,0,0,
+        screenShotUrl.width/dpr,
+        screenShotUrl.height/dpr);
+    }
     dw.curLayer.draw();
     dw.tempLayer.draw();
     window.requestAnimationFrame(animate);
 };
 
 module.exports = dw;
+
 
