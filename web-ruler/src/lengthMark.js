@@ -138,12 +138,20 @@ var LengthMark = function(ctx){
             length = this.dx();
         }
         this.ctx.font = "16px arial";
-        this.ctx.fillStyle = '#FE1616';
         var mtxt = this.ctx.measureText(length);
-        if(this.dir == "v")
-            this.ctx.fillText(length, this.markPos.x-mtxt.width*0.5, this.markPos.y);
-        if(this.dir == "h")
-            this.ctx.fillText(length, this.markPos.x, this.markPos.y);
+        var mx = 0,my = 0;
+        if(this.dir == "v"){
+            mx = this.markPos.x-mtxt.width*0.5;
+            my = this.markPos.y+6;
+        }
+        if(this.dir == "h"){
+            mx = this.markPos.x-mtxt.width*0.5;
+            my = this.markPos.y+6;
+        }
+        this.ctx.fillStyle = "#FFF";
+        ctx.fillRect(mx, my-16, mtxt.width, 18);
+        this.ctx.fillStyle = '#FE1616';
+        this.ctx.fillText(length, mx, my);
     };
     //绘制虚线
     this.drawDottedLine = function(){
