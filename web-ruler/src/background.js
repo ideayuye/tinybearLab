@@ -27,8 +27,8 @@ bg.drawBG = function(){
     var ctx = _.ctx;
     if(_.background){
         ctx.drawImage(_.background,0,0,
-        _.background.width/_.dpr,
-        _.background.height/_.dpr);
+        _.background.width,
+        _.background.height);
     }
 };
 

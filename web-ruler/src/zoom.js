@@ -5,7 +5,7 @@
 
 var zoom = {
     /*等级从1到10，1是1：1的*/
-    level:2,
+    level:1,
     /*中心点*/
     center:{x:0,y:0},
     ww:0,
@@ -38,6 +38,24 @@ zoom.calViewBox = function () {
     box.sy = _.center.y - box.sh*0.5;
 
     return  box;
+};
+
+/*放大*/
+zoom.zoomIn = function(){
+    if(this.level<10)
+        this.level ++;
+};
+
+/*缩小*/
+zoom.zoomOut = function(){
+    if(this.level > 1)
+        this.level--;
+}
+
+/*平移*/
+zoom.move = function(mx,my){
+    this.center.x += mx;
+    this.center.y += my;
 };
 
 module.exports = zoom;

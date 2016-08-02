@@ -6,6 +6,10 @@ var bg = require('./background.js');
 var zoom = require('./zoom.js');
 
 var dw = {
+    /*动作说明：
+        1－绘制标注线
+        2－平移图片
+    */
     action: 1,//当前绘制动作
     curPath: null,
     tempLayer: new Layer(),
@@ -92,6 +96,20 @@ dw.process = function (data) {
                 }
             }
             break;
+        case 2:
+            //mousedown
+            if(data.mouseType == "mousedown"){
+                
+            }
+            //mousemove
+            if(data.mouseType == "mousemove"){
+                
+            }
+            //mouseup
+            if(data.mouseType == "mouseup"){
+                
+            }
+            break;
         default:
             break;
     }
@@ -104,8 +122,6 @@ dw.drawCache = function () {
     dw.curLayer.draw();
     dw.tempLayer.draw();
 };
-
-//计算可视区域
 
 
 var animate = function () {

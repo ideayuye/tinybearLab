@@ -21,7 +21,7 @@ var config = {
             {
                 test: /\.html$/, //正则表达式匹配 .js 和 .jsx 文件
                 loader: 'tmodjs',//对匹配的文件进行处理的loader 
-                exclude: [nodeModulesPath]//排除node module中的文件
+                exclude: [nodemodulesPath]//排除node module中的文件
             }
         ]
     }

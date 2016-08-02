@@ -11,3 +11,20 @@
 }
 
 
+#TMK_menus{
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 10000;
+}
+
+#TMK_menus ul{
+    list-style: none;
+}
+
+#TMK_menus li{
+    float: left;
+    padding: 3px 10px;
+    background: #fff;
+    cursor: pointer;
+}
