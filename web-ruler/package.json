@@ -12,6 +12,7 @@
   "author": "tb",
   "license": "ISC",
   "dependencies": {
+    "tmodjs-loader": "^1.0.1",
     "webpack": "^1.13.1"
   }
 }

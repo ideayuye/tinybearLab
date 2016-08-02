@@ -1,8 +1,10 @@
 
 
-var button = document.createElement('button');
+/*var button = document.createElement('button');
 button.innerText = "截图";
 document.body.appendChild(button);
+
+button.addEventListener('click',getScreenShot);*/
 
 var draw = require('./draw');
 draw.init();
@@ -17,5 +19,7 @@ var getScreenShot = function () {
 
 getScreenShot();
 
-button.addEventListener('click',getScreenShot);
+
+
+
 
