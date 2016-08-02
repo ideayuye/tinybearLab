@@ -2,43 +2,52 @@
 var Line = require('./line.js');
 var Layer = require('./Layer.js');
 var LengthMark = require('./lengthMark.js');
+var bg = require('./background.js');
+var zoom = require('./zoom.js');
 
 var dw = {
-    action: 1,
+    action: 1,//当前绘制动作
     curPath: null,
     tempLayer: new Layer(),
     curLayer: new Layer()
 };
 
-var ww = 500;
-var wh = 500;
-var ctx = null;
-var canvas = null;
-var screenShotUrl = "";
-var dpr = window.devicePixelRatio;
+var ww = 500,
+    wh = 500,
+    ctx = null,
+    canvas = null,
+    cacheCtx = null,
+    cacheCanvas = null;
 
+/*初始化mark面板*/
 dw.init = function () {
     canvas = document.createElement('canvas');
+    cacheCanvas = document.createElement('canvas');
     canvas.setAttribute('id', 'ruler-panel');
     document.body.appendChild(canvas);
     ww = canvas.offsetWidth;
     wh = canvas.offsetHeight;
     canvas.setAttribute('width', ww);
     canvas.setAttribute('height', wh);
+    cacheCanvas.setAttribute('width', ww);
+    cacheCanvas.setAttribute('height', wh);
     ctx = canvas.getContext('2d');
+    cacheCtx = cacheCanvas.getContext('2d');
 
-    ctx.strokeStyle = "red";
+    cacheCtx.strokeStyle = "red";
 
+    bg.init(cacheCtx);
+    zoom.init(ww,wh);
     this.bindDraw();
     animate();
 }
 
+/*设置截取的背景图*/ 
 dw.setScreenShotUrl = function (screenShot) {
-    var image = new Image();
-    image.src = screenShot;
-    screenShotUrl = image;
+    bg.setBG(screenShot);
 }
 
+/*绑定绘制动作*/
 dw.bindDraw = function () {
     var that = this;
     var wrapperData = function (type, e) {
@@ -63,14 +72,14 @@ dw.bindDraw = function () {
     });
 
 }
-
+/*处理绘制动作*/
 dw.process = function (data) {
     //根据action判断当前图形 图形的绘制进展
     switch (data.action) {
         case 1:
             if (!this.curPath && data.mouseType == "mousedown") {
                 // this.curPath = new Line(ctx);
-                this.curPath = new LengthMark(ctx);
+                this.curPath = new LengthMark(cacheCtx);
                 this.tempLayer.addPath(this.curPath);
             }
             if (this.curPath) {
@@ -88,16 +97,21 @@ dw.process = function (data) {
     }
 }
 
-var animate = function () {
-    //重绘页面
-    ctx.clearRect(0, 0, ww, wh);
-    if(screenShotUrl){
-        ctx.drawImage(screenShotUrl,0,0,
-        screenShotUrl.width/dpr,
-        screenShotUrl.height/dpr);
-    }
+//离屏绘制
+dw.drawCache = function () {
+    cacheCtx.clearRect(0, 0, ww, wh);
+    bg.drawBG();
     dw.curLayer.draw();
     dw.tempLayer.draw();
+};
+
+//计算可视区域
+
+
+var animate = function () {
+    dw.drawCache();
+    var box = zoom.calViewBox();
+    ctx.drawImage(cacheCanvas,box.sx,box.sy,box.sw,box.sh,0,0,ww,wh);
     window.requestAnimationFrame(animate);
 };
 
