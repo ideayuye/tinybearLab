@@ -1,52 +1,59 @@
 
-var Line = require('./line.js');
 var Layer = require('./Layer.js');
-var LengthMark = require('./lengthMark.js');
 var bg = require('./background.js');
 var zoom = require('./zoom.js');
+var process = require('./reducers/process.js');
+var cacheCvs = require('./cacheCanvas.js');
+var createStore = require('redux').createStore;
 
 var dw = {
-    /*动作说明：
+    /*
+        当前绘制动作
+        动作说明：
         1－绘制标注线
         2－平移图片
     */
-    action: 1,//当前绘制动作
-    curPath: null,
-    tempLayer: new Layer(),
-    curLayer: new Layer()
+    action: 1
 };
+
+/*初始state*/
+var initState = {
+    curPath: null,
+    isUpdate: false, 
+    tempLayer: new Layer(),
+    curLayer: new Layer(),
+    cacheCtx:null,
+}
 
 var ww = 500,
     wh = 500,
     ctx = null,
     canvas = null,
-    cacheCtx = null,
-    cacheCanvas = null;
+    store = null;
 
 /*初始化mark面板*/
 dw.init = function () {
     canvas = document.createElement('canvas');
-    cacheCanvas = document.createElement('canvas');
     canvas.setAttribute('id', 'ruler-panel');
     document.body.appendChild(canvas);
     ww = canvas.offsetWidth;
     wh = canvas.offsetHeight;
     canvas.setAttribute('width', ww);
     canvas.setAttribute('height', wh);
-    cacheCanvas.setAttribute('width', ww);
-    cacheCanvas.setAttribute('height', wh);
     ctx = canvas.getContext('2d');
-    cacheCtx = cacheCanvas.getContext('2d');
+    cacheCvs.init(ww, wh);
+    initState.cacheCtx = cacheCvs.context;
+    this.bindStore();
 
-    cacheCtx.strokeStyle = "red";
+    cacheCvs.context.strokeStyle = "red";
 
-    bg.init(cacheCtx);
-    zoom.init(ww,wh);
+    bg.init(cacheCvs.context);
+    zoom.init(ww, wh);
     this.bindDraw();
     animate();
 }
 
-/*设置截取的背景图*/ 
+/*设置截取的背景图*/
 dw.setScreenShotUrl = function (screenShot) {
     bg.setBG(screenShot);
 }
@@ -64,70 +71,42 @@ dw.bindDraw = function () {
     };
     canvas.addEventListener('mousedown', function (e) {
         var data = wrapperData('mousedown', e);
-        that.process(data);
+        store.dispatch({ type: "1_mousedown", data: data });
     });
     canvas.addEventListener('mouseup', function (e) {
         var data = wrapperData('mouseup', e);
-        that.process(data);
+        store.dispatch({ type: "1_mouseend", data: data });
     });
     canvas.addEventListener('mousemove', function (e) {
         var data = wrapperData('mousemove', e);
-        that.process(data);
+        store.dispatch({ type: "1_mouseend", data: data });
     });
-
 }
-/*处理绘制动作*/
-dw.process = function (data) {
-    //根据action判断当前图形 图形的绘制进展
-    switch (data.action) {
-        case 1:
-            if (!this.curPath && data.mouseType == "mousedown") {
-                // this.curPath = new Line(ctx);
-                this.curPath = new LengthMark(cacheCtx);
-                this.tempLayer.addPath(this.curPath);
-            }
-            if (this.curPath) {
-                this.curPath.process(data);
-                if (this.curPath.isEnd()) {
-                    var id = this.curPath.id;
-                    this.tempLayer.remove(id);
-                    this.curLayer.addPath(this.curPath);
-                    this.curPath = null;
-                }
-            }
-            break;
-        case 2:
-            //mousedown
-            if(data.mouseType == "mousedown"){
-                
-            }
-            //mousemove
-            if(data.mouseType == "mousemove"){
-                
-            }
-            //mouseup
-            if(data.mouseType == "mouseup"){
-                
-            }
-            break;
-        default:
-            break;
-    }
+
+dw.bindStore = function(){
+    store = createStore(process,initState);
+    store.subscribe(function () {
+        // 需要时刷新图形
+        var state = store.getState();
+        if (state && state.isUpdate) {
+            dw.drawCache(state);
+            state.isUpdate = false;
+        }
+    });
 }
 
 //离屏绘制
-dw.drawCache = function () {
-    cacheCtx.clearRect(0, 0, ww, wh);
+dw.drawCache = function (state) {
+    cacheCvs.context.clearRect(0, 0, ww, wh);
     bg.drawBG();
-    dw.curLayer.draw();
-    dw.tempLayer.draw();
+    state.curLayer.draw();
+    state.tempLayer.draw();
 };
 
-
+/*启动动画*/
 var animate = function () {
-    dw.drawCache();
     var box = zoom.calViewBox();
-    ctx.drawImage(cacheCanvas,box.sx,box.sy,box.sw,box.sh,0,0,ww,wh);
+    ctx.drawImage(cacheCvs.canvas, box.sx, box.sy, box.sw, box.sh, 0, 0, ww, wh);
     window.requestAnimationFrame(animate);
 };
 
