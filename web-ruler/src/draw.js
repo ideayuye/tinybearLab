@@ -2,7 +2,7 @@
 var Layer = require('./Layer.js');
 var bg = require('./background.js');
 var zoom = require('./zoom.js');
-var process = require('./reducers/process.js');
+var process = require('./reducers/combineReducers.js');
 var cacheCvs = require('./cacheCanvas.js');
 var createStore = require('redux').createStore;
 
@@ -18,11 +18,22 @@ var dw = {
 
 /*初始state*/
 var initState = {
-    curPath: null,
-    isUpdate: false, 
-    tempLayer: new Layer(),
-    curLayer: new Layer(),
-    cacheCtx:null,
+    draw:{
+        curPath: null,
+        isUpdate: false, 
+        tempLayer: new Layer(),
+        curLayer: new Layer(),
+        cacheCtx:null,
+    },
+    control:{
+        isPan:0,
+        startX:0,
+        startY:0,
+        endX:0,
+        endY:0,
+        mx:0,//水平平移量
+        my:0,//垂直平一量
+    }
 }
 
 var ww = 500,
@@ -42,7 +53,7 @@ dw.init = function () {
     canvas.setAttribute('height', wh);
     ctx = canvas.getContext('2d');
     cacheCvs.init(ww, wh);
-    initState.cacheCtx = cacheCvs.context;
+    initState.draw.cacheCtx = cacheCvs.context;
     this.bindStore();
 
     cacheCvs.context.strokeStyle = "red";
@@ -52,6 +63,7 @@ dw.init = function () {
     this.bindDraw();
     animate();
 }
+
 
 /*设置截取的背景图*/
 dw.setScreenShotUrl = function (screenShot) {
@@ -71,15 +83,15 @@ dw.bindDraw = function () {
     };
     canvas.addEventListener('mousedown', function (e) {
         var data = wrapperData('mousedown', e);
-        store.dispatch({ type: "1_mousedown", data: data });
+        store.dispatch({ type: data.action+"_"+data.mouseType, data: data });
     });
     canvas.addEventListener('mouseup', function (e) {
         var data = wrapperData('mouseup', e);
-        store.dispatch({ type: "1_mouseend", data: data });
+        store.dispatch({ type: data.action+"_"+data.mouseType, data: data });
     });
     canvas.addEventListener('mousemove', function (e) {
         var data = wrapperData('mousemove', e);
-        store.dispatch({ type: "1_mouseend", data: data });
+        store.dispatch({ type: data.action+"_"+data.mouseType, data: data });
     });
 }
 
@@ -88,6 +100,7 @@ dw.bindStore = function(){
     store.subscribe(function () {
         // 需要时刷新图形
         var state = store.getState();
+            state = state && state.draw;
         if (state && state.isUpdate) {
             dw.drawCache(state);
             state.isUpdate = false;
@@ -106,7 +119,8 @@ dw.drawCache = function (state) {
 /*启动动画*/
 var animate = function () {
     var box = zoom.calViewBox();
-    ctx.drawImage(cacheCvs.canvas, box.sx, box.sy, box.sw, box.sh, 0, 0, ww, wh);
+    ctx.clearRect(0, 0, ww, wh);
+    ctx.drawImage(cacheCvs.canvas, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, wh);
     window.requestAnimationFrame(animate);
 };
 

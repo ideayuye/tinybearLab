@@ -21,7 +21,7 @@ zoom.init = function (ww,wh) {
 };
 
 /*
-计算可视区域
+计算可视区域 转化可视区域到
 */
 zoom.calViewBox = function () {
     var _ = this;
@@ -29,13 +29,27 @@ zoom.calViewBox = function () {
         sx:0,
         sy:0,
         sw:0,
-        sh:0
+        sh:0,
+        dx:0,
+        dy:0,
+        dw:_.ww,
+        dh:_.wh
     }
 
-    box.sw =  _.ww/_.level;
+    box.sw = _.ww/_.level;
     box.sx = _.center.x -  box.sw*0.5;
     box.sh = _.wh/_.level;
     box.sy = _.center.y - box.sh*0.5;
+
+    if(box.sx < 0 ){
+        box.dx = -box.sx;
+        box.sx = 0;
+    }
+
+    if(box.sy < 0){
+        box.dy = -box.sy;
+        box.sy = 0;
+    }
 
     return  box;
 };
@@ -54,9 +68,9 @@ zoom.zoomOut = function(){
 
 /*平移*/
 zoom.move = function(mx,my){
-    this.center.x += mx;
-    this.center.y += my;
+    this.center.x += mx/this.level;
+    this.center.y += my/this.level;
 };
 
-module.exports = zoom;
+module.exports = zoom; 
 

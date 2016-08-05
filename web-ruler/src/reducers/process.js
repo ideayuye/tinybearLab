@@ -16,7 +16,8 @@ var process = function (state, action) {
                 state.isUpdate = true;
             }
             return state;
-        case "1_mouseend":
+        case "1_mousemove":
+        case "1_mouseup":
             if (state.curPath) {
                 state.curPath.process(action.data);
                 if (state.curPath.isEnd()) {

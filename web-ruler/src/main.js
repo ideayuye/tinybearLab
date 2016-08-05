@@ -28,7 +28,14 @@ getScreenShot();
 
 var menuZI =  document.querySelector('#menu_zoom_in');
 var menuZO = document.querySelector('#menu_zoom_out');
+var menuPan = document.querySelector('#menu_pan');
 
 menuZI.addEventListener('click',()=>{zoom.zoomIn();});
 menuZO.addEventListener('click',()=>{zoom.zoomOut();});
+menuPan.addEventListener('click',()=>{
+    if(draw.action == 1)
+        draw.action = 2;
+    else
+        draw.action = 1;
+});
 
