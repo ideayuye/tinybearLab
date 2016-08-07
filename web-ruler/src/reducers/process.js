@@ -4,6 +4,7 @@
 */
 
 var LengthMark = require('./../lengthMark.js');
+var bg = require('./../background.js');
 
 var process = function (state, action) {
     state = state || { };
@@ -28,6 +29,14 @@ var process = function (state, action) {
                 }
                 state.isUpdate = true;
             }
+            return state;
+        case "setbackground":
+            if(!state.bg){
+                state.bg = bg;
+                state.bg.init(state.cacheCtx);
+            }
+            state.bg.setBG(action.screenShot);
+            state.isUpdate = true;
             return state;
         default:
             return state;

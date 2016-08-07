@@ -97,7 +97,7 @@ var LengthMark = function(ctx){
     this.draw=function(){
         if(this.step < 2)
             return;
-        this.ctx.stokeStyle = '#FE1616';
+        this.ctx.strokeStyle = '#FE1616';
         this.ctx.beginPath();
         this.ctx.lineWidth = 1;
         this.ctx.moveTo(this.p1.x,this.p1.y);

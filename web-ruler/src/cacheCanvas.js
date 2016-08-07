@@ -8,14 +8,15 @@ var cacheCanvas = {
     context:null
 };
 
-
-cacheCanvas.init = function(ww,wh){
+cacheCanvas.init = function(){
     this.canvas  = document.createElement('canvas');
-    this.canvas.setAttribute('width', ww);
-    this.canvas.setAttribute('height', wh);
     this.context = this.canvas.getContext('2d');
 };
 
+cacheCanvas.setBox = function(ww,wh){
+    this.canvas.setAttribute('width', ww);
+    this.canvas.setAttribute('height', wh);
+}
 
 
 module.exports = cacheCanvas;

@@ -7,7 +7,7 @@ var bg = {
     ctx:null,
     //背景图
     background:null,
-    dpr:1
+
 };
 
 bg.init = function(ctx){
@@ -17,8 +17,7 @@ bg.init = function(ctx){
 bg.setBG = function (screenShot) {
     var image = new Image();
     image.src = screenShot;
-    this.background = image;
-    this.dpr = window.devicePixelRatio;
+    this.background = image;;
 }
 
 //背景图

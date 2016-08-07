@@ -1,6 +1,5 @@
 
 var Layer = require('./Layer.js');
-var bg = require('./background.js');
 var zoom = require('./zoom.js');
 var process = require('./reducers/combineReducers.js');
 var cacheCvs = require('./cacheCanvas.js');
@@ -24,6 +23,7 @@ var initState = {
         tempLayer: new Layer(),
         curLayer: new Layer(),
         cacheCtx:null,
+        bg:null
     },
     control:{
         isPan:0,
@@ -52,32 +52,32 @@ dw.init = function () {
     canvas.setAttribute('width', ww);
     canvas.setAttribute('height', wh);
     ctx = canvas.getContext('2d');
-    cacheCvs.init(ww, wh);
+    cacheCvs.init();
     initState.draw.cacheCtx = cacheCvs.context;
     this.bindStore();
-
-    cacheCvs.context.strokeStyle = "red";
-
-    bg.init(cacheCvs.context);
-    zoom.init(ww, wh);
     this.bindDraw();
+    zoom.init(ww,wh);    
     animate();
 }
 
-
 /*设置截取的背景图*/
 dw.setScreenShotUrl = function (screenShot) {
-    bg.setBG(screenShot);
+    var image = new Image();
+    image.src = screenShot;
+    cacheCvs.setBox(image.width,image.height);
+    zoom.setCenter(image.width,image.height);
+    store.dispatch({type:'setbackground',screenShot:screenShot});
 }
 
 /*绑定绘制动作*/
 dw.bindDraw = function () {
     var that = this;
     var wrapperData = function (type, e) {
+        var ne = zoom.transCoord(e.x,e.y);
         return {
             mouseType: type,
-            x: e.x,
-            y: e.y,
+            x: ne.x,
+            y: ne.y,
             action: that.action
         };
     };
@@ -108,10 +108,10 @@ dw.bindStore = function(){
     });
 }
 
-//离屏绘制
+/*离屏绘制*/
 dw.drawCache = function (state) {
     cacheCvs.context.clearRect(0, 0, ww, wh);
-    bg.drawBG();
+    state.bg.drawBG();
     state.curLayer.draw();
     state.tempLayer.draw();
 };
