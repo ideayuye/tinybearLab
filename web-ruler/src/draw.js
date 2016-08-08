@@ -47,6 +47,7 @@ dw.init = function () {
     canvas = document.createElement('canvas');
     canvas.setAttribute('id', 'ruler-panel');
     document.body.appendChild(canvas);
+    
     ww = canvas.offsetWidth;
     wh = canvas.offsetHeight;
     canvas.setAttribute('width', ww);
@@ -54,6 +55,10 @@ dw.init = function () {
     ctx = canvas.getContext('2d');
     cacheCvs.init();
     initState.draw.cacheCtx = cacheCvs.context;
+    /*测试*/
+    /*document.body.appendChild(cacheCvs.canvas);
+    cacheCvs.canvas.setAttribute('id', 'ruler-panel');*/
+    /*测试*/
     this.bindStore();
     this.bindDraw();
     zoom.init(ww,wh);    
@@ -76,6 +81,8 @@ dw.bindDraw = function () {
         var ne = zoom.transCoord(e.x,e.y);
         return {
             mouseType: type,
+            ox:e.x,
+            oy:e.y,
             x: ne.x,
             y: ne.y,
             action: that.action

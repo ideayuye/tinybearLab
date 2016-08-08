@@ -28,6 +28,8 @@ bg.drawBG = function(){
         ctx.drawImage(_.background,0,0,
         _.background.width,
         _.background.height);
+        ctx.strokeStyle = "green";
+        ctx.strokeRect(0,0,_.background.width,_.background.height);
     }
 };
 

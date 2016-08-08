@@ -9,8 +9,8 @@ var mapControl = function (state, action) {
     state = state || {};
     switch (action.type) {
         case "2_mousedown":
-            state.startX = action.data.x;
-            state.startY = action.data.y;
+            state.startX = action.data.ox;
+            state.startY = action.data.oy;
             state.endX = 0;
             state.endY = 0;
             state.mx = 0;
@@ -19,12 +19,12 @@ var mapControl = function (state, action) {
             return state;
         case "2_mousemove":
             if(state.isPan){
-                state.endX = action.data.x;
-                state.endY = action.data.y;
+                state.endX = action.data.ox;
+                state.endY = action.data.oy;
                 state.mx = state.startX - state.endX;
                 state.my = state.startY - state.endY;
-                state.startX = action.data.x;
-                state.startY = action.data.y;   
+                state.startX = action.data.ox;
+                state.startY = action.data.oy;   
                 zoom.move(state.mx, state.my);
             }
             return state;
