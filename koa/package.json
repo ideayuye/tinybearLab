@@ -1,0 +1,15 @@
+{
+  "name": "koa-start",
+  "version": "1.0.0",
+  "description": "koa的练习项目",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "static":"node static-server.js"
+  },
+  "keywords": [
+    "demo"
+  ],
+  "author": "tb",
+  "license": "ISC"
+}
