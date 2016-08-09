@@ -48,20 +48,21 @@ dw.init = function () {
     canvas.setAttribute('id', 'ruler-panel');
     document.body.appendChild(canvas);
     
-    ww = canvas.offsetWidth;
-    wh = canvas.offsetHeight;
-    canvas.setAttribute('width', ww);
-    canvas.setAttribute('height', wh);
+    // ww = canvas.offsetWidth;
+    // wh = canvas.offsetHeight;
+    // canvas.setAttribute('width', ww);
+    // canvas.setAttribute('height', wh);
     ctx = canvas.getContext('2d');
     cacheCvs.init();
     initState.draw.cacheCtx = cacheCvs.context;
     /*测试*/
-    /*document.body.appendChild(cacheCvs.canvas);
-    cacheCvs.canvas.setAttribute('id', 'ruler-panel');*/
+    // document.body.appendChild(cacheCvs.canvas);
+    // cacheCvs.canvas.setAttribute('id', 'ruler-panel');
     /*测试*/
     this.bindStore();
     this.bindDraw();
-    zoom.init(ww,wh);    
+    // zoom.init(ww,wh);  
+    console.log(ww,wh,ww/wh);  
     animate();
 }
 
@@ -71,6 +72,16 @@ dw.setScreenShotUrl = function (screenShot) {
     image.src = screenShot;
     cacheCvs.setBox(image.width,image.height);
     zoom.setCenter(image.width,image.height);
+    console.log(image.width,image.height,image.width/image.height);
+
+    ww = window.innerWidth;
+    wh = window.innerHeight;
+    canvas.setAttribute('width', ww);
+    canvas.setAttribute('height', wh);
+    zoom.init(ww,wh); 
+    canvas.style.width = ww+"px";
+    canvas.style.height = wh+"px";
+
     store.dispatch({type:'setbackground',screenShot:screenShot});
 }
 

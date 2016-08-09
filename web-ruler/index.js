@@ -10,7 +10,7 @@ chrome.browserAction.onClicked.addListener(function () {
     });
 
     chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-        chrome.tabs.captureVisibleTab(function (screenshotUrl) {
+        chrome.tabs.captureVisibleTab({format:'png'},function (screenshotUrl) {
             sendResponse(screenshotUrl );
         });
         return true;

@@ -28,10 +28,12 @@ zoom.init = function (ww,wh) {
 设置中心点
  */
 zoom.setCenter=function(mw,mh){
+    var _ = this;
     this.mw = mw;
     this.mh = mh;
     this.center.x = mw*0.5;
     this.center.y = mh*0.5;
+    // this.wh = Math.round(_.ww * mh/mw);
 };
 
 /*

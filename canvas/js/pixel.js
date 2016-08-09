@@ -11,8 +11,8 @@ var imgd = document.getElementById('r_img');
 // };
 
 window.onload = function(){
-	// cp.drawImage(imgd,0,0);
-	cp.drawImage(imgd,0,0,300,227);
+	cp.drawImage(imgd,0,0);
+	// cp.drawImage(imgd,0,0,imgd.width,imgd.height);
 }
 
 var pick  = function(event){

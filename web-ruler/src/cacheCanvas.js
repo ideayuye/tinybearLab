@@ -16,6 +16,8 @@ cacheCanvas.init = function(){
 cacheCanvas.setBox = function(ww,wh){
     this.canvas.setAttribute('width', ww);
     this.canvas.setAttribute('height', wh);
+    this.canvas.style.width = ww+"px";
+    this.canvas.style.height = wh+"px";
 }
 
 

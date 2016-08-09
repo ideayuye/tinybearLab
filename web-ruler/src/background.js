@@ -6,8 +6,7 @@
 var bg = {
     ctx:null,
     //背景图
-    background:null,
-
+    background:null
 };
 
 bg.init = function(ctx){
@@ -25,9 +24,7 @@ bg.drawBG = function(){
     var _ = this;
     var ctx = _.ctx;
     if(_.background){
-        ctx.drawImage(_.background,0,0,
-        _.background.width,
-        _.background.height);
+        ctx.drawImage(_.background,0,0);
         ctx.strokeStyle = "green";
         ctx.strokeRect(0,0,_.background.width,_.background.height);
     }
