@@ -47,12 +47,8 @@ dw.init = function () {
     canvas = document.createElement('canvas');
     canvas.setAttribute('id', 'ruler-panel');
     document.body.appendChild(canvas);
-    
-    // ww = canvas.offsetWidth;
-    // wh = canvas.offsetHeight;
-    // canvas.setAttribute('width', ww);
-    // canvas.setAttribute('height', wh);
     ctx = canvas.getContext('2d');
+    
     cacheCvs.init();
     initState.draw.cacheCtx = cacheCvs.context;
     /*测试*/

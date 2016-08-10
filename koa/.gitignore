@@ -3,3 +3,4 @@ examples-master
 .idea
 .gitignore
 .vscode
+config/db.json
