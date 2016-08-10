@@ -4,6 +4,10 @@ var zoom = require('./zoom.js');
 var process = require('./reducers/combineReducers.js');
 var cacheCvs = require('./cacheCanvas.js');
 var createStore = require('redux').createStore;
+var os = require('./detectOS')(),
+    isMac = os === "Mac",
+    dpr = window.devicePixelRatio,
+    isRetina = isMac && dpr == 2;
 
 var dw = {
     /*
@@ -17,22 +21,22 @@ var dw = {
 
 /*初始state*/
 var initState = {
-    draw:{
+    draw: {
         curPath: null,
-        isUpdate: false, 
+        isUpdate: false,
         tempLayer: new Layer(),
         curLayer: new Layer(),
-        cacheCtx:null,
-        bg:null
+        cacheCtx: null,
+        bg: null
     },
-    control:{
-        isPan:0,
-        startX:0,
-        startY:0,
-        endX:0,
-        endY:0,
-        mx:0,//水平平移量
-        my:0,//垂直平一量
+    control: {
+        isPan: 0,
+        startX: 0,
+        startY: 0,
+        endX: 0,
+        endY: 0,
+        mx: 0,//水平平移量
+        my: 0,//垂直平一量
     }
 }
 
@@ -48,7 +52,7 @@ dw.init = function () {
     canvas.setAttribute('id', 'ruler-panel');
     document.body.appendChild(canvas);
     ctx = canvas.getContext('2d');
-    
+
     cacheCvs.init();
     initState.draw.cacheCtx = cacheCvs.context;
     /*测试*/
@@ -57,8 +61,6 @@ dw.init = function () {
     /*测试*/
     this.bindStore();
     this.bindDraw();
-    // zoom.init(ww,wh);  
-    console.log(ww,wh,ww/wh);  
     animate();
 }
 
@@ -66,30 +68,38 @@ dw.init = function () {
 dw.setScreenShotUrl = function (screenShot) {
     var image = new Image();
     image.src = screenShot;
-    cacheCvs.setBox(image.width,image.height);
-    zoom.setCenter(image.width,image.height);
-    console.log(image.width,image.height,image.width/image.height);
+    var imgW = image.width,
+        imgH = image.height;
+    cacheCvs.setBox(imgW, imgH,isRetina);
+    zoom.setCenter(imgW, imgH);
 
     ww = window.innerWidth;
     wh = window.innerHeight;
-    canvas.setAttribute('width', ww);
-    canvas.setAttribute('height', wh);
-    zoom.init(ww,wh); 
-    canvas.style.width = ww+"px";
-    canvas.style.height = wh+"px";
+    canvas.setAttribute('width', imgW);
+    canvas.setAttribute('height', imgH);
+    zoom.init(imgW, imgH,isRetina);
+    if(isRetina){
+        ww = imgW;
+        wh = imgH;
+        canvas.style.width = Math.round(ww*0.5)+"px";
+        canvas.style.height = Math.round(wh*0.5)+"px";
+    }else{
+        canvas.style.width = ww + "px";
+        canvas.style.height = wh + "px";
+    }
 
-    store.dispatch({type:'setbackground',screenShot:screenShot});
+    store.dispatch({ type: 'setbackground', screenShot: screenShot });
 }
 
 /*绑定绘制动作*/
 dw.bindDraw = function () {
     var that = this;
     var wrapperData = function (type, e) {
-        var ne = zoom.transCoord(e.x,e.y);
+        var ne = zoom.transCoord(e.x, e.y);
         return {
             mouseType: type,
-            ox:e.x,
-            oy:e.y,
+            ox: e.x,
+            oy: e.y,
             x: ne.x,
             y: ne.y,
             action: that.action
@@ -97,24 +107,24 @@ dw.bindDraw = function () {
     };
     canvas.addEventListener('mousedown', function (e) {
         var data = wrapperData('mousedown', e);
-        store.dispatch({ type: data.action+"_"+data.mouseType, data: data });
+        store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
     });
     canvas.addEventListener('mouseup', function (e) {
         var data = wrapperData('mouseup', e);
-        store.dispatch({ type: data.action+"_"+data.mouseType, data: data });
+        store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
     });
     canvas.addEventListener('mousemove', function (e) {
         var data = wrapperData('mousemove', e);
-        store.dispatch({ type: data.action+"_"+data.mouseType, data: data });
+        store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
     });
 }
 
-dw.bindStore = function(){
-    store = createStore(process,initState);
+dw.bindStore = function () {
+    store = createStore(process, initState);
     store.subscribe(function () {
         // 需要时刷新图形
         var state = store.getState();
-            state = state && state.draw;
+        state = state && state.draw;
         if (state && state.isUpdate) {
             dw.drawCache(state);
             state.isUpdate = false;

@@ -7,6 +7,8 @@ var container = document.createElement('div');
 container.innerHTML=html;
 document.body.appendChild(container);
 
+
+
 var draw = require('./draw');
 var zoom = require('./zoom');
 var initDraw = function () {

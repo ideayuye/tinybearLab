@@ -13,15 +13,17 @@ var zoom = {
     wh:0,
     //全景宽高
     mw:0,
-    mh:0
+    mh:0,
+    isRetina:false
 };
 
-zoom.init = function (ww,wh) {
+zoom.init = function (ww,wh,isRetina) {
     var _ = this;
     _.center.x = ww*0.5;
     _.center.y = wh*0.5;
     _.ww = ww;
     _.wh = wh;
+    _.isRetina = isRetina;
 };
 
 /*
@@ -75,6 +77,10 @@ zoom.transCoord = function(x,y){
     // 更具中心点 缩放比例 计算新坐标位置
     var ncrd = {x:0,y:0};
     var _ = this;
+    if(_.isRetina){
+        x = 2*x;
+        y = 2*y;
+    }
     ncrd.x = x/_.level+(_.center.x-_.ww*.5/_.level);
     ncrd.y = y/_.level+(_.center.y-_.wh*.5/_.level);
     return ncrd;
