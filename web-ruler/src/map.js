@@ -10,11 +10,5 @@ var map = {
     bg: null
 }
 
-map.refresh = function(){
-    var _ = this;
-    _.bg.drawBG();
-    _.curLayer.draw();
-    _.tempLayer.draw();
-}
 
 module.exports = map;

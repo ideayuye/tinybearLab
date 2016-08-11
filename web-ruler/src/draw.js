@@ -151,7 +151,7 @@ dw.zoomOut = function(){
 /*离屏绘制*/
 dw.drawCache = function () {
     cacheCvs.context.clearRect(0, 0, ww, wh);
-    map.refresh();
+    map.bg.drawBG();
 };
 
 /*启动动画*/
@@ -160,6 +160,8 @@ var animate = function () {
     if(box){
         ctx.clearRect(0, 0, ww, wh);
         ctx.drawImage(cacheCvs.canvas, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, wh);
+        map.curLayer.draw(isRetina);
+        map.tempLayer.draw(isRetina);
     }
     window.requestAnimationFrame(animate);
 };

@@ -1,6 +1,7 @@
 
 var LengthMark = function(ctx) {
     this.ctx = ctx;
+    this.isRetina = false;
     this.id = "lm_" + (new Date()).valueOf();
     this.p1 = {
         x: 0,
@@ -143,19 +144,23 @@ var LengthMark = function(ctx) {
     this.drawNode = function() {
         var ctx = this.ctx,
             p1 = this.vP1,
-            p2 = this.vP2;
+            p2 = this.vP2,
+            hh = 5;
         ctx.beginPath();
+        if(this.isRetina){
+            hh = 10;
+        }
         if (this.dir == "v") {
-            ctx.moveTo(p1.x - 5, p1.y);
-            ctx.lineTo(p1.x + 5, p1.y);
-            ctx.moveTo(p2.x - 5, p2.y);
-            ctx.lineTo(p2.x + 5, p2.y);
+            ctx.moveTo(p1.x - hh, p1.y);
+            ctx.lineTo(p1.x + hh, p1.y);
+            ctx.moveTo(p2.x - hh, p2.y);
+            ctx.lineTo(p2.x + hh, p2.y);
         }
         if (this.dir == "h") {
-            ctx.moveTo(p1.x, p1.y - 5);
-            ctx.lineTo(p1.x, p1.y + 5);
-            ctx.moveTo(p2.x, p2.y - 5);
-            ctx.lineTo(p2.x, p2.y + 5);
+            ctx.moveTo(p1.x, p1.y - hh);
+            ctx.lineTo(p1.x, p1.y + hh);
+            ctx.moveTo(p2.x, p2.y - hh);
+            ctx.lineTo(p2.x, p2.y + hh);
         }
         ctx.stroke();
         ctx.closePath();
@@ -169,10 +174,14 @@ var LengthMark = function(ctx) {
             p2 = this.vP2;
         
         ctx.font = "16px arial";
+        ctx.lineWidth = 1;
+        if(me.isRetina){
+            ctx.font = "32px arial";
+        }
         var mtxt = this.ctx.measureText(length);
         ctx.strokeStyle = '#FE1616';
         ctx.beginPath();
-        ctx.lineWidth = 1;
+        
         //绘制线
         var x1 = p1.x,
             y1 = p1.y,
@@ -223,9 +232,8 @@ var LengthMark = function(ctx) {
         this.calMarkPos();
         if(length > 20){
             mx = this.markPos.x - mtxt.width * 0.5;
-            my = this.markPos.y + 6;
-        }
-        else{
+            my = this.isRetina? this.markPos.y+12 : this.markPos.y + 6;
+        }else{
             if (this.dir == "v") {
                 mx = this.markPos.x + 10;
                 my = this.markPos.y + 6;

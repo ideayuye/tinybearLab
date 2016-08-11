@@ -13,12 +13,14 @@ var Layer = function(){
     this.remove=function(id){
         delete this.paths[id];
     };
-    this.draw=function() {
+    this.draw=function(isRetina) {
         for (var p in this.paths) {
             //计算图形是否展示
             //坐标转换到显示区坐标 
-            this.paths[p].mapCoords(zoom.genReTransCoord());   
-            this.paths[p].draw();
+            var path = this.paths[p];
+            path.isRetina = isRetina;
+            path.mapCoords(zoom.genReTransCoord());   
+            path.draw();
         }
     };
 };
