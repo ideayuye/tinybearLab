@@ -29,7 +29,6 @@ var LengthMark = function(ctx) {
             this.p2.x = x + 0.5;
             this.p2.y = this.p1.y;
         }
-        this.calMarkPos();
         this.p2.isOK = 1;
     };
     this.step = 0;
@@ -68,15 +67,17 @@ var LengthMark = function(ctx) {
     };
     //计算长度标记的位置
     this.calMarkPos = function() {
-        var dir = this.dir;
+        var dir = this.dir,
+            p1 = this.vP1,
+            p2 = this.vP2;
         var x, y;
         if (dir == "v") {
-            x = this.p1.x;
-            y = Math.round((this.p1.y + this.p2.y) * 0.5);
+            x = p1.x;
+            y = Math.round((p1.y + p2.y) * 0.5);
         }
         if (dir == "h") {
-            x = Math.round((this.p1.x + this.p2.x) * 0.5);
-            y = this.p1.y;
+            x = Math.round((p1.x + p2.x) * 0.5);
+            y = p1.y;
         }
         this.markPos = {
             x: x,
@@ -118,36 +119,54 @@ var LengthMark = function(ctx) {
                 break;
         }
     };
+
+    this.vP1 = {x:0,y:0};
+    this.vP2 = {x:0,y:0};
+    //把存储坐标映射到显示屏坐标
+    this.mapCoords = function(mapFun){
+        var _ = this;
+        var p1 = _.p1;
+        _.vP1 = mapFun(p1.x,p1.y);
+        var p2 = _.p2;
+        _.vP2 = mapFun(p2.x,p2.y);
+    };
+
     this.draw = function() {
-        if (this.step < 2)
+        var _ = this;
+        if (_.step < 2)
             return;
-        this.drawMark();
-        this.drawNode();
-        this.step == 2 && this.drawDottedLine();
+        _.drawMark();
+        _.drawNode();
+        _.step == 2 && _.drawDottedLine();
     };
     //绘制节点
     this.drawNode = function() {
-        this.ctx.beginPath();
+        var ctx = this.ctx,
+            p1 = this.vP1,
+            p2 = this.vP2;
+        ctx.beginPath();
         if (this.dir == "v") {
-            this.ctx.moveTo(this.p1.x - 5, this.p1.y);
-            this.ctx.lineTo(this.p1.x + 5, this.p1.y);
-            this.ctx.moveTo(this.p2.x - 5, this.p2.y);
-            this.ctx.lineTo(this.p2.x + 5, this.p2.y);
+            ctx.moveTo(p1.x - 5, p1.y);
+            ctx.lineTo(p1.x + 5, p1.y);
+            ctx.moveTo(p2.x - 5, p2.y);
+            ctx.lineTo(p2.x + 5, p2.y);
         }
         if (this.dir == "h") {
-            this.ctx.moveTo(this.p1.x, this.p1.y - 5);
-            this.ctx.lineTo(this.p1.x, this.p1.y + 5);
-            this.ctx.moveTo(this.p2.x, this.p2.y - 5);
-            this.ctx.lineTo(this.p2.x, this.p2.y + 5);
+            ctx.moveTo(p1.x, p1.y - 5);
+            ctx.lineTo(p1.x, p1.y + 5);
+            ctx.moveTo(p2.x, p2.y - 5);
+            ctx.lineTo(p2.x, p2.y + 5);
         }
-        this.ctx.stroke();
-        this.ctx.closePath();
+        ctx.stroke();
+        ctx.closePath();
     };
     //绘制标注
     this.drawMark = function() {
         var ctx = this.ctx,
             me = this,
-            length = this.length();
+            length = this.length(),
+            p1 = this.vP1,
+            p2 = this.vP2;
         
         ctx.font = "16px arial";
         var mtxt = this.ctx.measureText(length);
@@ -155,27 +174,27 @@ var LengthMark = function(ctx) {
         ctx.beginPath();
         ctx.lineWidth = 1;
         //绘制线
-        var x1 = me.p1.x,
-            y1 = me.p1.y,
-            x2 = me.p2.x,
-            y2 = me.p2.y;
+        var x1 = p1.x,
+            y1 = p1.y,
+            x2 = p2.x,
+            y2 = p2.y;
         //如果第一个点在第二个点下方 互换
-        if (me.p1.x + me.p1.y > me.p2.x + me.p2.y) {
-            x1 = me.p2.x;
-            y1 = me.p2.y;
-            x2 = me.p1.x;
-            y2 = me.p1.y;
+        if (p1.x + p1.y > p2.x + p2.y) {
+            x1 = p2.x;
+            y1 = p2.y;
+            x2 = p1.x;
+            y2 = p1.y;
         }
         if (length > 20) { //大于20内连接
             if (this.dir == "v") {
-                var my = Math.round((me.p1.y + me.p2.y) * .5);
+                var my = Math.round((p1.y + p2.y) * .5);
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(x1, my-10);
                 ctx.moveTo(x2, my+10);
                 ctx.lineTo(x2, y2);
             }
             if (this.dir == "h") {
-                var mx = Math.round((me.p1.x + me.p2.x) * .5);
+                var mx = Math.round((p1.x + p2.x) * .5);
                 var hw = mtxt.width*0.5;
                 ctx.moveTo(x1, y1);
                 ctx.lineTo(mx-hw, y1);
@@ -201,6 +220,7 @@ var LengthMark = function(ctx) {
 
         var mx = 0,
             my = 0;
+        this.calMarkPos();
         if(length > 20){
             mx = this.markPos.x - mtxt.width * 0.5;
             my = this.markPos.y + 6;
@@ -215,30 +235,35 @@ var LengthMark = function(ctx) {
                 my = this.markPos.y - 10;
             }
         }
-        this.ctx.fillStyle = '#FE1616';
-        this.ctx.fillText(length, mx, my);
+        ctx.fillStyle = '#FE1616';
+        ctx.fillText(length, mx, my);
     };
     //绘制虚线
     this.drawDottedLine = function() {
-        this.ctx.save();
-        this.ctx.beginPath();
-        this.ctx.setLineDash([5]);
+        var ctx = this.ctx,
+            p1 = this.vP1,
+            p2 = this.vP2;
+        ctx.save();
+        ctx.beginPath();
+        ctx.setLineDash([5]);
         if (this.dir == "v") {
-            this.ctx.moveTo(this.p1.x - 1000, this.p1.y);
-            this.ctx.lineTo(this.p1.x + 1000, this.p1.y);
-            this.ctx.moveTo(this.p2.x - 1000, this.p2.y);
-            this.ctx.lineTo(this.p2.x + 1000, this.p2.y);
+            ctx.moveTo(p1.x - 1000, p1.y);
+            ctx.lineTo(p1.x + 1000, p1.y);
+            ctx.moveTo(p2.x - 1000, p2.y);
+            ctx.lineTo(p2.x + 1000, p2.y);
         }
         if (this.dir == "h") {
-            this.ctx.moveTo(this.p1.x, this.p1.y - 1000);
-            this.ctx.lineTo(this.p1.x, this.p1.y + 1000);
-            this.ctx.moveTo(this.p2.x, this.p2.y - 1000);
-            this.ctx.lineTo(this.p2.x, this.p2.y + 1000);
+            ctx.moveTo(p1.x, p1.y - 1000);
+            ctx.lineTo(p1.x, p1.y + 1000);
+            ctx.moveTo(p2.x, p2.y - 1000);
+            ctx.lineTo(p2.x, p2.y + 1000);
         }
-        this.ctx.stroke();
-        this.ctx.closePath();
-        this.ctx.restore();
+        ctx.stroke();
+        ctx.closePath();
+        ctx.restore();
     };
+    //矩形感应区域
+
 };
 
 module.exports = LengthMark;

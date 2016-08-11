@@ -5,14 +5,15 @@
 
 var LengthMark = require('./../lengthMark.js');
 var bg = require('./../background.js');
+var map = require('./../map.js');
 
 var process = function (state, action) {
     state = state || { };
     switch (action.type) {
         case "1_mousedown":
             if (!state.curPath) {
-                state.curPath = new LengthMark(state.cacheCtx);
-                state.tempLayer.addPath(state.curPath);
+                state.curPath = new LengthMark(map.viewCtx);
+                map.tempLayer.addPath(state.curPath);
                 state.curPath.process(action.data);
                 state.isUpdate = true;
             }
@@ -23,19 +24,19 @@ var process = function (state, action) {
                 state.curPath.process(action.data);
                 if (state.curPath.isEnd()) {
                     var id = state.curPath.id;
-                    state.tempLayer.remove(id);
-                    state.curLayer.addPath(state.curPath);
+                    map.tempLayer.remove(id);
+                    map.curLayer.addPath(state.curPath);
                     state.curPath = null;
                 }
                 state.isUpdate = true;
             }
             return state;
         case "setbackground":
-            if(!state.bg){
-                state.bg = bg;
-                state.bg.init(state.cacheCtx);
+            if(!map.bg){
+                map.bg = bg;
+                map.bg.init(map.cacheCtx);
             }
-            state.bg.setBG(action.screenShot);
+            map.bg.setBG(action.screenShot);
             state.isUpdate = true;
             return state;
         default:

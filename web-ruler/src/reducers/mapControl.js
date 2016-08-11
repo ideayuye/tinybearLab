@@ -26,10 +26,19 @@ var mapControl = function (state, action) {
                 state.startX = action.data.ox;
                 state.startY = action.data.oy;   
                 zoom.move(state.mx, state.my);
+                state.isUpdate = true;
             }
             return state;
         case "2_mouseup":
             state.isPan = 0;
+            return state;
+        case "zoom_in":
+            zoom.zoomIn();
+            state.isUpdate = true;
+            return state;
+        case "zoom_out":
+            zoom.zoomOut();
+            state.isUpdate = true;
             return state;
         default:
             return state;

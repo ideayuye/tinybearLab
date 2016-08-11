@@ -1,9 +1,10 @@
 
-var Layer = require('./Layer.js');
+
 var zoom = require('./zoom.js');
 var process = require('./reducers/combineReducers.js');
 var cacheCvs = require('./cacheCanvas.js');
 var createStore = require('redux').createStore;
+var map = require('./map.js');
 var os = require('./detectOS')(),
     isMac = os === "Mac",
     dpr = window.devicePixelRatio,
@@ -24,10 +25,6 @@ var initState = {
     draw: {
         curPath: null,
         isUpdate: false,
-        tempLayer: new Layer(),
-        curLayer: new Layer(),
-        cacheCtx: null,
-        bg: null
     },
     control: {
         isPan: 0,
@@ -37,6 +34,7 @@ var initState = {
         endY: 0,
         mx: 0,//水平平移量
         my: 0,//垂直平一量
+        isUpdate:false
     }
 }
 
@@ -54,7 +52,8 @@ dw.init = function () {
     ctx = canvas.getContext('2d');
 
     cacheCvs.init();
-    initState.draw.cacheCtx = cacheCvs.context;
+    map.cacheCtx = cacheCvs.context;
+    map.viewCtx = ctx;
     /*测试*/
     // document.body.appendChild(cacheCvs.canvas);
     // cacheCvs.canvas.setAttribute('id', 'ruler-panel');
@@ -117,34 +116,51 @@ dw.bindDraw = function () {
         var data = wrapperData('mousemove', e);
         store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
     });
-}
+};
 
 dw.bindStore = function () {
     store = createStore(process, initState);
     store.subscribe(function () {
         // 需要时刷新图形
         var state = store.getState();
-        state = state && state.draw;
-        if (state && state.isUpdate) {
-            dw.drawCache(state);
-            state.isUpdate = false;
+        draw = state && state.draw;
+        if (draw && draw.isUpdate) {
+            dw.drawCache();
+            draw.isUpdate = false;
         }
     });
-}
+    store.subscribe(function(){
+        var state = store.getState();
+        control = state && state.control;
+        if (control && control.isUpdate) {
+            zoom.calViewBox();
+            //计算坐标
+            control.isUpdate = false;
+        }
+    });
+};
+
+dw.zoomIn = function(){
+    store.dispatch({ type: 'zoom_in'});
+};
+
+dw.zoomOut = function(){
+    store.dispatch({type: 'zoom_out'});
+};
 
 /*离屏绘制*/
-dw.drawCache = function (state) {
+dw.drawCache = function () {
     cacheCvs.context.clearRect(0, 0, ww, wh);
-    state.bg.drawBG();
-    state.curLayer.draw();
-    state.tempLayer.draw();
+    map.refresh();
 };
 
 /*启动动画*/
 var animate = function () {
-    var box = zoom.calViewBox();
-    ctx.clearRect(0, 0, ww, wh);
-    ctx.drawImage(cacheCvs.canvas, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, wh);
+    var box = zoom.viewBox;
+    if(box){
+        ctx.clearRect(0, 0, ww, wh);
+        ctx.drawImage(cacheCvs.canvas, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, wh);
+    }
     window.requestAnimationFrame(animate);
 };
 
