@@ -1,14 +1,17 @@
 
-
 var zoom = require('./zoom.js');
 var process = require('./reducers/combineReducers.js');
+var CommomCanvas = require('./libs/CommonCanvas.js');
 var cacheCvs = require('./cacheCanvas.js');
 var createStore = require('redux').createStore;
 var map = require('./map.js');
 var os = require('./detectOS')(),
     isMac = os === "Mac",
     dpr = window.devicePixelRatio,
-    isRetina = isMac && dpr == 2;
+    isRetina = isMac && dpr == 2,
+    vCanvas = null,
+    bCanvas = null,
+    store = null;
 
 var dw = {
     /*
@@ -38,22 +41,20 @@ var initState = {
     }
 }
 
-var ww = 500,
-    wh = 500,
-    ctx = null,
-    canvas = null,
+var vCanvas = null,
+    bCanvas = null,
     store = null;
 
 /*初始化mark面板*/
 dw.init = function () {
-    canvas = document.createElement('canvas');
-    canvas.setAttribute('id', 'ruler-panel');
-    document.body.appendChild(canvas);
-    ctx = canvas.getContext('2d');
+    vCanvas = new CommomCanvas();
+    bCanvas = new CommomCanvas();
 
-    cacheCvs.init();
-    map.cacheCtx = cacheCvs.context;
-    map.viewCtx = ctx;
+    vCanvas.canvas.setAttribute('id', 'ruler-panel');
+    document.body.appendChild(vCanvas.canvas);
+
+    map.cacheCtx = bCanvas.context;
+    map.viewCtx = vCanvas.context;
     /*测试*/
     // document.body.appendChild(cacheCvs.canvas);
     // cacheCvs.canvas.setAttribute('id', 'ruler-panel');
@@ -66,26 +67,13 @@ dw.init = function () {
 /*设置截取的背景图*/
 dw.setScreenShotUrl = function (screenShot) {
     var image = new Image();
-    image.src = screenShot;
+        image.src = screenShot;
     var imgW = image.width,
         imgH = image.height;
-    cacheCvs.setBox(imgW, imgH,isRetina);
-    zoom.setCenter(imgW, imgH);
-
-    ww = window.innerWidth;
-    wh = window.innerHeight;
-    canvas.setAttribute('width', imgW);
-    canvas.setAttribute('height', imgH);
+    bCanvas.setBox(imgW, imgH,isRetina);
+    vCanvas.setBox(imgW, imgH,isRetina);
     zoom.init(imgW, imgH,isRetina);
-    if(isRetina){
-        ww = imgW;
-        wh = imgH;
-        canvas.style.width = Math.round(ww*0.5)+"px";
-        canvas.style.height = Math.round(wh*0.5)+"px";
-    }else{
-        canvas.style.width = ww + "px";
-        canvas.style.height = wh + "px";
-    }
+    zoom.setCenter(imgW, imgH);
 
     store.dispatch({ type: 'setbackground', screenShot: screenShot });
 }
@@ -104,6 +92,7 @@ dw.bindDraw = function () {
             action: that.action
         };
     };
+    var canvas = vCanvas.canvas;
     canvas.addEventListener('mousedown', function (e) {
         var data = wrapperData('mousedown', e);
         store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
@@ -148,18 +137,19 @@ dw.zoomOut = function(){
     store.dispatch({type: 'zoom_out'});
 };
 
-/*离屏绘制*/
+/*背景绘制*/
 dw.drawCache = function () {
-    cacheCvs.context.clearRect(0, 0, ww, wh);
+    bCanvas.context.clearRect(0, 0, bCanvas.ww,bCanvas.wh);
     map.bg.drawBG();
 };
 
 /*启动动画*/
 var animate = function () {
     var box = zoom.viewBox;
+    var ctx = vCanvas.context;
     if(box){
-        ctx.clearRect(0, 0, ww, wh);
-        ctx.drawImage(cacheCvs.canvas, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, wh);
+        ctx.clearRect(0, 0, vCanvas.ww,vCanvas.wh);
+        ctx.drawImage(bCanvas.canvas, box.sx, box.sy, box.sw, box.sh, box.dx, box.dy, box.dw, box.dh);
         map.curLayer.draw(isRetina);
         map.tempLayer.draw(isRetina);
     }
