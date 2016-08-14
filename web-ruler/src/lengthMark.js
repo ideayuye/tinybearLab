@@ -157,6 +157,7 @@ LengthMark.prototype.drawNode = function() {
     ctx.beginPath();
     if(this.isRetina){
         hh = 10;
+        ctx.lineWidth =2;
     }
     if (this.dir == "v") {
         ctx.moveTo(p1.x - hh, p1.y);
@@ -186,6 +187,7 @@ LengthMark.prototype.drawMark = function() {
     ctx.lineWidth = 1;
     if(me.isRetina){
         ctx.font = "32px arial";
+        ctx.lineWidth =2;
     }
     var mtxt = this.ctx.measureText(length);
     ctx.strokeStyle = '#FE1616';
