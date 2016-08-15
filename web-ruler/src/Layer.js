@@ -25,5 +25,20 @@ var Layer = function(){
     };
 };
 
+Layer.prototype.hitTest = function(x,y){
+    var isFind =0;
+    for (var p in this.paths) {
+        var path = this.paths[p];
+        path.clearLight();
+        if(!isFind){
+            if( path.hitTest(x,y)){
+                //高亮50ms
+                path.setLight();
+                isFind = 1;    
+            }
+        }
+    }
+};
+
 module.exports = Layer;
 

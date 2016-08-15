@@ -70,6 +70,7 @@ var LengthMark = function(ctx) {
         x: 0,
         y: 0
     };
+    this.light = 0;
 };
 
 //计算长度标记的位置
@@ -142,10 +143,17 @@ LengthMark.prototype.process = function(data) {
 LengthMark.prototype.draw = function() {
     var _ = this;
     if (_.step < 2)
-        return;
+        return;    
+    var ctx = _.ctx;
+    ctx.save();
+    if(this.light){
+        ctx.shadowColor = "#666666";
+        ctx.shadowBlur = 10;
+    }
     _.drawMark();
     _.drawNode();
     _.step == 2 && _.drawDottedLine();
+    ctx.restore();
 };
 
 /*绘制节点 */
@@ -282,6 +290,39 @@ LengthMark.prototype.drawDottedLine = function() {
     ctx.closePath();
     ctx.restore();
 };
+
+//选中状态
+
+//hover状态
+LengthMark.prototype.setLight = function(){
+    this.light = 1;
+};
+
+LengthMark.prototype.clearLight = function(){
+    this.light = 0;
+};
+
+//感应区域 测试鼠标是否在感应范围
+LengthMark.prototype.hitTest = function(x,y){
+    var _ = this,
+        dir = this.dir,
+        hit = 0,
+        p1 = _.p1,
+        p2 = _.p2,
+        buffer = 5;
+    if(dir == "v"){
+        var hitx = p1.x - buffer <= x && p1.x + buffer >= x ;
+        var hity = ( p1.y <= y && p2.y >= y ) || ( p2.y <= y && p1.y >= y );
+        hit = hitx && hity;
+    }
+    if(dir == "h"){
+        var hity = p1.y - buffer <= y && p1.y + buffer >= y ;
+        var hitx = ( p1.x <= x && p2.x >= x ) || ( p2.x <= x && p1.x >= x );
+        hit = hitx && hity;
+    }
+    return hit;
+};
+
 
 module.exports = LengthMark;
 

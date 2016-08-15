@@ -59,6 +59,11 @@ var bindMenu =function(){
     menuZO.addEventListener('click', draw.zoomOut);
     menuPan.addEventListener('click', pan);
     menuMeasure.addEventListener('click',measure);
+    menuSelect.addEventListener('click',function(e){
+        draw.action = 3;
+        var menu = e.target;
+        lightMenu(menu);
+    });
 
     //绑定快捷键
     Mousetrap.bind('alt+=', draw.zoomIn);

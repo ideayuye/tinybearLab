@@ -17,8 +17,9 @@ var dw = {
     /*
         当前绘制动作
         动作说明：
-        1－绘制标注线
-        2－平移图片
+        1-绘制标注线
+        2-平移图片
+        3-选取对象
     */
     action: 1
 };
@@ -38,7 +39,8 @@ var initState = {
         mx: 0,//水平平移量
         my: 0,//垂直平一量
         isUpdate:false
-    }
+    },
+    edit:{}
 }
 
 var vCanvas = null,
@@ -136,6 +138,16 @@ dw.zoomIn = function(){
 dw.zoomOut = function(){
     store.dispatch({type: 'zoom_out'});
 };
+
+//解析当前状态 确定当前的交互指令
+var parseCommand = function(){
+    var state = store.getState();
+    // 绘制标注状态
+    // 平移面板
+    // 移动标注
+    // 微调标注
+    // 默认鼠标移动为选取对象
+}
 
 /*背景绘制*/
 dw.drawCache = function () {
