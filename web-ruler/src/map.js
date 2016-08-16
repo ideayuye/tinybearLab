@@ -9,5 +9,9 @@ var map = {
     bg: null
 }
 
+map.getSelectedPath = function () {
+    return this.curLayer.selectedPath;
+}
+
 
 module.exports = map;

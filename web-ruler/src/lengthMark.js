@@ -146,12 +146,13 @@ LengthMark.prototype.draw = function() {
         return;    
     var ctx = _.ctx;
     ctx.save();
-    if(this.light){
+    if(_.light){
         ctx.shadowColor = "#666666";
         ctx.shadowBlur = 10;
     }
     _.drawMark();
     _.drawNode();
+    _.light && _.drawEars();
     _.step == 2 && _.drawDottedLine();
     ctx.restore();
 };
@@ -291,7 +292,34 @@ LengthMark.prototype.drawDottedLine = function() {
     ctx.restore();
 };
 
-//选中状态
+
+/*绘制耳朵*/ 
+LengthMark.prototype.drawEars = function(){
+    var p1 = this.vP1,
+        p2 = this.vP2,
+        ctx = this.ctx,
+        dir = this.dir;
+        _ = this;
+    if(dir == "v"){
+        if(p1.y > p2.y){
+            var t = p2.y;
+            p2.y = p1.y;
+            p1.y = t;
+        }
+        ctx.strokeRect(p1.x-5,p1.y-20,10,10);
+        ctx.strokeRect(p2.x-5,p2.y+10,10,10);
+    }
+    if(dir == "h"){
+         if(p1.x > p2.x){
+            var t = p2.x;
+            p2.x = p1.x;
+            p1.x = t;
+        }
+        ctx.strokeRect(p1.x-20,p1.y-5,10,10);
+        ctx.strokeRect(p2.x+10,p2.y-5,10,10);
+    }
+
+};
 
 //hover状态
 LengthMark.prototype.setLight = function(){
@@ -322,6 +350,18 @@ LengthMark.prototype.hitTest = function(x,y){
     }
     return hit;
 };
+
+//移动位置
+LengthMark.prototype.move = function(mx,my){
+    var p1 = this.p1,
+        p2 = this.p2;
+    p1.x += mx;
+    p1.y += my;
+    p2.x += mx;
+    p2.y += my;
+}
+
+//微调节点
 
 
 module.exports = LengthMark;

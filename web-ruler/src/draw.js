@@ -2,9 +2,9 @@
 var zoom = require('./zoom.js');
 var process = require('./reducers/combineReducers.js');
 var CommomCanvas = require('./libs/CommonCanvas.js');
-var cacheCvs = require('./cacheCanvas.js');
 var createStore = require('redux').createStore;
 var map = require('./map.js');
+var interpreter = require('./libs/interpreter.js');
 var os = require('./detectOS')(),
     isMac = os === "Mac",
     dpr = window.devicePixelRatio,
@@ -17,6 +17,7 @@ var dw = {
     /*
         当前绘制动作
         动作说明：
+        0-无操作
         1-绘制标注线
         2-平移图片
         3-选取对象
@@ -34,13 +35,15 @@ var initState = {
         isPan: 0,
         startX: 0,
         startY: 0,
-        endX: 0,
-        endY: 0,
         mx: 0,//水平平移量
         my: 0,//垂直平一量
         isUpdate:false
     },
-    edit:{}
+    edit:{
+        isMove :0,
+        lastX:0,
+        lastY:0
+    }
 }
 
 var vCanvas = null,
@@ -58,8 +61,8 @@ dw.init = function () {
     map.cacheCtx = bCanvas.context;
     map.viewCtx = vCanvas.context;
     /*测试*/
-    // document.body.appendChild(cacheCvs.canvas);
-    // cacheCvs.canvas.setAttribute('id', 'ruler-panel');
+    // document.body.appendChild(bCanvas.canvas);
+    // bCanvas.canvas.setAttribute('id', 'ruler-panel');
     /*测试*/
     this.bindStore();
     this.bindDraw();
@@ -97,15 +100,18 @@ dw.bindDraw = function () {
     var canvas = vCanvas.canvas;
     canvas.addEventListener('mousedown', function (e) {
         var data = wrapperData('mousedown', e);
-        store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
+        var type = interpreter.parse(store.getState(),that.action,data.mouseType,map);
+        store.dispatch({ type: type, data: data });
     });
     canvas.addEventListener('mouseup', function (e) {
         var data = wrapperData('mouseup', e);
-        store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
+        var type = interpreter.parse(store.getState(),that.action,data.mouseType,map);
+        store.dispatch({ type:type, data: data });
     });
     canvas.addEventListener('mousemove', function (e) {
         var data = wrapperData('mousemove', e);
-        store.dispatch({ type: data.action + "_" + data.mouseType, data: data });
+        var type = interpreter.parse(store.getState(),that.action,data.mouseType,map);
+        store.dispatch({ type:type, data: data });
     });
 };
 
@@ -139,15 +145,6 @@ dw.zoomOut = function(){
     store.dispatch({type: 'zoom_out'});
 };
 
-//解析当前状态 确定当前的交互指令
-var parseCommand = function(){
-    var state = store.getState();
-    // 绘制标注状态
-    // 平移面板
-    // 移动标注
-    // 微调标注
-    // 默认鼠标移动为选取对象
-}
 
 /*背景绘制*/
 dw.drawCache = function () {

@@ -31,7 +31,7 @@ var bindMenu =function(){
     var menuZI = document.querySelector('#menu_zoom_in');
     var menuZO = document.querySelector('#menu_zoom_out');
     var menuPan = document.querySelector('#menu_pan');
-    var menuSelect = document.querySelector("#menu_select");
+    // var menuSelect = document.querySelector("#menu_select");
     var menuMeasure = document.querySelector("#menu_measure");
 
     var lightMenu = function(menu){
@@ -59,11 +59,11 @@ var bindMenu =function(){
     menuZO.addEventListener('click', draw.zoomOut);
     menuPan.addEventListener('click', pan);
     menuMeasure.addEventListener('click',measure);
-    menuSelect.addEventListener('click',function(e){
-        draw.action = 3;
-        var menu = e.target;
-        lightMenu(menu);
-    });
+    // menuSelect.addEventListener('click',function(e){
+    //     draw.action = 3;
+    //     var menu = e.target;
+    //     lightMenu(menu);
+    // });
 
     //绑定快捷键
     Mousetrap.bind('alt+=', draw.zoomIn);
