@@ -318,7 +318,6 @@ LengthMark.prototype.drawEars = function(){
         ctx.strokeRect(p1.x-20,p1.y-5,10,10);
         ctx.strokeRect(p2.x+10,p2.y-5,10,10);
     }
-
 };
 
 //hover状态
@@ -337,17 +336,19 @@ LengthMark.prototype.hitTest = function(x,y){
         hit = 0,
         p1 = _.p1,
         p2 = _.p2,
-        buffer = 5;
+        buffer = 5,
+        el = 20;//感应扩大到耳朵位置
     if(dir == "v"){
         var hitx = p1.x - buffer <= x && p1.x + buffer >= x ;
-        var hity = ( p1.y <= y && p2.y >= y ) || ( p2.y <= y && p1.y >= y );
+        var hity = ( p1.y-el <= y && p2.y+el >= y ) || ( p2.y-el <= y && p1.y+el >= y );
         hit = hitx && hity;
     }
     if(dir == "h"){
         var hity = p1.y - buffer <= y && p1.y + buffer >= y ;
-        var hitx = ( p1.x <= x && p2.x >= x ) || ( p2.x <= x && p1.x >= x );
+        var hitx = ( p1.x-el <= x && p2.x+el >= x ) || ( p2.x-el <= x && p1.x+el >= x );
         hit = hitx && hity;
     }
+
     return hit;
 };
 
@@ -361,8 +362,9 @@ LengthMark.prototype.move = function(mx,my){
     p2.y += my;
 }
 
-//微调节点
-
+//检查是否感应到耳朵位置
+//耳朵高亮
+//移动节点
 
 module.exports = LengthMark;
 

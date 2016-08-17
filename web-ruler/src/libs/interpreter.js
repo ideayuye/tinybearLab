@@ -17,7 +17,6 @@ interpreter.parse = function(state,action,mouseType,map){
             if(action == 2){
                 return "2_mousedown";
             }
-
         case 'mousemove':
             var edit = state.edit;
             if(selectPath && edit.isMove){  
@@ -45,7 +44,6 @@ interpreter.parse = function(state,action,mouseType,map){
             if(action == 2){
                 return "2_mouseup";
             }
-            return "";
     }
 }
 
