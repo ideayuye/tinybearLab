@@ -5,6 +5,7 @@
     left: 0;
     background: rgba(50,50,50,1);
     z-index: 9999;
+    cursor: url(images/hand.png);
 }
 
 #TMK_menus{
@@ -31,5 +32,9 @@
 #TMK_menus li.current,#TMK_menus li:hover{
     color: #fff;
     background: #f90;
+}
+
+.pan{
+    cursor: url("images/hand.png");
 }
 

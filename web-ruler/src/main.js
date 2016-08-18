@@ -47,6 +47,7 @@ var bindMenu =function(){
         draw.action = 2;
         var menu = e.target;
         lightMenu(menu);
+        document.querySelector('#ruler-panel').setAttribute('class','pan');
     }
 
     var measure = function(e){
