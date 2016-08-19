@@ -4,14 +4,10 @@
 var Mousetrap = require('./libs/mousetrap.js');
 var draw = require('./draw');
 
-Mousetrap.bind(['alt+='], function() { 
-    console.log('4');
-    return;
- });
- Mousetrap.bind(['alt+-'], function() { 
-    console.log('5');
-    return;
- });
+var $ = require('jquery');
+
+
+console.log($.fn.jquery);
 
 var initDraw = function () {
     document.body.appendChild(container);
@@ -28,10 +24,10 @@ var container = document.createElement('div');
 
 //绑定菜单事件
 var bindMenu =function(){
+    var $rulerPanel = $('#ruler-panel');
     var menuZI = document.querySelector('#menu_zoom_in');
     var menuZO = document.querySelector('#menu_zoom_out');
     var menuPan = document.querySelector('#menu_pan');
-    // var menuSelect = document.querySelector("#menu_select");
     var menuMeasure = document.querySelector("#menu_measure");
 
     var lightMenu = function(menu){
@@ -47,7 +43,7 @@ var bindMenu =function(){
         draw.action = 2;
         var menu = e.target;
         lightMenu(menu);
-        document.querySelector('#ruler-panel').setAttribute('class','pan');
+        $rulerPanel.addClass('pan').siblings();
     }
 
     var measure = function(e){
@@ -60,11 +56,6 @@ var bindMenu =function(){
     menuZO.addEventListener('click', draw.zoomOut);
     menuPan.addEventListener('click', pan);
     menuMeasure.addEventListener('click',measure);
-    // menuSelect.addEventListener('click',function(e){
-    //     draw.action = 3;
-    //     var menu = e.target;
-    //     lightMenu(menu);
-    // });
 
     //绑定快捷键
     Mousetrap.bind('alt+=', draw.zoomIn);
@@ -76,7 +67,6 @@ var bindMenu =function(){
 
 var getScreenShot = function () {
     chrome.runtime.sendMessage({ n: "sall" }, function (response) {
-        console.log("screen ok");
         initDraw();
         draw.setScreenShotUrl(response);
         /*var img = document.createElement('img');
