@@ -42,7 +42,9 @@ var initState = {
     edit:{
         isMove :0,
         lastX:0,
-        lastY:0
+        lastY:0,
+        isNodeMove :0
+
     }
 }
 

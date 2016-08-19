@@ -8,6 +8,9 @@ interpreter.parse = function(state,action,mouseType,map){
         case 'mousedown':
             //如果有对象被选中 切换到编辑状态
             if(selectPath){  
+                if(selectPath.lightEar){
+                    return "e_m_node_start";
+                }
                return "e_move_start";
             }
             // 绘制标注状态
@@ -19,6 +22,9 @@ interpreter.parse = function(state,action,mouseType,map){
             }
         case 'mousemove':
             var edit = state.edit;
+            if(selectPath && selectPath.lightEar && edit.isNodeMove){
+                return "e_m_node_moving";
+            }
             if(selectPath && edit.isMove){  
                return "e_move_moving";
             }
@@ -35,6 +41,9 @@ interpreter.parse = function(state,action,mouseType,map){
             return "3_mousemove";
         case 'mouseup':
             var edit = state.edit;
+            if(selectPath && selectPath.lightEar && edit.isNodeMove){
+                return "e_m_node_end";
+            }
             if(selectPath && edit.isMove){  
                return "e_move_end";
             }

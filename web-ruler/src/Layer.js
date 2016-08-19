@@ -27,7 +27,11 @@ Layer.prototype.draw=function(isRetina) {
     }
 };
 
-Layer.prototype.hitTest = function(x,y){
+Layer.prototype.hitTest = function(dt){
+    var x = dt.x,
+        y = dt.y,
+        ox = dt.ox,
+        oy = dt.oy;
     var isFind =0;
     this.selectedPath = null;
     for (var p in this.paths) {
@@ -36,6 +40,7 @@ Layer.prototype.hitTest = function(x,y){
         if(!isFind){
             if( path.hitTest(x,y)){
                 this.selectedPath  = path;
+                path.earTouch(ox,oy);
                 path.setLight();
                 isFind = 1;    
             }

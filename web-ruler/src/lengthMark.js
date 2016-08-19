@@ -56,21 +56,22 @@ var LengthMark = function(ctx) {
         }
         return dy;
     };
-    this.length = function() {
-        var length = "";
-        if (this.dir == "v") {
-            length = this.dy();
-        }
-        if (this.dir == "h") {
-            length = this.dx();
-        }
-        return length;
-    };
     this.markPos = {
         x: 0,
         y: 0
     };
     this.light = 0;
+};
+
+LengthMark.prototype.length = function() {
+    var length = "";
+    if (this.dir == "v") {
+        length = this.dy();
+    }
+    if (this.dir == "h") {
+        length = this.dx();
+    }
+    return length;
 };
 
 //计算长度标记的位置
@@ -294,29 +295,58 @@ LengthMark.prototype.drawDottedLine = function() {
 
 
 /*绘制耳朵*/ 
-LengthMark.prototype.drawEars = function(){
+LengthMark.prototype.calEars = function(){
     var p1 = this.vP1,
         p2 = this.vP2,
-        ctx = this.ctx,
-        dir = this.dir;
+        dir = this.dir,
         _ = this;
+    var le = {node:_.p1,},
+        re = {node:_.p2};
     if(dir == "v"){
         if(p1.y > p2.y){
             var t = p2.y;
             p2.y = p1.y;
             p1.y = t;
+            le.node = _.p2;
+            re.node = _.p1;
         }
-        ctx.strokeRect(p1.x-5,p1.y-20,10,10);
-        ctx.strokeRect(p2.x-5,p2.y+10,10,10);
+        le.x = p1.x-5;
+        le.y = p1.y-20;
+        re.x = p2.x-5;
+        re.y = p2.y+10;
     }
     if(dir == "h"){
          if(p1.x > p2.x){
             var t = p2.x;
             p2.x = p1.x;
             p1.x = t;
+            le.node = _.p2;
+            re.node = _.p1;
         }
-        ctx.strokeRect(p1.x-20,p1.y-5,10,10);
-        ctx.strokeRect(p2.x+10,p2.y-5,10,10);
+        le.x = p1.x-20;
+        le.y = p1.y-5;
+        re.x = p2.x+10;
+        re.y = p2.y-5;
+    }
+    return {
+        e1:le,
+        e2:re
+    }
+};
+
+/*绘制耳朵*/ 
+LengthMark.prototype.drawEars = function(){
+    var ctx = this.ctx,
+        _ = this;
+    var ears = _.calEars();
+    ctx.strokeRect(ears.e1.x,ears.e1.y,10,10);
+    ctx.strokeRect(ears.e2.x,ears.e2.y,10,10);
+    //选中高亮
+    if(_.lightEar && _.lightEar === ears.e1.node){
+        ctx.fillRect(ears.e1.x,ears.e1.y,10,10);
+    }
+    if(_.lightEar && _.lightEar === ears.e2.node){
+        ctx.fillRect(ears.e2.x,ears.e2.y,10,10);
     }
 };
 
@@ -327,6 +357,7 @@ LengthMark.prototype.setLight = function(){
 
 LengthMark.prototype.clearLight = function(){
     this.light = 0;
+    this.lightEar = 0;
 };
 
 //感应区域 测试鼠标是否在感应范围
@@ -363,8 +394,57 @@ LengthMark.prototype.move = function(mx,my){
 }
 
 //检查是否感应到耳朵位置
-//耳朵高亮
+LengthMark.prototype.lightEar = 0;//0-没有选中 
+LengthMark.prototype.earTouch = function(x,y){
+    var _ = this,
+        dir = this.dir;
+    //计算耳朵位置
+    var ears = _.calEars(),
+        e1 = ears.e1,
+        e2 = ears.e2;
+    if(e1.x <= x && e1.x+10 >= x && e1.y <= y && e1.y +10 >= y){
+        _.lightEar = e1.node;
+    }
+    if(e2.x <= x && e2.x+10 >= x && e2.y <= y && e2.y +10 >= y){
+        _.lightEar = e2.node;
+    }
+}
+
+LengthMark.prototype.order = 0;
+LengthMark.prototype.freezNodeOrder = function(){
+    var _ = this,
+        dir = this.dir,
+        node = _.lightEar,
+        other = _.p1;
+    if(node === _.p1){
+        other = _.p2;
+    }
+    if(dir == "v"){
+        this.order = other.y > node.y;
+    }
+    if(dir == "h"){
+        this.order = other.x > node.x
+    }
+
+}
 //移动节点
+LengthMark.prototype.moveNode = function (mx, my) {
+    var _ = this,
+        dir = this.dir,
+        node = _.lightEar,
+        other = _.p1;
+    if(node === _.p1){
+        other = _.p2;
+    }
+    if(dir == "v"){
+        if(_.order == other.y > node.y+my)
+            node.y += my;
+    }
+    if(dir == "h"){
+        if(_.order == other.x > node.x+mx)
+            node.x += mx;         
+    }        
+}
 
 module.exports = LengthMark;
 
