@@ -1,4 +1,8 @@
 
+canvas{
+    cursor: default;
+}
+
 #ruler-panel{
     position: fixed;
     top: 0;

@@ -296,12 +296,14 @@ LengthMark.prototype.drawDottedLine = function() {
 
 /*绘制耳朵*/ 
 LengthMark.prototype.calEars = function(){
-    var p1 = this.vP1,
-        p2 = this.vP2,
+    var p1 = Object.assign({}, this.vP1),
+        p2 = Object.assign({}, this.vP2),
         dir = this.dir,
-        _ = this;
+        _ = this,
+        muli = _.isRetina?2:1;
     var le = {node:_.p1,},
         re = {node:_.p2};
+
     if(dir == "v"){
         if(p1.y > p2.y){
             var t = p2.y;
@@ -310,10 +312,10 @@ LengthMark.prototype.calEars = function(){
             le.node = _.p2;
             re.node = _.p1;
         }
-        le.x = p1.x-5;
-        le.y = p1.y-20;
-        re.x = p2.x-5;
-        re.y = p2.y+10;
+        le.x = p1.x-5*muli;
+        le.y = p1.y-20*muli;
+        re.x = p2.x-5*muli;
+        re.y = p2.y+10*muli;
     }
     if(dir == "h"){
          if(p1.x > p2.x){
@@ -323,10 +325,10 @@ LengthMark.prototype.calEars = function(){
             le.node = _.p2;
             re.node = _.p1;
         }
-        le.x = p1.x-20;
-        le.y = p1.y-5;
-        re.x = p2.x+10;
-        re.y = p2.y-5;
+        le.x = p1.x-20*muli;
+        le.y = p1.y-5*muli;
+        re.x = p2.x+10*muli;
+        re.y = p2.y-5*muli;
     }
     return {
         e1:le,
@@ -339,14 +341,17 @@ LengthMark.prototype.drawEars = function(){
     var ctx = this.ctx,
         _ = this;
     var ears = _.calEars();
-    ctx.strokeRect(ears.e1.x,ears.e1.y,10,10);
-    ctx.strokeRect(ears.e2.x,ears.e2.y,10,10);
+    var earSize = 10;
+    if(_.isRetina)
+        earSize = 20;
+    ctx.strokeRect(ears.e1.x,ears.e1.y,earSize,earSize);
+    ctx.strokeRect(ears.e2.x,ears.e2.y,earSize,earSize);
     //选中高亮
     if(_.lightEar && _.lightEar === ears.e1.node){
-        ctx.fillRect(ears.e1.x,ears.e1.y,10,10);
+        ctx.fillRect(ears.e1.x,ears.e1.y,earSize,earSize);
     }
     if(_.lightEar && _.lightEar === ears.e2.node){
-        ctx.fillRect(ears.e2.x,ears.e2.y,10,10);
+        ctx.fillRect(ears.e2.x,ears.e2.y,earSize,earSize);
     }
 };
 
@@ -369,6 +374,9 @@ LengthMark.prototype.hitTest = function(x,y){
         p2 = _.p2,
         buffer = 5,
         el = 20;//感应扩大到耳朵位置
+    if(_.isRetina){
+        el = el *2;
+    }
     if(dir == "v"){
         var hitx = p1.x - buffer <= x && p1.x + buffer >= x ;
         var hity = ( p1.y-el <= y && p2.y+el >= y ) || ( p2.y-el <= y && p1.y+el >= y );
@@ -397,15 +405,21 @@ LengthMark.prototype.move = function(mx,my){
 LengthMark.prototype.lightEar = 0;//0-没有选中 
 LengthMark.prototype.earTouch = function(x,y){
     var _ = this,
-        dir = this.dir;
+        dir = this.dir,
+        earSize = 10;
+    if(_.isRetina){
+        x = x*2;
+        y = y*2;
+        earSize = earSize*2;
+    }
     //计算耳朵位置
     var ears = _.calEars(),
         e1 = ears.e1,
         e2 = ears.e2;
-    if(e1.x <= x && e1.x+10 >= x && e1.y <= y && e1.y +10 >= y){
+    if(e1.x <= x && e1.x + earSize >= x && e1.y <= y && e1.y + earSize >= y){
         _.lightEar = e1.node;
     }
-    if(e2.x <= x && e2.x+10 >= x && e2.y <= y && e2.y +10 >= y){
+    if(e2.x <= x && e2.x + earSize >= x && e2.y <= y && e2.y + earSize >= y){
         _.lightEar = e2.node;
     }
 }

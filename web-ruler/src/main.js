@@ -6,6 +6,9 @@ var draw = require('./draw');
 
 var $ = require('jquery');
 
+// $(window).on('keydown',function(e){
+//     console.log(e);
+// });
 
 console.log($.fn.jquery);
 
@@ -43,13 +46,14 @@ var bindMenu =function(){
         draw.action = 2;
         var menu = e.target;
         lightMenu(menu);
-        $rulerPanel.addClass('pan').siblings();
+        $rulerPanel.removeAttr('class').addClass('pan');
     }
 
     var measure = function(e){
         draw.action = 1;
         var menu = e.target;
         lightMenu(menu);
+        $rulerPanel.removeAttr('class');
     }
 
     menuZI.addEventListener('click', draw.zoomIn);
@@ -60,8 +64,12 @@ var bindMenu =function(){
     //绑定快捷键
     Mousetrap.bind('alt+=', draw.zoomIn);
     Mousetrap.bind('alt+-', draw.zoomOut);
-    Mousetrap.bind('alt+h', ()=>{ menuPan.click();});
-    Mousetrap.bind('alt+m', ()=>{ menuMeasure.click();});
+    Mousetrap.bind('h', ()=>{ menuPan.click();});
+    Mousetrap.bind('m', ()=>{ menuMeasure.click();});
+    Mousetrap.bind('backspace',()=>{
+        console.log('Backspace');
+        draw.deletePath();
+    });
 
 };
 

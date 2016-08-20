@@ -29,8 +29,8 @@ bg.drawBG = function(){
     var ctx = _.ctx;
     if(_.background){
         ctx.drawImage(_.background,0,0,_.imgW,_.imgH);
-        ctx.strokeStyle = "green";
-        ctx.strokeRect(0,0,_.imgW,_.imgH);
+        // ctx.strokeStyle = "green";
+        // ctx.strokeRect(0,0,_.imgW,_.imgH);
     }
 };
 

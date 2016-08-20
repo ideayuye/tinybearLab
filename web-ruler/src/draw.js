@@ -1,4 +1,5 @@
 
+var $ = require('jquery');
 var zoom = require('./zoom.js');
 var process = require('./reducers/combineReducers.js');
 var CommomCanvas = require('./libs/CommonCanvas.js');
@@ -89,28 +90,30 @@ dw.setScreenShotUrl = function (screenShot) {
 dw.bindDraw = function () {
     var that = this;
     var wrapperData = function (type, e) {
-        var ne = zoom.transCoord(e.x, e.y);
+        var x = e.x||e.offsetX||0;
+            y = e.y||e.offsetY||0;
+        var ne = zoom.transCoord(x, y);
         return {
             mouseType: type,
-            ox: e.x,
-            oy: e.y,
+            ox: x,
+            oy: y,
             x: ne.x,
             y: ne.y,
             action: that.action
         };
     };
-    var canvas = vCanvas.canvas;
-    canvas.addEventListener('mousedown', function (e) {
+    var $c = $(vCanvas.canvas);
+    $c.on('mousedown touchstart', function (e) {
         var data = wrapperData('mousedown', e);
         var type = interpreter.parse(store.getState(),that.action,data.mouseType,map);
         store.dispatch({ type: type, data: data });
     });
-    canvas.addEventListener('mouseup', function (e) {
+    $c.on('mouseup touchend', function (e) {
         var data = wrapperData('mouseup', e);
         var type = interpreter.parse(store.getState(),that.action,data.mouseType,map);
         store.dispatch({ type:type, data: data });
     });
-    canvas.addEventListener('mousemove', function (e) {
+    $c.on('mousemove touchmove', function (e) {
         var data = wrapperData('mousemove', e);
         var type = interpreter.parse(store.getState(),that.action,data.mouseType,map);
         store.dispatch({ type:type, data: data });
@@ -138,6 +141,12 @@ dw.bindStore = function () {
         }
     });
 };
+
+dw.deletePath = function(){
+    var path = map.getSelectedPath();
+    if(path)
+        map.curLayer.remove(path.id);
+}
 
 dw.zoomIn = function(){
     store.dispatch({ type: 'zoom_in'});

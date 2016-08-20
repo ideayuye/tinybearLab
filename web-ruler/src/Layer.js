@@ -48,5 +48,6 @@ Layer.prototype.hitTest = function(dt){
     }
 };
 
+
 module.exports = Layer;
 

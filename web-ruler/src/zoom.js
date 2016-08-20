@@ -37,7 +37,6 @@ zoom.setCenter=function(mw,mh){
     this.mh = mh;
     this.center.x = mw*0.5;
     this.center.y = mh*0.5;
-    // this.wh = Math.round(_.ww * mh/mw);
 };
 
 /*
@@ -113,6 +112,10 @@ zoom.zoomOut = function(){
 
 /*平移*/
 zoom.move = function(mx,my){
+    if(this.isRetina){
+        mx = mx*2;
+        my = my*2;
+    }
     this.center.x += mx/this.level;
     this.center.y += my/this.level;
 };
