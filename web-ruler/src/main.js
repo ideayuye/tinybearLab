@@ -10,7 +10,6 @@ var $ = require('jquery');
 //     console.log(e);
 // });
 
-console.log($.fn.jquery);
 
 var initDraw = function () {
     document.body.appendChild(container);
@@ -66,8 +65,7 @@ var bindMenu =function(){
     Mousetrap.bind('alt+-', draw.zoomOut);
     Mousetrap.bind('h', ()=>{ menuPan.click();});
     Mousetrap.bind('m', ()=>{ menuMeasure.click();});
-    Mousetrap.bind('backspace',()=>{
-        console.log('Backspace');
+    Mousetrap.bind(['backspace','del'],()=>{
         draw.deletePath();
     });
 
