@@ -30,7 +30,7 @@ var dw = {
 var initState = {
     draw: {
         curPath: null,
-        isUpdate: false,
+        isUpdate: false
     },
     control: {
         isPan: 0,

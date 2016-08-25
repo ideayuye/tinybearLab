@@ -19,16 +19,27 @@ var process = function (state, action) {
             }
             return state;
         case "1_mousemove":
+            if (state.curPath) {
+                state.curPath.process(action.data);
+                state.isUpdate = true;
+            }
+            return state;
         case "1_mouseup":
             if (state.curPath) {
                 state.curPath.process(action.data);
-                if (state.curPath.isEnd()) {
+                if(state.curPath.length()<1){
                     var id = state.curPath.id;
                     map.tempLayer.remove(id);
-                    map.curLayer.addPath(state.curPath);
                     state.curPath = null;
+                }else{
+                    if (state.curPath.isEnd()) {
+                        var id = state.curPath.id;
+                        map.tempLayer.remove(id);
+                        map.curLayer.addPath(state.curPath);
+                        state.curPath = null;
+                    }
+                    state.isUpdate = true;
                 }
-                state.isUpdate = true;
             }
             return state;
         case "setbackground":

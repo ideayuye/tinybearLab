@@ -1,6 +1,4 @@
 
-
-
 var Mousetrap = require('./libs/mousetrap.js');
 var draw = require('./draw');
 
@@ -10,19 +8,20 @@ var $ = require('jquery');
 //     console.log(e);
 // });
 
+//写入控制菜单
+var menus = require('./html/menu.html');
+var scale = require('./html/scale.html');
+var container = document.createElement('div');
+var $container = $(container);
+    $container.addClass('ruler-fix-bar');
+    $container.append(menus());
+    $container.append(scale());
 
 var initDraw = function () {
     document.body.appendChild(container);
     draw.init();
     bindMenu();
 };
-
-//写入控制菜单
-var menus = require('./html/menu.html');
-var html = menus();
-var container = document.createElement('div');
-    container.innerHTML=html;
-
 
 //绑定菜单事件
 var bindMenu =function(){
