@@ -4,18 +4,15 @@ var draw = require('./draw');
 
 var $ = require('jquery');
 
-// $(window).on('keydown',function(e){
-//     console.log(e);
-// });
 
 //写入控制菜单
 var menus = require('./html/menu.html');
 var scale = require('./html/scale.html');
 var container = document.createElement('div');
 var $container = $(container);
-    $container.addClass('ruler-fix-bar');
-    $container.append(menus());
+    $container.addClass('ruler-fix-bar').addClass('clearfix');
     $container.append(scale());
+    $container.append(menus());
 
 var initDraw = function () {
     document.body.appendChild(container);
@@ -26,10 +23,12 @@ var initDraw = function () {
 //绑定菜单事件
 var bindMenu =function(){
     var $rulerPanel = $('#ruler-panel');
-    var menuZI = document.querySelector('#menu_zoom_in');
-    var menuZO = document.querySelector('#menu_zoom_out');
+    var menuZI = document.querySelector('.scale-panel .zoom-in');
+    var menuZO = document.querySelector('.scale-panel .zoom-out');
     var menuPan = document.querySelector('#menu_pan');
     var menuMeasure = document.querySelector("#menu_measure");
+    var menuClose  = $('#menu_close');
+    var progress = $('.scale-panel progress');
 
     var lightMenu = function(menu){
         var  list = document.querySelectorAll('#TMK_menus li');
@@ -54,14 +53,21 @@ var bindMenu =function(){
         $rulerPanel.removeAttr('class');
     }
 
-    menuZI.addEventListener('click', draw.zoomIn);
-    menuZO.addEventListener('click', draw.zoomOut);
+    menuZI.addEventListener('click', ()=>{
+            draw.zoomIn();
+            progress.val(draw.getLevel());
+        });
+    menuZO.addEventListener('click', ()=>{
+            draw.zoomOut();
+            progress.val(draw.getLevel());
+        });
     menuPan.addEventListener('click', pan);
     menuMeasure.addEventListener('click',measure);
+    menuClose.click(close);
 
     //绑定快捷键
-    Mousetrap.bind('alt+=', draw.zoomIn);
-    Mousetrap.bind('alt+-', draw.zoomOut);
+    Mousetrap.bind('alt+=', menuZI.click());
+    Mousetrap.bind('alt+-', menuZO.click());
     Mousetrap.bind('h', ()=>{ menuPan.click();});
     Mousetrap.bind('m', ()=>{ menuMeasure.click();});
     Mousetrap.bind(['backspace','del'],()=>{
@@ -74,15 +80,29 @@ var getScreenShot = function () {
     chrome.runtime.sendMessage({ n: "sall" }, function (response) {
         initDraw();
         draw.setScreenShotUrl(response);
-        /*var img = document.createElement('img');
-        img.setAttribute('src', response);
-        document.body.appendChild(img);
-        img.style.cssText= "position:fixed;top:0;left:0;"*/
     });
 }
 
 getScreenShot();
 
+//检查是否contentscript已经注入
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    if(request.detectContentScript){
+        //已注入开启功能
+        sendResponse({isInjected:1});
+    }
+    return true;
+});
+
+
+//关闭ruler
+var close = function(){
+    //移除dom
+    $container.remove();
+    $('#ruler-panel').remove();
+    //解除事件
+    Mousetrap.reset();
+}
 
 
 

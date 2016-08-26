@@ -72,6 +72,10 @@ dw.init = function () {
     animate();
 }
 
+dw.getLevel = function(){
+    return zoom.level;
+}
+
 /*设置截取的背景图*/
 dw.setScreenShotUrl = function (screenShot) {
     var image = new Image();
