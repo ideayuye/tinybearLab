@@ -4,7 +4,6 @@ var draw = require('./draw');
 
 var $ = require('jquery');
 
-
 //写入控制菜单
 var menus = require('./html/menu.html');
 var scale = require('./html/scale.html');
@@ -14,9 +13,11 @@ var $container = $(container);
     $container.append(scale());
     $container.append(menus());
 
+draw.init();
+
 var initDraw = function () {
     document.body.appendChild(container);
-    draw.init();
+    draw.appendCanvasToBody();
     bindMenu();
 };
 
@@ -79,7 +80,9 @@ var bindMenu =function(){
 var getScreenShot = function () {
     chrome.runtime.sendMessage({ n: "sall" }, function (response) {
         initDraw();
+        draw.start();
         draw.setScreenShotUrl(response);
+        console.log('end:',Date.now());
     });
 }
 
@@ -89,6 +92,8 @@ getScreenShot();
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if(request.detectContentScript){
         //已注入开启功能
+        getScreenShot();
+        console.log('start:',Date.now());
         sendResponse({isInjected:1});
     }
     return true;
@@ -100,12 +105,8 @@ var close = function(){
     //移除dom
     $container.remove();
     $('#ruler-panel').remove();
+    draw.stop();
     //解除事件
-    Mousetrap.reset();
+    Mousetrap.reset(); 
 }
-
-
-
-
-
 

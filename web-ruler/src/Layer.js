@@ -16,6 +16,10 @@ var Layer = function(){
     };
 };
 
+Layer.prototype.clear = function(){
+    this.paths = {};
+}
+
 Layer.prototype.draw=function(isRetina) {
     for (var p in this.paths) {
         //计算图形是否展示

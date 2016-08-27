@@ -13,5 +13,8 @@ map.getSelectedPath = function () {
     return this.curLayer.selectedPath;
 }
 
+map.clear = function(){
+    this.curLayer.clear();
+}
 
 module.exports = map;

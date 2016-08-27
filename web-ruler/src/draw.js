@@ -59,7 +59,6 @@ dw.init = function () {
     bCanvas = new CommomCanvas();
 
     vCanvas.canvas.setAttribute('id', 'ruler-panel');
-    document.body.appendChild(vCanvas.canvas);
 
     map.cacheCtx = bCanvas.context;
     map.viewCtx = vCanvas.context;
@@ -68,8 +67,11 @@ dw.init = function () {
     // bCanvas.canvas.setAttribute('id', 'ruler-panel');
     /*测试*/
     this.bindStore();
-    this.bindDraw();
     animate();
+}
+
+dw.appendCanvasToBody=function(){
+    document.body.appendChild(vCanvas.canvas);
 }
 
 dw.getLevel = function(){
@@ -160,13 +162,13 @@ dw.zoomOut = function(){
     store.dispatch({type: 'zoom_out'});
 };
 
-
 /*背景绘制*/
 dw.drawCache = function () {
     bCanvas.context.clearRect(0, 0, bCanvas.ww,bCanvas.wh);
     map.bg.drawBG();
 };
 
+var animationFrame = null;
 /*启动动画*/
 var animate = function () {
     var box = zoom.viewBox;
@@ -177,8 +179,18 @@ var animate = function () {
         map.curLayer.draw(isRetina);
         map.tempLayer.draw(isRetina);
     }
-    window.requestAnimationFrame(animate);
+    animationFrame = window.requestAnimationFrame(animate);
 };
+
+dw.stop = function(){
+    window.cancelAnimationFrame(animationFrame);
+    map.clear();
+};
+
+dw.start = function(){
+    this.bindDraw();
+    animate();
+}
 
 module.exports = dw;
 
