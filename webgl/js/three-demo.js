@@ -48,7 +48,7 @@ function init() {
     return Q.Promise(function(resolve,reject){
         loader.load(
             // resource URL
-            'images/smile.jpg',
+            'images/psb.jpg',
             // Function when resource is loaded
             function ( texture ) {
                 // do something with the texture
