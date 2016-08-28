@@ -18,3 +18,4 @@ map.clear = function(){
 }
 
 module.exports = map;
+

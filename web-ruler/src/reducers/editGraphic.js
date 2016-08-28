@@ -18,6 +18,8 @@ var editGraphics = function (state, action) {
             state.mx = 0;
             state.my = 0;
             state.isMove = 1;
+            var path = map.getSelectedPath();
+            path.isEdit = 1;
             return state;
         case "e_move_moving":
             if(state.isMove){
@@ -31,6 +33,8 @@ var editGraphics = function (state, action) {
             return state;
         case "e_move_end":
             state.isMove  = 0 ;
+            var path = map.getSelectedPath();
+            path.isEdit = 0 ;
             return state;
         case "e_m_node_start":
             state.lastX = action.data.x;
@@ -40,6 +44,7 @@ var editGraphics = function (state, action) {
             state.isNodeMove = 1;
             var path = map.getSelectedPath();
             path.freezNodeOrder();
+            path.isEdit = 1;
             return state;
         case "e_m_node_moving":
             if(state.isNodeMove){
@@ -53,6 +58,8 @@ var editGraphics = function (state, action) {
             return state;
         case "e_m_node_end":
             state.isNodeMove  = 0 ;
+            var path = map.getSelectedPath();
+            path.isEdit = 0;
             return state;
         default:
             return state;

@@ -33,6 +33,10 @@
 #TMK_menus li:hover {
   opacity: .6;
 }
+#TMK_menus li.current {
+  font-weight: 600;
+  color: #f60;
+}
 #TMK_menus :last-child {
   border: none;
 }

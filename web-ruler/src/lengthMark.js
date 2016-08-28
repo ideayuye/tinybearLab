@@ -60,7 +60,10 @@ var LengthMark = function(ctx) {
         x: 0,
         y: 0
     };
+    //是否选中高亮
     this.light = 0;
+    // 是否编辑状态
+    this.isEdit = 0;
 };
 
 LengthMark.prototype.length = function() {
@@ -154,7 +157,8 @@ LengthMark.prototype.draw = function() {
     _.drawMark();
     _.drawNode();
     _.light && _.drawEars();
-    _.step == 2 && _.drawDottedLine();
+    //编辑状态要需要展示虚线
+    (_.step == 2||_.isEdit) && _.drawDottedLine();
     ctx.restore();
 };
 
@@ -375,7 +379,8 @@ LengthMark.prototype.hitTest = function(x,y){
         buffer = 5,
         el = 20;//感应扩大到耳朵位置
     if(_.isRetina){
-        el = el *2;
+        el *= 2;
+        buffer *= 2;
     }
     if(dir == "v"){
         var hitx = p1.x - buffer <= x && p1.x + buffer >= x ;

@@ -67,8 +67,8 @@ var bindMenu =function(){
     menuClose.click(close);
 
     //绑定快捷键
-    Mousetrap.bind('alt+=', menuZI.click());
-    Mousetrap.bind('alt+-', menuZO.click());
+    Mousetrap.bind('alt+=',()=>{ menuZI.click()});
+    Mousetrap.bind('alt+-',()=>{ menuZO.click()});
     Mousetrap.bind('h', ()=>{ menuPan.click();});
     Mousetrap.bind('m', ()=>{ menuMeasure.click();});
     Mousetrap.bind(['backspace','del'],()=>{
@@ -82,7 +82,7 @@ var getScreenShot = function () {
         initDraw();
         draw.start();
         draw.setScreenShotUrl(response);
-        console.log('end:',Date.now());
+        // console.log('end:',Date.now());
     });
 }
 
@@ -92,8 +92,9 @@ getScreenShot();
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     if(request.detectContentScript){
         //已注入开启功能
-        getScreenShot();
-        console.log('start:',Date.now());
+        if(!$('#ruler-panel').length)
+            getScreenShot();
+        // console.log('start:',Date.now());
         sendResponse({isInjected:1});
     }
     return true;
