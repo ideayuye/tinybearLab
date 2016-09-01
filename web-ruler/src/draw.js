@@ -192,6 +192,29 @@ dw.start = function(){
     animate();
 }
 
+
+// 微调mark元素
+dw.moveLeft = function(){
+    var path = map.getSelectedPath();
+    path.move(-1,0);
+}
+
+dw.moveRight = function(){
+    var path = map.getSelectedPath();
+    path.move(1,0);
+}
+
+dw.moveUp = function(){
+    var path = map.getSelectedPath();
+    path.move(0,-1);
+}
+
+dw.moveDown = function(){
+    var path = map.getSelectedPath();
+    path.move(0,1);
+}
+
+
 module.exports = dw;
 
 
