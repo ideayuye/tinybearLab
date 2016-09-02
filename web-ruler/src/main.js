@@ -75,14 +75,14 @@ var bindMenu = function () {
         draw.deletePath();
     });
 
-    Mousetrap.bind('left', () => { 
+    Mousetrap.bind('left', (e) => { 
         e.preventDefault(); 
         draw.moveLeft(); });
-    Mousetrap.bind('right', () => { 
+    Mousetrap.bind('right', (e) => { 
         e.preventDefault(); 
         draw.moveRight();
      });
-    Mousetrap.bind('up', () => { 
+    Mousetrap.bind('up', (e) => { 
         e.preventDefault(); 
         draw.moveUp(); 
     });
