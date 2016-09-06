@@ -24,10 +24,10 @@ var initDraw = function () {
 //绑定菜单事件
 var bindMenu = function () {
     var $rulerPanel = $('#ruler-panel');
-    var menuZI = document.querySelector('.scale-panel .zoom-in');
-    var menuZO = document.querySelector('.scale-panel .zoom-out');
-    var menuPan = document.querySelector('#menu_pan');
-    var menuMeasure = document.querySelector("#menu_measure");
+    var menuZI = $('.scale-panel .zoom-in');
+    var menuZO = $('.scale-panel .zoom-out');
+    var menuPan = $('#menu_pan');
+    var menuMeasure = $("#menu_measure");
     var menuClose = $('#menu_close');
     var progress = $('.scale-panel progress');
 
@@ -54,16 +54,16 @@ var bindMenu = function () {
         $rulerPanel.removeAttr('class');
     }
 
-    menuZI.addEventListener('click', () => {
+    menuZI.click (() => {
         draw.zoomIn();
         progress.val(draw.getLevel());
     });
-    menuZO.addEventListener('click', () => {
+    menuZO.click(() => {
         draw.zoomOut();
         progress.val(draw.getLevel());
     });
-    menuPan.addEventListener('click', pan);
-    menuMeasure.addEventListener('click', measure);
+    menuPan.click(pan);
+    menuMeasure.click(measure);
     menuClose.click(close);
 
     //绑定快捷键

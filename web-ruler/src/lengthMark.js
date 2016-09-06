@@ -144,7 +144,7 @@ LengthMark.prototype.process = function(data) {
 };
 
 
-LengthMark.prototype.draw = function() {
+LengthMark.prototype.draw = function(level) {
     var _ = this;
     if (_.step < 2)
         return;    
@@ -153,6 +153,10 @@ LengthMark.prototype.draw = function() {
     if(_.light){
         ctx.shadowColor = "#666666";
         ctx.shadowBlur = 10;
+    }
+    ctx.lineWidth = 1;
+    if(_.isRetina){
+        ctx.lineWidth =2;
     }
     _.drawMark();
     _.drawNode();
@@ -171,7 +175,6 @@ LengthMark.prototype.drawNode = function() {
     ctx.beginPath();
     if(this.isRetina){
         hh = 10;
-        ctx.lineWidth =2;
     }
     if (this.dir == "v") {
         ctx.moveTo(p1.x - hh, p1.y);
@@ -198,11 +201,10 @@ LengthMark.prototype.drawMark = function() {
         p2 = this.vP2;
     
     ctx.font = "16px arial";
-    ctx.lineWidth = 1;
     if(me.isRetina){
         ctx.font = "32px arial";
-        ctx.lineWidth =2;
     }
+
     var mtxt = this.ctx.measureText(length);
     ctx.strokeStyle = '#FE1616';
     ctx.beginPath();

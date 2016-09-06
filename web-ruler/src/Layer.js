@@ -27,7 +27,7 @@ Layer.prototype.draw=function(isRetina) {
         var path = this.paths[p];
         path.isRetina = isRetina;
         path.mapCoords(zoom.genReTransCoord());   
-        path.draw();
+        path.draw(zoom.level);
     }
 };
 
