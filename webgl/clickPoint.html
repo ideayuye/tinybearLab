@@ -1,0 +1,30 @@
+
+<!DOCTYPE html>
+<!--点击 绘制 点-->
+<html lang="en">
+    <head>
+        <title>click draw point</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--顶点着色器-->
+        <script id="shader-vs" type="x-shader/x-vertex">
+            attribute vec4 aVertexPosition;
+
+            void main(){
+                gl_Position = aVertexPosition;
+                gl_PointSize = 5.0;
+            }            
+        </script>
+        <!--片段着色器-->
+        <script id="shader-fs" type="x-shader/x-fragment">
+            void main(){
+                gl_FragColor = vec4(1.0,0.0,0.0,1.0);
+            }
+        </script>
+    </head>
+    <body>
+    <canvas id="testCanvas" width="500" height="500"></canvas>
+    <script type="text/javascript" src="js/clickPoint.js">
+    </script>
+    </body>
+</html>
