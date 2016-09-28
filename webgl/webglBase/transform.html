@@ -8,9 +8,10 @@
         <!--顶点着色器-->
         <script id="shader-vs" type="x-shader/x-vertex">
             attribute vec4 aVertexPosition;
+            uniform mat4 uMatrix;
 
             void main(){
-                gl_Position = aVertexPosition;
+                gl_Position = uMatrix * aVertexPosition;
             }            
         </script>
         <!--片段着色器-->

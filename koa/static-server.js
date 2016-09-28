@@ -4,6 +4,7 @@ var serve = require('koa-static');
 
 app.use(serve(__dirname+'/../svg'));
 app.use(serve(__dirname+'/../waterRipple'));
+app.use(serve(__dirname+'/../webgl'));
 
 
 app.listen(3008);

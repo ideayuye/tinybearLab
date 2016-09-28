@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!--纹理-->
+<html lang="en">
+    <head>
+        <title></title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--顶点着色器-->
+        <script id="shader-vs" type="x-shader/x-vertex">
+            attribute vec4 aVertexPosition;
+            attribute vec2 aTexCoord;
+            varying vec2 vTexCoord;
+
+            void main(){
+                gl_Position = aVertexPosition;
+                vTexCoord = aTexCoord;
+            }            
+        </script>
+        <!--片段着色器-->
+        <script id="shader-fs" type="x-shader/x-fragment">
+            precision mediump float;
+            
+            uniform sampler2D uSampler;
+            varying vec2 vTexCoord;
+
+            void main(){
+                gl_FragColor = texture2D(uSampler,vTexCoord);
+            }
+        </script>
+        <script >
+            //gl_FragColor = texture2D(uSampler,vTexCoord);
+        </script>
+    </head>
+    <body>
+        <canvas id="testCanvas" width="500" height="500"></canvas>
+        <script type="text/javascript" src="js/texture.js">
+        </script>
+    </body>
+</html>

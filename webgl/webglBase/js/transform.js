@@ -71,10 +71,6 @@ function drawScene(){
 
 initShader();
 
-//传递位置信息
-var aVertexPosition = gl.getAttribLocation(shaderProgram,'aVertexPosition');
-gl.vertexAttrib3f(aVertexPosition,0.5,0.0,0.0);
-drawScene();
 
 var points = [
     0.5,0,
@@ -82,7 +78,22 @@ var points = [
     0.0,0.5
 ];
 
+var radian = 15*Math.PI/180;
+var cosB = Math.cos(radian);
+var sinB = Math.sin(radian);
+
+var rotateMatrix = [
+    cosB,sinB,0.0,0.0,
+    -sinB,cosB,0.0,0.0,
+    0.0,0.0,1.0,0.0,
+    0.0,0.0,0.0,1.0
+];
+
 var drawTriangle = function(){
+    //设置旋转矩阵
+    var uMatrix = gl.getUniformLocation(shaderProgram,'uMatrix');
+    gl.uniformMatrix4fv(uMatrix,false,rotateMatrix);
+
     //把数据传输到缓冲区对象
     var buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
