@@ -88,9 +88,9 @@ var drawGeometry = function(){
     gl.vertexAttribPointer(aVertexPosition,2,gl.FLOAT,false,FSIZE*4,0);
     gl.enableVertexAttribArray(aVertexPosition);
     
-    var texBuffer = gl.createBuffer();
+    /*var texBuffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,vertics,gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,vertics,gl.STATIC_DRAW);*/
     var aTexCoord = gl.getAttribLocation(shaderProgram,'aTexCoord');
     gl.vertexAttribPointer(aTexCoord,2,gl.FLOAT,false,FSIZE*4,FSIZE*2);
     gl.enableVertexAttribArray(aTexCoord);
@@ -106,13 +106,16 @@ var drawGeometry = function(){
         gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,1);
         gl.activeTexture(gl.TEXTURE0);
         gl.bindTexture(gl.TEXTURE_2D,texture);
-        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MIN_FILTER,gl.LINEAR);
         gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,image);
+        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
+        // gl.bindTexture(gl.TEXTURE_2D, null);
+        gl.generateMipmap(gl.TEXTURE_2D);
         gl.uniform1i(uSampler,0);
         drawScene();
     }
 
-    image.src="images/zuangtou.jpg";
+    image.src="images/tiles.jpg";
+    // image.src="images/zuangtou.jpg";
 
     // drawScene();
 }
