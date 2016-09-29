@@ -1,5 +1,4 @@
 
-
 /*
 *@description 图形变换
 */
@@ -71,56 +70,33 @@ function drawScene(){
 
 initShader();
 
-var vertics = new Float32Array([
-    0.5,0.0, 1.0,0.0,
-    0.5,0.5, 1.0,1.0,
-    0.0,0.0, 0.0,0.0,
-    0.0,0.5, 0.0,1.0
-]);
+var points = [
+    0.5,0,0,
+    -0.5,0,0,
+    0.0,0.5,0,
+    0,0,0.5
+];
 
-var drawGeometry = function(){
+var matrix = new Matrix4();
+// matrix.setRotate(15,0,0,1);
+matrix.setLookAt(0,0,1, 0,0.2,0, 0,1,0);
+
+var drawTriangle = function(){
+    //设置旋转矩阵
+    var uMatrix = gl.getUniformLocation(shaderProgram,'uMatrix');
+    gl.uniformMatrix4fv(uMatrix,false,matrix.elements);
+
     //把数据传输到缓冲区对象
     var buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER,buffer);
-    gl.bufferData(gl.ARRAY_BUFFER,vertics,gl.STATIC_DRAW);
+    gl.bufferData(gl.ARRAY_BUFFER,new Float32Array(points),gl.STATIC_DRAW);
     var aVertexPosition = gl.getAttribLocation(shaderProgram,'aVertexPosition');
-    var FSIZE = vertics.BYTES_PER_ELEMENT;
-    gl.vertexAttribPointer(aVertexPosition,2,gl.FLOAT,false,FSIZE*4,0);
+    gl.vertexAttribPointer(aVertexPosition,3,gl.FLOAT,false,0,0);
     gl.enableVertexAttribArray(aVertexPosition);
-    
-    /*var texBuffer = gl.createBuffer();
-    gl.bindBuffer(gl.ARRAY_BUFFER,texBuffer);
-    gl.bufferData(gl.ARRAY_BUFFER,vertics,gl.STATIC_DRAW);*/
-    var aTexCoord = gl.getAttribLocation(shaderProgram,'aTexCoord');
-    gl.vertexAttribPointer(aTexCoord,2,gl.FLOAT,false,FSIZE*4,FSIZE*2);
-    gl.enableVertexAttribArray(aTexCoord);
-
-    //配置纹理
-    var texture = gl.createTexture();
-    var uSampler = gl.getUniformLocation(shaderProgram,'uSampler');
-
-    var image = new Image();
-
-    image.onload = function(){
-        //配置纹理参数
-        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,1);
-        gl.activeTexture(gl.TEXTURE0);
-        gl.bindTexture(gl.TEXTURE_2D,texture);
-        gl.texImage2D(gl.TEXTURE_2D,0,gl.RGB,gl.RGB,gl.UNSIGNED_BYTE,image);
-        gl.texParameteri(gl.TEXTURE_2D,gl.TEXTURE_MAG_FILTER,gl.LINEAR);
-        // gl.bindTexture(gl.TEXTURE_2D, null);
-        gl.generateMipmap(gl.TEXTURE_2D);
-        gl.uniform1i(uSampler,0);
-        drawScene();
-    }
-
-    image.src="images/tiles.jpg";
-    // image.src="images/hills.jpg";
-
-    // drawScene();
+    drawScene();
 }
 
-drawGeometry();
+drawTriangle();
 
-// alert(gl.MAX_VERTEX_ATTRIBS);
+
 
