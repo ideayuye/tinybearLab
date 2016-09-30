@@ -1,31 +1,36 @@
 <!DOCTYPE html>
+<!--光源-->
 <html lang="en">
     <head>
-        <title>视角</title>
+        <title>光源</title>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!--顶点着色器-->
         <script id="shader-vs" type="x-shader/x-vertex">
             attribute vec4 aVertexPosition;
-            attribute vec4 aColors;
-            //uniform vec4 uOrthMatrix;
+            attribute vec4 aColor;
+            attribute vec4 aNormal;
+            uniform vec3 uLightColor;
+            uniform vec3 uLightDirection;
             uniform mat4 uMatrix;
-            varying vec4 vColors;
+            varying vec4 vColor;
 
             void main(){
                 gl_Position = uMatrix * aVertexPosition;
-                gl_PointSize = 10.0;
-                vColors = aColors;
+                //归一化法向量
+                vec3 normal = normalize(vec3(aNormal));
+                float nDotL = max(dot(uLightDirection,normal),0.0);
+                vec3 diffuse = uLightDirection*vec3(aColor)*nDotL;
+                vColors = vec4(diffuse,aColor.a);
             }            
         </script>
         <!--片段着色器-->
         <script id="shader-fs" type="x-shader/x-fragment">
             precision mediump float;
 
-            varying vec4 vColors;
+            varying vec4 vColor;
             void main(){
-                //gl_FragColor = vec4(1.0,0.0,0.0,1.0);
-                gl_FragColor = vColors;
+                gl_FragColor = vColor;
             }
         </script>
     </head>

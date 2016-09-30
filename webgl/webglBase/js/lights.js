@@ -1,6 +1,6 @@
 
 /*
-*@description 图形变换
+*@description 光源
 */
 var canvas = document.getElementById('testCanvas');
 var gl = canvas.getContext('webgl');
@@ -107,13 +107,6 @@ var colors = [
     0.0,0.0,0.0
 ];
 
-/*var indices = new Uint8Array([
-    0,1,2,
-    3,0,1,
-    3,1,2,
-    3,0,2
-]);*/
-
 var indices = new Uint8Array([
     0,1,2,
     3,4,5,
@@ -124,6 +117,14 @@ var indices = new Uint8Array([
 var matrix = new Matrix4();
 matrix.setOrtho(-1.0,1.0,-1.0,1.0,-1.0,1.0);
 matrix.lookAt(0,0,0, 0,0,-1, 0,1,0);
+
+var uLightColor = gl.getUniformLocation(shaderProgram,'uLightColor');
+var uLightDirection = gl.getUniformLocation(shaderProgram,'uLightDirection');
+
+gl.uniform3f(uLightColor,1.0,1.0,1.0);
+var lightDirection = new Vector3([0.5,3.0,4.0]);
+lightDirection.normalize();
+gl.uniform3fv(uLightDirection,lightDirection.elements);
 
 var drawTriangle = function(){
     //设置旋转矩阵
