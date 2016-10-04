@@ -67,7 +67,45 @@ scene.add(light);
 scene.add(light1);
 scene.add(light2);
 
-render.render(scene,camera);
+
+//自定义shader
+var geoPlane = new THREE.PlaneGeometry(3,3,3,3);
+geoPlane.translate(3,1,1);
+var vertexShader = [
+    'void main(){',
+    'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
+    '}'
+].join('\n');
+var fragmentShader = [
+    'void main(){',
+    'gl_FragColor = vec4(1.0,0.0,0.0,1.0);',
+    '}'
+].join('\n');
+var shaderMaterial = new THREE.ShaderMaterial({
+    vertexShader:vertexShader,
+    fragmentShader:fragmentShader
+});
+var materialBasic = new THREE.MeshBasicMaterial({
+    color:0xff6600,
+    // wireframe :true
+});
+// var plane = new THREE.Mesh(geoPlane,materialBasic);
+var plane = new THREE.Mesh(geoPlane,shaderMaterial);
+
+scene.add(plane);
+
+var controls = new THREE.OrbitControls(camera,render.domElement);
+
+var animate = function(){
+    controls.update();
+    render.render(scene,camera);
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+
+
 
 
 
