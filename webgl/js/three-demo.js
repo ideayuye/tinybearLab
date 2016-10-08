@@ -44,7 +44,7 @@ function init() {
     // material = new THREE.MeshBasicMaterial({vertexColors:THREE.FaceColors,overdraw:0.5 });
     
                 
-    var loader = new THREE.TextureLoader();
+    var loader = new THREE.TextureLoader(); 
     return Q.Promise(function(resolve,reject){
         loader.load(
             // resource URL

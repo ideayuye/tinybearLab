@@ -26,7 +26,7 @@ var cube = new THREE.Mesh(geo,material);
 
 cube.rotation.y = 45 % (Math.PI * 2);
 cube.rotation.x = 45 % (Math.PI * 2);
-scene.add(cube);
+// scene.add(cube);
 
 var lineMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
 var geoLine = new THREE.Geometry();
@@ -60,7 +60,7 @@ scene.add(ambientLight);
 var light = new THREE.PointLight(0xffffff,1,0);
 light.position.set(-5,2,3);
 var light1 = new THREE.PointLight(0xffffff,1,0);
-light1.position.set(5,2,3);
+light1.position.set(5,5,3);
 var light2 = new THREE.PointLight(0xffffff,1,0);
 light2.position.set(0,-5,3);
 scene.add(light);
@@ -70,7 +70,8 @@ scene.add(light2);
 
 //自定义shader
 var geoPlane = new THREE.PlaneGeometry(3,3,3,3);
-geoPlane.translate(3,1,1);
+// geoPlane.translate(3,1,1);
+
 var vertexShader = [
     'void main(){',
     'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
@@ -78,21 +79,61 @@ var vertexShader = [
 ].join('\n');
 var fragmentShader = [
     'void main(){',
-    'gl_FragColor = vec4(1.0,0.0,0.0,1.0);',
+    'gl_FragColor = vec4(1.0,0.2588,0.0,1.0);',
     '}'
 ].join('\n');
 var shaderMaterial = new THREE.ShaderMaterial({
     vertexShader:vertexShader,
     fragmentShader:fragmentShader
 });
+shaderMaterial.side = THREE.DoubleSide;
 var materialBasic = new THREE.MeshBasicMaterial({
     color:0xff6600,
     // wireframe :true
+    fog:0xffffff
+});
+var materialLabert = new THREE.MeshLambertMaterial({
+    color:0xff6600,
+    fog:0xffffff,
+    emissive:"#000000"
 });
 // var plane = new THREE.Mesh(geoPlane,materialBasic);
 var plane = new THREE.Mesh(geoPlane,shaderMaterial);
 
-scene.add(plane);
+// scene.add(plane);
+
+//sphere
+var sphereGeo = new THREE.SphereGeometry(2,40,40);
+var loader = new THREE.TextureLoader();
+var loadPsb = function(){
+    return Q.Promise(function(resolve,reject){
+        loader.load(
+            // resource URL
+            './../images/psb.jpg',
+            // Function when resource is loaded
+            function ( texture ) {
+                materialBasic.map = texture;
+                resolve();
+            },
+            // Function called when download progresses
+            function ( xhr ) {
+                console.log( (xhr.loaded / xhr.total * 100) + '% loaded' );
+            },
+            // Function called when download errors
+            function ( xhr ) {
+                console.log( 'An error happened' );
+                reject(xhr);
+            }
+        );
+    });
+}
+/*loadPsb().done(function(){
+    
+});*/
+
+var sphere = new THREE.Mesh(sphereGeo,materialLabert);
+    scene.add(sphere);
+
 
 var controls = new THREE.OrbitControls(camera,render.domElement);
 
