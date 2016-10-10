@@ -48,17 +48,30 @@
             return col;
         }
 
+        //混合颜色
+        vec3 mixColor(vec2 st){
+            vec3 clr1 = vec3(0.7,0.0,0.0);
+            vec3 clr2 = vec3(0.0,0.9,0.0);
+
+            float t = step(0.33,st.y)*(1.0-step(0.66,st.y)) + step(0.66,st.y)*0.3;
+
+            return mix(clr1,clr2,t);
+        }
+
         void main() {
             vec2 st = gl_FragCoord.xy/u_resolution.xy;
 
-            float y = abs(sin(st.x));
+            float y = sin(st.x)/st.x;
 
             vec3 color = vec3(y);
 
             float pct = plot(st,y);
-            color = (1.0-pct)*color+pct*vec3(0.0,1.0,0.0);
+            //color = (1.0-pct)*color + pct*vec3(0.0,1.0,0.0);
+            color = pct*vec3(0.0,1.0,0.0);
 
-            color = ripple();
+            //color = ripple();
+
+            color = mixColor(st);
 
             gl_FragColor=vec4(color,1.0);
         }
