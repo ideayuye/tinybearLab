@@ -131,16 +131,24 @@ var loadPsb = function(){
     
 });*/
 
+
 var sphere = new THREE.Mesh(sphereGeo,materialLabert);
     scene.add(sphere);
 
+var tween = new TWEEN.Tween({x:0});
+tween.to({ x: 5 }, 1000);
+tween.onUpdate(function(){
+    // console.log(this.x);
+    sphere.position.x = this.x;
+});
+tween.start();
 
 var controls = new THREE.OrbitControls(camera,render.domElement);
 
 var animate = function(){
     controls.update();
     render.render(scene,camera);
-
+    TWEEN.update();
     requestAnimationFrame(animate);
 }
 

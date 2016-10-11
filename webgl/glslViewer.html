@@ -80,6 +80,7 @@
         var container;
         var camera, scene, renderer;
         var uniforms;
+        var ready;
 
         init();
         animate();
@@ -94,33 +95,38 @@
 
             var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
 
-            var texture = new THREE.TextureLoader().load( "images/pure.jpg" );
+            var texture = new THREE.TextureLoader().load( "images/water01.jpg" );
                 texture.wrapS = THREE.RepeatWrapping;
                 texture.wrapT = THREE.RepeatWrapping;
                 texture.repeat.set( 4, 4 );
 
-            uniforms = {
-                u_time: { type: "f", value: 1.0 },
-                u_resolution: { type: "v2", value: new THREE.Vector2() },
-                tex : { value:texture }
-            };
+            var loader = new THREE.XHRLoader().load('shaders/shaderLab.glsl',function(text){
+                uniforms = {
+                    u_time: { type: "f", value: 1.0 },
+                    u_resolution: { type: "v2", value: new THREE.Vector2() },
+                    tex : { value:texture }
+                };
 
-            var material = new THREE.ShaderMaterial( {
-                uniforms: uniforms,
-                vertexShader: document.getElementById( 'vertexShader' ).textContent,
-                fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-            } );
+                var material = new THREE.ShaderMaterial( {
+                    uniforms: uniforms,
+                    vertexShader: document.getElementById( 'vertexShader' ).textContent,
+                    //fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+                    fragmentShader: text
+                } );
 
-            var mesh = new THREE.Mesh( geometry, material );
-            scene.add( mesh );
+                var mesh = new THREE.Mesh( geometry, material );
+                scene.add( mesh );
 
-            renderer = new THREE.WebGLRenderer();
-            renderer.setPixelRatio( window.devicePixelRatio );
+                renderer = new THREE.WebGLRenderer();
+                renderer.setPixelRatio( window.devicePixelRatio );
 
-            container.appendChild( renderer.domElement );
+                container.appendChild( renderer.domElement );
 
-            onWindowResize();
-            window.addEventListener( 'resize', onWindowResize, false );
+                onWindowResize();
+                window.addEventListener( 'resize', onWindowResize, false );
+                ready = 1;
+            });
+            
         }
 
         function onWindowResize( event ) {
@@ -131,7 +137,7 @@
 
         function animate() {
             requestAnimationFrame( animate );
-            render();
+            ready && render();
         }
 
         function render() {
