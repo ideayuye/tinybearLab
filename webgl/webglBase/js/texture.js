@@ -114,8 +114,9 @@ var drawGeometry = function(){
         drawScene();
     }
 
-    image.src="images/tiles.jpg";
+    // image.src="images/tiles.jpg";
     // image.src="images/hills.jpg";
+    image.src = './../images/horse_pow2.png';
 
     // drawScene();
 }

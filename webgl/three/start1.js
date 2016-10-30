@@ -26,7 +26,7 @@ var cube = new THREE.Mesh(geo,material);
 
 cube.rotation.y = 45 % (Math.PI * 2);
 cube.rotation.x = 45 % (Math.PI * 2);
-scene.add(cube);
+// scene.add(cube);
 
 var lineMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
 var geoLine = new THREE.Geometry();
@@ -90,7 +90,7 @@ var shaderMaterial = new THREE.ShaderMaterial({
 });
 shaderMaterial.side = THREE.DoubleSide;
 var materialBasic = new THREE.MeshBasicMaterial({
-    color:0xff6600,
+    // color:0xff6600,
     // wireframe :true
     fog:0xffffff
 });
@@ -112,6 +112,8 @@ var loadPsb = function(){
         loader.load(
             // resource URL
             './../images/psb.jpg',
+            // './../images/Tutorial81_pic1.png',
+            // "https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/earthmap.jpg",
             // Function when resource is loaded
             function ( texture ) {
                 materialBasic.map = texture;
@@ -129,23 +131,23 @@ var loadPsb = function(){
         );
     });
 }
-/*loadPsb().done(function(){
-    
-});*/
-
-
-var sphere = new THREE.Mesh(sphereGeo,materialLabert);
+loadPsb().done(function(){
+    // var sphere = new THREE.Mesh(sphereGeo,materialBasic);
+    // sphere.position.set(0,0,0);
     // scene.add(sphere);
 
-var tween = new TWEEN.Tween({x:0,y:0});
+    var cube1 = new THREE.Mesh(geo,materialBasic);
+        scene.add(cube1);
+});
+
+
+/*var tween = new TWEEN.Tween({x:0,y:0});
 tween.to({ x: 3, y:1}, 500);
 tween.onUpdate(function(){
     sphere.position.x = this.x;
     sphere.position.y = this.y;
 });
-tween.start();
-
-
+tween.start();*/
 
 
 var controls = new THREE.OrbitControls(camera,render.domElement);
@@ -153,7 +155,7 @@ var controls = new THREE.OrbitControls(camera,render.domElement);
 var animate = function(){
     controls.update();
     render.render(scene,camera);
-    TWEEN.update();
+    // TWEEN.update();
     requestAnimationFrame(animate);
 }
 
