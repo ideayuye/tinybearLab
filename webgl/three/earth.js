@@ -2,7 +2,7 @@
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,1,10);
-camera.position.set(0,0,5);
+camera.position.set(0,0,6);
 
 var render = new THREE.WebGLRenderer({
     canvas:document.getElementById('test')
@@ -54,56 +54,11 @@ scene.add(line);
 scene.add(line1);
 scene.add(line2);
 
-//light
-var ambientLight = new THREE.AmbientLight(0xffffff);
-scene.add(ambientLight);
-var light = new THREE.PointLight(0xffffff,1,0);
-light.position.set(-5,2,3);
-var light1 = new THREE.PointLight(0xffffff,1,0);
-light1.position.set(5,5,3);
-var light2 = new THREE.PointLight(0xffffff,1,0);
-light2.position.set(0,-5,3);
-/*scene.add(light);
-scene.add(light1);
-scene.add(light2);*/
-var dirLight = new THREE.DirectionalLight(0xff0000,0.5);
-dirLight.position.set(0,1,0);
-
-
-//自定义shader
-var geoPlane = new THREE.PlaneGeometry(3,3,3,3);
-// geoPlane.translate(3,1,1);
-
-var vertexShader = [
-    'void main(){',
-    'gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );',
-    '}'
-].join('\n');
-var fragmentShader = [
-    'void main(){',
-    'gl_FragColor = vec4(1.0,0.2588,0.0,1.0);',
-    '}'
-].join('\n');
-var shaderMaterial = new THREE.ShaderMaterial({
-    vertexShader:vertexShader,
-    fragmentShader:fragmentShader
-});
-shaderMaterial.side = THREE.DoubleSide;
 var materialBasic = new THREE.MeshBasicMaterial({
     // color:0xff6600,
     // wireframe :true
     fog:0xffffff
 });
-var materialLabert = new THREE.MeshLambertMaterial({
-    color:0xff6600,
-    fog:0xffffff,
-    emissive:"#000000"
-});
-// var plane = new THREE.Mesh(geoPlane,materialBasic);
-var plane = new THREE.Mesh(geoPlane,shaderMaterial);
-
-// scene.add(plane);
-
 //sphere
 var sphereGeo = new THREE.SphereGeometry(2,40,40);
 var loader = new THREE.TextureLoader();
@@ -113,7 +68,8 @@ var loadPsb = function(){
             // resource URL
             // './../images/psb.jpg',
             // './../images/Tutorial81_pic1.png',
-            "https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/earthmap.jpg",
+            // "https://s3-us-west-2.amazonaws.com/s.cdpn.io/123941/earthmap.jpg",
+            './../images/earthmap.jpg',
             // Function when resource is loaded
             function ( texture ) {
                 materialBasic.map = texture;
@@ -135,10 +91,63 @@ loadPsb().done(function(){
     var sphere = new THREE.Mesh(sphereGeo,materialBasic);
     sphere.position.set(0,0,0);
     scene.add(sphere);
-
-    // var cube1 = new THREE.Mesh(geo,materialBasic);
-    //     scene.add(cube1);
 });
+
+//经纬度转空间坐标
+var fromDegrees = function(lon,lat){
+    var x,y,z;
+    r = 2;
+    var rlat = lat/180*Math.PI,
+        rlon = lon/180*Math.PI;
+    y = r * Math.sin(rlat);
+    var pl = r*Math.cos(rlat);
+    x = pl*Math.cos(rlon);
+    z = -pl*Math.sin(rlon);
+    return {
+        x:x,
+        y:y,
+        z:z
+    }
+}
+
+// console.log(-10,20,fromDegrees(-10,20));
+// console.log(0,0,fromDegrees(0,0));
+console.log(-90,0,fromDegrees(-90,0));
+console.log(-180,0,fromDegrees(-180,0));
+console.log(180,0,fromDegrees(180,0));
+
+console.log(20,20,fromDegrees(20,20));
+console.log(90,0,fromDegrees(90,0));
+
+console.log(0,90,fromDegrees(0,90));
+console.log(0,-90,fromDegrees(0,-90));
+
+var geometry = new THREE.CircleGeometry( 0.05, 50);
+var material = new THREE.MeshBasicMaterial( { color: 0xff0000 ,side:THREE.DoubleSide} );
+var circle = new THREE.Mesh( geometry, material );
+var ps = fromDegrees(118.78,32.04);
+// var ps = fromDegrees(38.91,15.44);
+// var ps = fromDegrees(1.5,0.2);
+// var ps = fromDegrees(0,0);
+circle.position.set(ps.x,ps.y,ps.z);
+
+scene.add(circle);
+
+var geoLineX1 = new THREE.Geometry();
+geoLineX1.vertices.push(
+    new THREE.Vector3(ps.x, ps.y, ps.z),
+    new THREE.Vector3(ps.x*2, ps.y*2, ps.z*2)
+);
+var lineMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
+var linex1 = new THREE.Line(geoLineX1, lineMaterial);
+scene.add(linex1);
+
+var geometryPl = new THREE.PlaneGeometry( 1, 0.5, 16 );
+var materialPl = new THREE.MeshBasicMaterial( {color: 0x1111ff, side: THREE.DoubleSide} );
+var plane = new THREE.Mesh( geometryPl, materialPl );
+plane.position.set(ps.x*2, ps.y*2, ps.z*2);
+// plane.translate(-0,-0,0);
+scene.add(plane);
 
 
 /*var tween = new TWEEN.Tween({x:0,y:0});
