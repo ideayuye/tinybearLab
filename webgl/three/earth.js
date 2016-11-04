@@ -2,6 +2,7 @@
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75,window.innerWidth/window.innerHeight,1,10);
+// var camera = new THREE.OrthographicCamera( 10 / - 2, 10 / 2, 10 / 2, 10 / - 2, 10, -10 );
 camera.position.set(0,0,6);
 
 var render = new THREE.WebGLRenderer({
@@ -50,10 +51,10 @@ var geoLine2 = new THREE.Geometry();
     );
 var line2 = new THREE.Line(geoLine2,lineMaterialG);
 
-scene.add(line);
+/*scene.add(line);
 scene.add(line1);
 scene.add(line2);
-
+*/
 var materialBasic = new THREE.MeshBasicMaterial({
     // color:0xff6600,
     // wireframe :true
@@ -125,10 +126,10 @@ console.log(0,-90,fromDegrees(0,-90));
 var geometry = new THREE.CircleGeometry( 0.05, 50);
 var material = new THREE.MeshBasicMaterial( { color: 0xff0000 ,side:THREE.DoubleSide} );
 var circle = new THREE.Mesh( geometry, material );
-var ps = fromDegrees(118.78,32.04);
+// var ps = fromDegrees(118.78,32.04);
 // var ps = fromDegrees(38.91,15.44);
 // var ps = fromDegrees(1.5,0.2);
-// var ps = fromDegrees(0,0);
+var ps = fromDegrees(-88.11,31.22);
 circle.position.set(ps.x,ps.y,ps.z);
 
 scene.add(circle);
@@ -136,7 +137,7 @@ scene.add(circle);
 var geoLineX1 = new THREE.Geometry();
 geoLineX1.vertices.push(
     new THREE.Vector3(ps.x, ps.y, ps.z),
-    new THREE.Vector3(ps.x*2, ps.y*2, ps.z*2)
+    new THREE.Vector3(ps.x*1.5+1, ps.y*1.5, ps.z*1.5)
 );
 var lineMaterial = new THREE.LineBasicMaterial({color: 0x0000ff});
 var linex1 = new THREE.Line(geoLineX1, lineMaterial);
@@ -145,7 +146,7 @@ scene.add(linex1);
 var geometryPl = new THREE.PlaneGeometry( 1, 0.5, 16 );
 var materialPl = new THREE.MeshBasicMaterial( {color: 0x1111ff, side: THREE.DoubleSide} );
 var plane = new THREE.Mesh( geometryPl, materialPl );
-plane.position.set(ps.x*2, ps.y*2, ps.z*2);
+plane.position.set(ps.x*1.5+1+0.5, ps.y*1.5+0.25, ps.z*1.5);
 // plane.translate(-0,-0,0);
 scene.add(plane);
 
