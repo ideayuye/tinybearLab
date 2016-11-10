@@ -5,12 +5,18 @@ var buildPath = path.resolve(__dirname,"build");
 var nodemodulesPath = path.resolve(__dirname,'node_modules');
 
 var config = {
-	entry:path.resolve(__dirname,'src/main.js'),
+	entry:[
+		// 'webpack/hot/poll?1000',
+		'webpack-dev-server/client?http://localhost:3005',//资源服务器地址
+    	'webpack/hot/only-dev-server',
+		path.resolve(__dirname,'src/main1.js')
+	],
 	// entry:{m1:path.resolve(__dirname,'src/main.js'),
 	// 	m2:path.resolve(__dirname,'src/main1.js')},
 	resolve:{
 		extentions:["","js"]
 	},
+	// target: 'node',
 	//Server Configuration options
     devServer:{
 	    contentBase: '',  //Relative directory for base of server

@@ -1,4 +1,4 @@
 
 
-console.log('it is  two');
+var hx = require('./hotReplace/hot2');
 
