@@ -7,8 +7,9 @@ var nodemodulesPath = path.resolve(__dirname,'node_modules');
 var config = {
 	entry:[
 		// 'webpack/hot/poll?1000',
-		'webpack-dev-server/client?http://localhost:3005',//资源服务器地址
-    	'webpack/hot/only-dev-server',
+		// 'webpack-dev-server/client?http://localhost:3005',//资源服务器地址
+    	// 'webpack/hot/only-dev-server',
+		'webpack/hot/dev-server',
 		path.resolve(__dirname,'src/main1.js')
 	],
 	// entry:{m1:path.resolve(__dirname,'src/main.js'),

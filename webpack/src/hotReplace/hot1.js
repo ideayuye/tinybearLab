@@ -1,6 +1,6 @@
 
 module.exports = function(){
-    console.log('bx bl xx sf are you ok');
+    console.log('bx bl xx sf are ok');
 
 }
 
