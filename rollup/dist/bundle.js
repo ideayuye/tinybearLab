@@ -1,0 +1,1 @@
+!function(o,n){"object"==typeof exports&&"undefined"!=typeof module?n():"function"==typeof define&&define.amd?define(n):n()}(this,function(){"use strict";function o(){console.log("it is m1")}function n(){console.log("hi")}o(),o(),n(),console.log("main ok")});

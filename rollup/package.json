@@ -1,0 +1,17 @@
+{
+  "name": "rollup",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "rollup": "rollup -c config.js -m inline",
+    "build": "rollup -c config.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "rollup": "^0.36.3",
+    "rollup-plugin-uglify": "^1.0.1"
+  }
+}
