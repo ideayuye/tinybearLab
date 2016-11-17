@@ -1,4 +1,7 @@
 
+### debug
+rollup配置sourcemap然后就可以对源代码调试
+
 ###GlobalAPI
 
     initUse(Vue) //绑定运用插件方法
