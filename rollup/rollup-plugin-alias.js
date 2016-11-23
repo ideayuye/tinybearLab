@@ -16,7 +16,6 @@ var endsWith = function (needle, haystack) {
   return haystack.slice(-needle.length) === needle;
 };
 var isFilePath = function (id) {
-  // return (/^\.?\//.test(id)
   return (/(^\.?\/)|(^[a-zA-Z]\:(\\|\/))/.test(id)
   );
 };
