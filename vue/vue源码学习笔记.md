@@ -9,3 +9,6 @@ rollup配置sourcemap然后就可以对源代码调试
     initExtend(Vue) //绑定扩展方法
     initAssetRegisters(Vue) 
 
+###初始化流程
+- this._init(options) --调用 core/instance/init.js 里的初始化函数
+

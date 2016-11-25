@@ -19,8 +19,13 @@
 	  </ul>
 	</div>
 
-    <script type="text/javascript">
-    	new Vue({
+	<hr>
+	<div id="render_lab">
+		<js-render :level="level">audi A3</js-render>
+	</div>
+
+  <script type="text/javascript">
+    new Vue({
 		  el: '#app',
 		  data: {
 		    message: 'Hello Vue.js!'
@@ -38,6 +43,8 @@
 		  }
 		})
     </script>
+
+		<script type="text/javascript" src="js/renderLab.js"></script>
 </body>
 
 </html>
