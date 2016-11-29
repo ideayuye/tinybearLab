@@ -7,19 +7,7 @@
 </head>
 
 <body>
-	<div id="app">
-		{{ message }}
-	</div>
-	<hr>
-	<div id="app1">
-		<ul>
-			<li v-for="todo in todos">
-				{{ todo.text }}
-			</li>
-		</ul>
-	</div>
 	
-	<hr>
 	<div id="render_lab">
 		<js-render :level="level">audi A3</js-render>
 	</div>
@@ -61,29 +49,26 @@
 		<div>counter:{{count}}</div>
 	</div>
 
-	<script type="text/javascript">
-    new Vue({
-		  el: '#app',
-		  data: {
-		    message: 'Hello Vue.js!'
-		  }
-		});
+	<!--vue-loader-->
+	<hr>
+	<div id="vue_loader_lab">
+		hi vue-loader
+		<test></test>
+	</div>
 
-		new Vue({
-		  el: '#app1',
-		  data: {
-		    todos: [
-		      { text: 'Learn JavaScript' },
-		      { text: 'Learn Vue.js' },
-		      { text: 'Build Something Awesome' }
-		    ]
-		  }
-		})
-  </script>
+	<!--computed lab-->
+	<hr>
+	<div id="computed_lab">
+		<div>{{sayHello}}</div>
+	</div>
+
+
 	<script type="text/javascript" src="js/renderLab.js"></script>
 	<script type="text/javascript" src="js/slotLab.js"></script>
 	<script type="text/javascript" src="js/dynamicComponetLab.js"></script>
-	<script type="text/javascript" src="js/vuexLab.js"></script>
+	<!--<script type="text/javascript" src="js/vuexLab.js"></script>-->
+	<script type="text/javascript" src="build/main.js"></script>
+	<script type="text/javascript" src="js/computedLab.js"></script>
 </body>
 
 </html>
