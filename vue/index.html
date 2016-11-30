@@ -46,7 +46,8 @@
 	<hr>
 	<div id="vuex_lab">
 		<div>vuex</div>
-		<div>counter:{{count}}</div>
+		<div>counter:{{$store.state.count}}</div>
+		<button @click="increment">+</button>
 	</div>
 
 	<!--vue-loader-->
@@ -62,13 +63,35 @@
 		<div>{{sayHello}}</div>
 	</div>
 
+	<!--表单-->
+	<hr>	
+	<div id="forms_lab">
+		<!--绑定单个-->
+		<div><label><input type="checkbox" v-model="ischecked">single dog</label> </div>
+		<!--绑定数组-->
+		<div>
+			<label > <input type="checkbox" value="roll" v-model="names">roll </label>
+			<label > <input type="checkbox" value="up" v-model="names">up </label>
+			<label > <input type="checkbox" value="bell" v-model="names">bell </label>
+			<div>selected: 
+				<span v-for="item in names"> {{item}} </span>
+			</div>
+		</div>
+		<!--绑定单元框-->
+		<div>
+			<label > <input type="radio" value="one" v-model="orders"> one </label>
+			<label > <input type="radio" value="two" v-model="orders"> two </label>
+			<div>selected: <span>{{orders}}</span></div>
+		</div>
+	</div>
 
 	<script type="text/javascript" src="js/renderLab.js"></script>
 	<script type="text/javascript" src="js/slotLab.js"></script>
 	<script type="text/javascript" src="js/dynamicComponetLab.js"></script>
-	<!--<script type="text/javascript" src="js/vuexLab.js"></script>-->
+	<script type="text/javascript" src="js/vuexLab.js"></script>
 	<script type="text/javascript" src="build/main.js"></script>
 	<script type="text/javascript" src="js/computedLab.js"></script>
+	<script type="text/javascript" src="js/formsLab.js"></script>
 </body>
 
 </html>

@@ -11,12 +11,17 @@ var store = new Vuex.Store({
     },
     //actions
     actions:{
-        increment: ({ commit }) => commit('increment')
+        increment: function (context){ 
+            context.commit('increment');
+        }
     }
 });
 
 new Vue({
     el:"#vuex_lab",
-    store
+    store,
+    methods: Vuex.mapActions([
+        'increment'
+    ])
 });
 
