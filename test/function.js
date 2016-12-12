@@ -156,5 +156,48 @@ t.tx = function(){
 
 t.tx();*/
 
+
+/*
+    偏应用函数
+*/
+var ninja = {
+    chirp:function si(n){
+        return n>1? si(n-1) + '-chirp':'chirp';
+    }
+}
+
+var samurai = {chirp:ninja.chirp}
+
+ninja = {}
+
+Function.prototype.curry = function(){
+    var fn  = this;
+        args = Array.prototype.slice.call(arguments);
+    
+    return function(){
+        return fn.apply(this,args.concat(Array.prototype.slice.call(arguments)));
+    }
+}
+
+Function.prototype.partical = function(){
+    var fn  = this,
+        args = Array.prototype.slice.call(arguments);
+    return function(){
+        var arg = 0;
+        for(var i=0;i<args.length && arg < arguments.length;i++){
+            if(args[i] === undefined){
+                args[i] = arguments[arg++];
+            }
+        }
+        return fn.apply(this,args);
+    }
+}
+
+// String.prototype.csv = String.prototype.split.curry(/,\s*/);
+String.prototype.csv = String.prototype.split.partical(/,\s*/);
+
+var res = ('h1,belly,daling').csv()
+console.log(res);
+
 console.log('success to end');
 
