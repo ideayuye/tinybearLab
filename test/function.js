@@ -126,7 +126,7 @@ var Ninja1 = Person.subClass({
         this._super(false);
     },
     dance:function(){
-        return this._super();
+        // return this._super();
     },
     swingSword:function(){
         return true;
@@ -135,10 +135,10 @@ var Ninja1 = Person.subClass({
 
 
 var person = new Person(true);
-var n1 = new Ninja1();
+// var n1 = new Ninja1();
 
 console.log( person.dance());
-console.log( n1.dance());
+// console.log( n1.dance());
 
 
 /*

@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "启动程序",
-            "program": "${workspaceRoot}/function.js",
+            "program": "${workspaceRoot}/regexp.js",
             "cwd": "${workspaceRoot}"
         },
         {
