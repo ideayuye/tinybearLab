@@ -4,7 +4,7 @@
 */
 
 var CheckTag = function () {
-    this.regCheck = /<([a-zA-Z]\w*)(?:\s[^<>]*?)?>|<\/([a-zA-Z]\w*)>/g;
+    this.regCheck = null;
     this.regTmpl = null;
     this.regComment = null;
 }
