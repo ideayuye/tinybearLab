@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>router</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script type="text/javascript" src="node_modules/vue/dist/vue.js"></script>
+    <script type="text/javascript" src="node_modules/vue-router/dist/vue-router.min.js"></script>
+</head>
+
+<body>
+    <div id="app">
+        <div class="list-group">
+            <router-link to="/foo">Go to Home</router-link>
+            <router-link to="/bar">Go to About</router-link>
+        </div>
+         <!-- 路由匹配到的组件将渲染在这里 -->
+        <router-view></router-view>
+    </div>
+    <script type="text/javascript" src="js/router.js"></script>
+</body>
+
+</html>

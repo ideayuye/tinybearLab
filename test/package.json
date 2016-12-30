@@ -1,16 +1,14 @@
 {
-  "name": "vue-lab",
+  "name": "testx1",
   "version": "1.0.0",
   "description": "",
-  "main": "vue.min.js",
+  "main": "checkTag.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "vue": "^2.1.3",
-    "vue-router": "^2.1.1",
-    "vuex": "^2.0.0"
+    "monkberry": "^4.0.8"
   }
 }
