@@ -6,7 +6,7 @@ var common = require('./js/common');
 
 common();
 a();
-// console.log('hello world');
+console.log('hello world');
 // document.getElementById("container").innerHTML = "<p>hello world</p>";
 
 

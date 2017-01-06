@@ -3,6 +3,7 @@ var webpack = require('webpack');
 var path = require('path');
 var buildPath = path.resolve(__dirname,"build");
 var nodemodulesPath = path.resolve(__dirname,'node_modules');
+var DashboardPlugin = require('webpack-dashboard/plugin');
 
 var config = {
 	entry:[
@@ -10,7 +11,7 @@ var config = {
 		// 'webpack-dev-server/client?http://localhost:3005',//资源服务器地址
     	// 'webpack/hot/only-dev-server',
 		'webpack/hot/dev-server',
-		path.resolve(__dirname,'src/main1.js')
+		path.resolve(__dirname,'src/main.js')
 	],
 	// entry:{m1:path.resolve(__dirname,'src/main.js'),
 	// 	m2:path.resolve(__dirname,'src/main1.js')},
@@ -32,10 +33,12 @@ var config = {
 		filename:"app.js"
 	},
 	plugins: [
+		new DashboardPlugin(),
 	    //Enables Hot Modules Replacement
 	    new webpack.HotModuleReplacementPlugin(),
 	    //Allows error warnings but does not stop compiling. Will remove when eslint is added
 	    new webpack.NoErrorsPlugin()
+
 	    //Moves files
 	    // new TransferWebpackPlugin([
 	    //   {from: ''}

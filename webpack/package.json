@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack-config.js --colors",
-    "dev": "webpack-dev-server --config webpack-dev-config.js --progress --inline --colors"
+    "dev": "webpack-dev-server --config webpack-dev-config.js --progress --inline --colors",
+    "dev-dash": "webpack-dashboard webpack-dev-server --config webpack-dev-config.js --progress --inline --colors"
   },
   "keywords": [
     "test"
@@ -24,5 +25,8 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.12.9",
     "webpack-dev-server": "^1.14.0"
+  },
+  "devDependencies": {
+    "webpack-dashboard": "^0.2.1"
   }
 }
