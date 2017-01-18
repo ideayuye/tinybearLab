@@ -3,11 +3,12 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var fs = require('fs');
-var serveStatic = require('serve-static')
+var serveStatic = require('serve-static');
+var multipart = require('connect-multiparty');
+var multipartMiddleware = multipart();
 
 app.use(bodyParser());
 app.use(serveStatic('static'));
-
 
 app.get('/log',(req,res)=>{
     var callback = req.query.callback||'callback';
@@ -16,5 +17,27 @@ app.get('/log',(req,res)=>{
     res.send(callback+'({h:"hello"})');
 });
 
-app.listen(80);
+
+app.post('/upload',multipartMiddleware ,(req,res)=>{
+    var upfile = req.files.upfile;
+    var files = [];
+    if (upfile instanceof  Array) {
+        files = upfile;
+    } else {
+        files.push(upfile);
+    }
+    for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        var path = file.path;
+        var name = file.name;
+        var target_path = "./tempStore/" + name;
+        fs.rename(path, target_path, function (err) {
+            if (err) throw err;
+        });
+    }
+
+    res.send({ title:'Complete' });
+})
+
+app.listen(802);
 
