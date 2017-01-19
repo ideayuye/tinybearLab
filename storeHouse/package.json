@@ -10,8 +10,8 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "connect-multiparty": "^2.0.0",
     "express": "^4.14.0",
+    "multiparty": "^4.1.2",
     "serve-static": "^1.11.1"
   }
 }

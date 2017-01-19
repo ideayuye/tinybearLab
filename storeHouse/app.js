@@ -4,8 +4,7 @@ var app = express();
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var serveStatic = require('serve-static');
-var multipart = require('connect-multiparty');
-var multipartMiddleware = multipart();
+var multiparty = require('multiparty');
 
 app.use(bodyParser());
 app.use(serveStatic('static'));
@@ -18,23 +17,29 @@ app.get('/log',(req,res)=>{
 });
 
 
-app.post('/upload',multipartMiddleware ,(req,res)=>{
-    var upfile = req.files.upfile;
-    var files = [];
-    if (upfile instanceof  Array) {
-        files = upfile;
-    } else {
-        files.push(upfile);
-    }
-    for (var i = 0; i < files.length; i++) {
-        var file = files[i];
-        var path = file.path;
-        var name = file.name;
-        var target_path = "./tempStore/" + name;
-        fs.rename(path, target_path, function (err) {
-            if (err) throw err;
-        });
-    }
+app.post('/upload',(req,res)=>{
+    var form = new multiparty.Form({uploadDir: './tempStore/'});
+    form.parse(req, function(err, fields, files) {
+        var upfile = files.upfile;
+        var files = [];
+        if (upfile instanceof  Array) {
+            files = upfile;
+        } else {
+            files.push(upfile);
+        }
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var path = file.path;
+            var name = file.originalFilename;
+            var target_path = "./tempStore/" + name;
+            fs.rename(path, target_path, function (err) {
+                if (err) throw err;
+                fs.unlink(path,(err)=>{
+                    console.log(err);
+                });
+            });
+        }
+    });
 
     res.send({ title:'Complete' });
 })
