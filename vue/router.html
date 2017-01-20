@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <title>router</title>
     <meta charset="UTF-8">
@@ -13,10 +12,15 @@
     <div id="app">
         <div class="list-group">
             <router-link to="/foo">Go to Home</router-link>
-            <router-link to="/bar">Go to About</router-link>
+            <router-link to="/foo/chl">Go to Home chl</router-link>
+            <router-link to="/bar/1">Go to 1</router-link>
+            <router-link to="/bar/2">Go to 2</router-link>
+            <router-link :to="{name:'gl',params: { userId: 123 }}">Go to gloot</router-link>
+            <router-link to="/view">Go to view</router-link>
         </div>
-         <!-- 路由匹配到的组件将渲染在这里 -->
+        <!-- 路由匹配到的组件将渲染在这里 -->
         <router-view></router-view>
+        <router-view name="a"></router-view>
     </div>
     <script type="text/javascript" src="js/router.js"></script>
 </body>

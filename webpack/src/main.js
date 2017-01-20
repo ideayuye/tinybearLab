@@ -15,3 +15,20 @@ console.log('hello world');
 //  var html = template(data);
 //  document.getElementById('tmpl_container').innerHTML = html;
 
+
+var cp = function(resolve){
+     require.ensure(['./js/codeSplit.js'],function(){
+        resolve(require('./js/codeSplit.js'));
+    });
+}
+
+var getModule = function(){
+    return new Promise((resolve,require)=>{
+        cp(resolve);
+    });
+}
+
+getModule().then((cl)=>{
+    console.log(cl.name);
+});
+

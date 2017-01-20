@@ -19,7 +19,8 @@ var config = {
 	},
 	output:{
 		path:buildPath,
-		filename:"app.js"
+		filename:"app.js",
+		publicPath:'build/'
 	},
 	module:{
 		loaders:[{
@@ -42,17 +43,17 @@ var config = {
 		//        warnings: false
 		//     }
 		// }),
-		new webpack.optimize.CommonsChunkPlugin({
-			name: "vendor",
-			// (the commons chunk name)
-			filename: "vendor.js",
-			// (the filename of the commons chunk)
-			// minChunks: 3,
-			// (Modules must be shared between 3 entries)
+		// new webpack.optimize.CommonsChunkPlugin({
+		// 	name: "vendor",
+		// 	// (the commons chunk name)
+		// 	filename: "vendor.js",
+		// 	// (the filename of the commons chunk)
+		// 	// minChunks: 3,
+		// 	// (Modules must be shared between 3 entries)
 
-			// chunks: ["pageA", "pageB"],
-			// (Only use these entries)
-		})
+		// 	// chunks: ["pageA", "pageB"],
+		// 	// (Only use these entries)
+		// })
 	]
 	
 }
