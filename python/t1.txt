@@ -1,0 +1,42 @@
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="id"
+
+WU_FILE_14
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="name"
+
+1140.jpeg
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="type"
+
+image/jpeg
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="lastModifiedDate"
+
+Wed Feb 22 2017 18:09:45 GMT+0800 (中国标准时间)
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="size"
+
+7102
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="mediatype"
+
+pic
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="uploadmediarequest"
+
+{"UploadType":2,"BaseRequest":{"Uin":"70730005","Sid":"2y6aCkNBtyDsvkw4+z","Skey":"@crypt_e0023afd_334fa0e612d6640fda87876fcddc0b2a","DeviceID":"e506062998708085"},"ClientMediaId":1487758185815,"TotalLen":7102,"StartPos":0,"DataLen":7102,"MediaType":4,"FromUserName":"@f12779ba502c02937909cc5d6dee2742","ToUserName":"filehelper"}
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="webwx_data_ticket"
+
+gSeHFd8QlkD+rhH2v0Ia2J5C
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="pass_ticket"
+
+FINvZiILp4JRrLRO%2FeOnbtS0M6bzi6TMGuwlR2lPHsk%3D
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6
+Content-Disposition: form-data; name="filename"; filename="1140.jpeg"
+Content-Type: image/jpeg
+
+
+------WebKitFormBoundary9sxoJ0f9f4qIVEr6--

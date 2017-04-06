@@ -22,6 +22,9 @@ var config = {
 		filename:"app.js",
 		publicPath:'build/'
 	},
+	externals:{
+		react:'React'
+	},
 	module:{
 		loaders:[{
 			test:/\.css$/,

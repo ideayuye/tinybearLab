@@ -32,3 +32,4 @@ getModule().then((cl)=>{
     console.log(cl.name);
 });
 
+var re = require('react');
