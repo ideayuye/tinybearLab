@@ -1,4 +1,4 @@
-var Mock = require('mockjs')
+// var Mock = require('mockjs')
 var data = Mock.mock({
     'list|10': [{
         'id|+1': 1,
@@ -8,3 +8,5 @@ var data = Mock.mock({
 })
 
 console.log(data);
+
+Mock.mock('http://localhost:9527/test',data);
