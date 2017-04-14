@@ -1,6 +1,6 @@
 
-import hello from "libs/m1.js"
-import hi from "libs/m2.js"
+import hello from "libs/m1"
+import hi from "libs/m2"
 
 hello();
 hi();

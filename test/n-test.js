@@ -58,6 +58,10 @@ var m1 = require('./module');
 console.log(require.resolve('module'));
 
 
+const crypto = require('crypto');
+const hmac = crypto.createHmac('sha256', '0xUIOb');
 
-
+hmac.update("bill");
+console.log(hmac.digest('hex'));
+console.log('ok');
 
