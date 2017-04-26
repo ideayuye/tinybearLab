@@ -6,7 +6,7 @@ var fs = require('fs');
 var serveStatic = require('serve-static');
 var multiparty = require('multiparty');
 
-app.use(bodyParser());
+// app.use(bodyParser());
 app.use(serveStatic('static'));
 
 app.get('/log',(req,res)=>{
@@ -19,7 +19,11 @@ app.get('/log',(req,res)=>{
 
 app.post('/upload',(req,res)=>{
     var form = new multiparty.Form({uploadDir: './tempStore/'});
+    console.log('start parse');
     form.parse(req, function(err, fields, files) {
+        if(err)
+            console.log(err);
+        console.log('parse ok');
         var upfile = files.upfile;
         var files = [];
         if (upfile instanceof  Array) {
@@ -34,9 +38,6 @@ app.post('/upload',(req,res)=>{
             var target_path = "./tempStore/" + name;
             fs.rename(path, target_path, function (err) {
                 if (err) throw err;
-                fs.unlink(path,(err)=>{
-                    console.log(err);
-                });
             });
         }
     });
