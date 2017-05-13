@@ -14,24 +14,23 @@ SkillTree.prototype.init= function(){
     var stage = new Hilo.Stage({
         renderType:'canvas',
         container: container,
-        width: 720,
-        height: 1280,
-        scaleX: 0.5,
-        scaleY: 0.5
+        width: 720*0.5,
+        height: 1280*0.5,
     });
 
-/*    var bgWidth = 720;
-    var bgHeight = 1280;
-    container.insertBefore(Hilo.createElement('div', {
+    var bgWidth = 720*0.5;
+    var bgHeight = 1280*0.5;
+    var dom = Hilo.createElement('div', {
       id: 'bg',
       style: {
           position: 'absolute',
           background: 'url(images/bg.png) no-repeat',
-          backgroundSize: bgWidth + 'px, ' + bgHeight + 'px',
+          backgroundSize: 'cover',
           width: bgWidth + 'px',
           height: bgHeight + 'px'
       }
-    }), stage.canvas);*/
+    });
+    container.insertBefore(dom,stage.canvas);
 
     var ground = new Hilo.Bitmap({
       id: 'ground',
@@ -39,7 +38,7 @@ SkillTree.prototype.init= function(){
     });
     ground.x =0;
     ground.y = 0;
-    ground.addTo(stage);
+    // ground.addTo(stage);
 
     var text = new Hilo.Text({
         color:'#f50',

@@ -1,0 +1,19 @@
+{
+  "name": "bear1",
+  "version": "0.0.0",
+  "description": "",
+  "author": "tinybear <576135266@qq.com>",
+  "main": "functions/__init__.js",
+  "dependencies": {},
+  "private": true,
+  "stdlib": {
+    "build": "faaslang",
+    "name": "tinybear/bear1",
+    "timeout": 10000,
+    "publish": true,
+    "personalize": {
+      "keys": [],
+      "user": []
+    }
+  }
+}
