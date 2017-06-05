@@ -1,11 +1,12 @@
 
 var L = require('leaflet');
 require('./LeafletPlayback');
+require('leaflet.markercluster');
 
 var mymap = L.map('mapid').setView([22.516818, 113.898495], 13);
 
 L.tileLayer('http://t{s}.tianditu.cn/DataServer?T=img_w&X={x}&Y={y}&L={z}', {
-    maxZoom: 18,
+    // maxZoom: 18,
     attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, ' +
         '<a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
         'Imagery © <a href="http://mapbox.com">Mapbox</a>',
@@ -20,19 +21,32 @@ var greenIcon = L.icon({
     popupAnchor:  [0, -10] // point from which the popup should open relative to the iconAnchor
 });
 
-var marker = L.marker([113.887125, 22.522761].reverse(),{icon:greenIcon});
-marker.addTo(mymap);
+var marker = L.marker([113.887125, 22.521761].reverse()
+,{icon:greenIcon}
+);
+// marker.addTo(mymap);
 marker.bindPopup("<b>Hello world!</b><br>I am a popup.");
-marker.openPopup();
+// marker.openPopup();
 
-marker.remove();
+// marker.remove();
 
-marker = L.marker([113.887125, 22.522761].reverse(),{icon:greenIcon});
-marker.addTo(mymap);
-
-
-// var marker1 = L.marker([113.887125, 22.522761].reverse(),{icon:greenIcon});
+var marker1 = L.marker([113.887325, 22.522761].reverse()
+,{icon:greenIcon}
+);
 // marker1.addTo(mymap);
+
+var marker2 = L.marker([113.887525, 22.523861].reverse(),{icon:greenIcon});
+
+// 密集图标优化
+var markers = L.markerClusterGroup();
+markers.addLayer(marker);
+markers.addLayer(marker1);
+markers.addLayer(marker2);
+mymap.addLayer(markers);
+
+// markers.removeLayer(marker);
+// marker.remove();
+
 
 //geoJSON
 var geoFeature = {
@@ -55,15 +69,17 @@ var geoFeature = {
 		},
 	}
 
-var geo = L.geoJSON(geoFeature,{
-    color:"#f50"
-}).addTo(mymap);
+// var geo = L.geoJSON(geoFeature,{
+//     color:"#f50"
+// }).addTo(mymap);
 
-geo.bindPopup("<b>Hello,geo!<b>");
+// geo.bindPopup("<b>Hello,geo!<b>");
 
 //轨迹回放
 var playback = null;
-window.onload = function(){
+
+// window.onload = 
+var playbb = function(){
 	 // Get start/end times
     var startTime = new Date(demoTracks[0].properties.time[0]);
     var endTime = new Date(demoTracks[0].properties.time[demoTracks[0].properties.time.length - 1]);
@@ -118,5 +134,7 @@ window.onload = function(){
         
     };
           
-}
+};
+
+
 

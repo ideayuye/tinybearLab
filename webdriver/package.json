@@ -1,5 +1,5 @@
 {
-  "name": "leaflet-demo",
+  "name": "webdriver-demo",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -9,7 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "leaflet": "^1.0.3",
-    "leaflet.markercluster": "^1.0.5"
+    "chromedriver": "^2.29.0",
+    "selenium-webdriver": "^3.4.0"
   }
 }
