@@ -14,3 +14,4 @@
 - rollup实践
 - web-ruler 测量页面距离chrome扩展
 - others
+- vuex实践
