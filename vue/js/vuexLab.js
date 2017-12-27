@@ -17,6 +17,8 @@ var store = new Vuex.Store({
     }
 });
 
+//修改分支
+
 new Vue({
     el:"#vuex_lab",
     store,
