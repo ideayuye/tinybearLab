@@ -7,7 +7,7 @@ new Vue({
     },
     components:{
         home:{
-            template:"<div>home<div>"
+            template:"<div>home</div>"
         },
         room:{
             template:"<div>room</div>"

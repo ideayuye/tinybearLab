@@ -1,0 +1,22 @@
+{
+    "name": "pwa-start",
+    "short_name": "PWA",
+    "description": "An pwa page",
+    "start_url": "/",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#ACE",
+    "theme_color": "#ACE",
+    "icons": [
+        {
+            "src": "/images/logo72.png",
+            "sizes": "72x72",
+            "type": "image/png"
+        },
+        {
+            "src": "/images/logo144.png",
+            "sizes": "144x144",
+            "type": "image/png"
+        }
+    ]
+}
