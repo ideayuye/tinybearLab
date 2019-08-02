@@ -1,0 +1,21 @@
+<html>
+    <head>
+        <title>pwa</title>
+        <link rel="manifest" href="/manifest.json">
+        <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no"/>
+    </head>
+    <body>
+        <div>pwa start</div>
+    </body>
+    <script>
+        if('serviceWorker' in navigator){
+            navigator.serviceWorker.register('./service-worker.js').then(function(registration){
+                console.log('registration ok')
+            }).catch(function(err){
+                console.log('service worker registation fail')
+            })
+        }
+    </script>
+</html>
+
+
