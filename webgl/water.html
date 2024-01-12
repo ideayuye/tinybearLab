@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simple Water Surface</title>
+  <style>
+    body { margin: 0; }
+    canvas { display: block; }
+  </style>
+</head>
+<body>
+  <canvas id="webgl-canvas" width="500" height="500"></canvas>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gl-matrix/2.4.0/gl-matrix.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      const canvas = document.getElementById("webgl-canvas");
+      const gl = canvas.getContext("webgl");
+
+      if (!gl) {
+        console.error("Unable to initialize WebGL. Your browser may not support it.");
+        return;
+      }
+
+      // Vertex shader program
+      const vsSource = `
+        attribute vec4 aVertexPosition;
+        uniform mat4 uModelViewMatrix;
+        uniform mat4 uProjectionMatrix;
+        varying highp vec2 vTextureCoord;
+
+        void main(void) {
+          gl_Position = uProjectionMatrix * uModelViewMatrix * aVertexPosition;
+          vTextureCoord = aVertexPosition.xy + 0.5;
+        }
+      `;
+
+      // Fragment shader program
+      const fsSource = `
+        precision highp float;
+        varying highp vec2 vTextureCoord;
+
+        void main(void) {
+          float c = cos(vTextureCoord.x * 10.0) * cos(vTextureCoord.y * 10.0) * 0.5 + 0.5;
+          gl_FragColor = vec4(0.0, 0.5, 1.0, c);
+        }
+      `;
+
+      function loadShader(gl, type, source) {
+        const shader = gl.createShader(type);
+        gl.shaderSource(shader, source);
+        gl.compileShader(shader);
+
+        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+          console.error("An error occurred compiling the shaders: " + gl.getShaderInfoLog(shader));
+          gl.deleteShader(shader);
+          return null;
+        }
+
+        return shader;
+      }
+
+      function initShaderProgram(gl, vsSource, fsSource) {
+        const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
+        const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+
+        const shaderProgram = gl.createProgram();
+        gl.attachShader(shaderProgram, vertexShader);
+        gl.attachShader(shaderProgram, fragmentShader);
+        gl.linkProgram(shaderProgram);
+
+        if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
+          console.error("Unable to initialize the shader program: " + gl.getProgramInfoLog(shaderProgram));
+          return null;
+        }
+
+        return shaderProgram;
+      }
+
+      const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
+
+      const programInfo = {
+        program: shaderProgram,
+        attribLocations: {
+          vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+        },
+        uniformLocations: {
+          projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+          modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+        },
+      };
+
+      const buffers = initBuffers(gl);
+
+      function initBuffers(gl) {
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+
+        const positions = [
+          -1.0,  1.0,
+           1.0,  1.0,
+          -1.0, -1.0,
+           1.0, -1.0,
+        ];
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(positions), gl.STATIC_DRAW);
+
+        return {
+          position: positionBuffer,
+        };
+      }
+
+      function drawScene(gl, programInfo, buffers) {
+        gl.clearColor(0.0, 0.0, 0.0, 1.0);
+        gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+        const fieldOfView = 45 * Math.PI / 180;
+        const aspect = gl.canvas.clientWidth / gl.canvas.clientHeight;
+        const zNear = 0.1;
+        const zFar = 100.0;
+        const projectionMatrix = mat4.create();
+
+        mat4.perspective(projectionMatrix, fieldOfView, aspect, zNear, zFar);
+
+        const modelViewMatrix = mat4.create();
+        mat4.translate(modelViewMatrix, modelViewMatrix, [0.0, 0.0, -5.0]);
+
+        gl.useProgram(programInfo.program);
+
+        {
+          const numComponents = 2;  // 2 components per iteration
+          const type = gl.FLOAT;    // the data is 32bit floats
+          const normalize = false;  // don't normalize the data
+          const stride = 0;         // 0 = move forward size * sizeof(type) each iteration to get the next position
+          const offset = 0;         // start at the beginning of the buffer
+          gl.bindBuffer(gl.ARRAY_BUFFER, buffers.position);
+          gl.vertexAttribPointer(
+              programInfo.attribLocations.vertexPosition,
+              numComponents,
+              type,
+              normalize,
+              stride,
+              offset);
+          gl.enableVertexAttribArray(programInfo.attribLocations.vertexPosition);
+        }
+
+        gl.uniformMatrix4fv(
+            programInfo.uniformLocations.projectionMatrix,
+            false,
+            projectionMatrix);
+        gl.uniformMatrix4fv(
+            programInfo.uniformLocations.modelViewMatrix,
+            false,
+            modelViewMatrix);
+
+        {
+          const offset = 0;
+          const vertexCount = 4;
+          gl.drawArrays(gl.TRIANGLE_STRIP, offset, vertexCount);
+        }
+      }
+
+      function render() {
+        drawScene(gl, programInfo, buffers);
+        requestAnimationFrame(render);
+      }
+
+      render();
+    });
+  </script>
+</body>
+</html>
