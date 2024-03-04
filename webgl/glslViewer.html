@@ -1,149 +1,150 @@
-
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>glsl viewer</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <style>
-            *{
-                margin: 0;
-                padding: 0;
-            }
-            #container{
-                height:100%;
-                width:100%;
-            }
-            canvas{
-                vertical-align: middle;
-            }
-        </style>
-    </head>
-    <body>
+  <head>
+    <title>glsl viewer</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      #container {
+        height: 100%;
+        width: 100%;
+      }
+      canvas {
+        vertical-align: middle;
+      }
+    </style>
+  </head>
+  <body>
     <div id="container"></div>
     <script src="js/three.min.js"></script>
     <script id="vertexShader" type="x-shader/x-vertex">
-        void main() {
-            gl_Position = vec4( position, 1.0 );
-        }
+      void main() {
+          gl_Position = vec4( position, 1.0 );
+      }
     </script>
     <script id="fragmentShader" type="x-shader/x-fragment">
-        #define PI 3.14159265359
+      #define PI 3.14159265359
 
-        uniform vec2 u_resolution;
-        uniform float u_time;
-        uniform sampler2D tex;
+      uniform vec2 u_resolution;
+      uniform float u_time;
+      uniform sampler2D tex;
 
-        float plot(vec2 st,float pct){
-            return smoothstep(pct-0.005,pct,st.y) - smoothstep(pct,pct+0.005,st.y);
-        }
+      float plot(vec2 st,float pct){
+          return smoothstep(pct-0.005,pct,st.y) - smoothstep(pct,pct+0.005,st.y);
+      }
 
-        //ripple
-        vec3 ripple(){
-            vec2 cPos = -1.0 + 2.0*gl_FragCoord.xy/u_resolution.xy;
-            float cLength = length(cPos);
-            vec2 uv = gl_FragCoord.xy/u_resolution.xy + (cPos/cLength)*sin(cLength*12.0-u_time*2.0)*0.01;
+      //ripple
+      vec3 ripple(){
+          vec2 cPos = -1.0 + 2.0*gl_FragCoord.xy/u_resolution.xy;
+          float cLength = length(cPos);
+          vec2 uv = gl_FragCoord.xy/u_resolution.xy + (cPos/cLength)*sin(cLength*12.0-u_time*2.0)*0.01;
 
-            vec3 col = texture2D(tex,uv).xyz;
-            return col;
-        }
+          vec3 col = texture2D(tex,uv).xyz;
+          return col;
+      }
 
-        //混合颜色
-        vec3 mixColor(vec2 st){
-            vec3 clr1 = vec3(0.7,0.0,0.0);
-            vec3 clr2 = vec3(0.0,0.9,0.0);
+      //混合颜色
+      vec3 mixColor(vec2 st){
+          vec3 clr1 = vec3(0.7,0.0,0.0);
+          vec3 clr2 = vec3(0.0,0.9,0.0);
 
-            float t = step(0.33,st.y)*(1.0-step(0.66,st.y)) + step(0.66,st.y)*0.3;
+          float t = step(0.33,st.y)*(1.0-step(0.66,st.y)) + step(0.66,st.y)*0.3;
 
-            return mix(clr1,clr2,t);
-        }
+          return mix(clr1,clr2,t);
+      }
 
-        void main() {
-            vec2 st = gl_FragCoord.xy/u_resolution.xy;
+      void main() {
+          vec2 st = gl_FragCoord.xy/u_resolution.xy;
 
-            float y = sin(st.x)/st.x;
+          float y = sin(st.x)/st.x;
 
-            vec3 color = vec3(y);
+          vec3 color = vec3(y);
 
-            float pct = plot(st,y);
-            //color = (1.0-pct)*color + pct*vec3(0.0,1.0,0.0);
-            color = pct*vec3(0.0,1.0,0.0);
+          float pct = plot(st,y);
+          //color = (1.0-pct)*color + pct*vec3(0.0,1.0,0.0);
+          color = pct*vec3(0.0,1.0,0.0);
 
-            //color = ripple();
+          //color = ripple();
 
-            color = mixColor(st);
+          color = mixColor(st);
 
-            gl_FragColor=vec4(color,1.0);
-        }
+          gl_FragColor=vec4(color,1.0);
+      }
     </script>
     <script>
-        var container;
-        var camera, scene, renderer;
-        var uniforms;
-        var ready;
+      var container;
+      var camera, scene, renderer;
+      var uniforms;
+      var ready;
 
-        init();
-        animate();
+      init();
+      animate();
 
-        function init() {
-            container = document.getElementById( 'container' );
+      function init() {
+        container = document.getElementById("container");
 
-            camera = new THREE.Camera();
-            camera.position.z = 1;
+        camera = new THREE.Camera();
+        camera.position.z = 1;
 
-            scene = new THREE.Scene();
+        scene = new THREE.Scene();
 
-            var geometry = new THREE.PlaneBufferGeometry( 2, 2 );
+        var geometry = new THREE.PlaneBufferGeometry(2, 2);
 
-            var texture = new THREE.TextureLoader().load( "images/water01.jpg" );
-                texture.wrapS = THREE.RepeatWrapping;
-                texture.wrapT = THREE.RepeatWrapping;
-                texture.repeat.set( 4, 4 );
+        var texture = new THREE.TextureLoader().load("images/water.webp");
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(4, 4);
 
-            var loader = new THREE.XHRLoader().load('shaders/shaderLab.glsl',function(text){
-                uniforms = {
-                    u_time: { type: "f", value: 1.0 },
-                    u_resolution: { type: "v2", value: new THREE.Vector2() },
-                    tex : { value:texture }
-                };
+        var loader = new THREE.XHRLoader().load(
+          "shaders/shaderLab.glsl",
+          function (text) {
+            uniforms = {
+              u_time: { type: "f", value: 1.0 },
+              u_resolution: { type: "v2", value: new THREE.Vector2() },
+              tex: { value: texture },
+            };
 
-                var material = new THREE.ShaderMaterial( {
-                    uniforms: uniforms,
-                    vertexShader: document.getElementById( 'vertexShader' ).textContent,
-                    //fragmentShader: document.getElementById( 'fragmentShader' ).textContent
-                    fragmentShader: text
-                } );
-
-                var mesh = new THREE.Mesh( geometry, material );
-                scene.add( mesh );
-
-                renderer = new THREE.WebGLRenderer();
-                renderer.setPixelRatio( window.devicePixelRatio );
-
-                container.appendChild( renderer.domElement );
-
-                onWindowResize();
-                window.addEventListener( 'resize', onWindowResize, false );
-                ready = 1;
+            var material = new THREE.ShaderMaterial({
+              uniforms: uniforms,
+              vertexShader: document.getElementById("vertexShader").textContent,
+              //fragmentShader: document.getElementById( 'fragmentShader' ).textContent
+              fragmentShader: text,
             });
-            
-        }
 
-        function onWindowResize( event ) {
-            renderer.setSize( window.innerWidth, window.innerHeight );
-            uniforms.u_resolution.value.x = renderer.domElement.width;
-            uniforms.u_resolution.value.y = renderer.domElement.height;
-        }
+            var mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
 
-        function animate() {
-            requestAnimationFrame( animate );
-            ready && render();
-        }
+            renderer = new THREE.WebGLRenderer();
+            renderer.setPixelRatio(window.devicePixelRatio);
 
-        function render() {
-            uniforms.u_time.value += 0.05;
-            renderer.render( scene, camera );
-        }
+            container.appendChild(renderer.domElement);
+
+            onWindowResize();
+            window.addEventListener("resize", onWindowResize, false);
+            ready = 1;
+          }
+        );
+      }
+
+      function onWindowResize(event) {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        uniforms.u_resolution.value.x = renderer.domElement.width;
+        uniforms.u_resolution.value.y = renderer.domElement.height;
+      }
+
+      function animate() {
+        requestAnimationFrame(animate);
+        ready && render();
+      }
+
+      function render() {
+        uniforms.u_time.value += 0.05;
+        renderer.render(scene, camera);
+      }
     </script>
-</body>
+  </body>
 </html>

@@ -1,22 +1,28 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
+  <head>
     <title>WebGL Demo</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <link rel="stylesheet" href="webgl.css" type="text/css">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" href="webgl.css" type="text/css" />
     <script type="text/javascript" src="sylvester.js"></script>
     <script type="text/javascript" src="glUtils.js"></script>
     <script id="shader-fs" type="x-shader/x-fragment">
       varying lowp vec4 vColor;
+      varying vec2 v_texcoord;
+      uniform sampler2D u_texture;
+
       void main(void) {
-        gl_FragColor = vColor;
+        //gl_FragColor = vColor;
+        gl_FragColor = texture2D(u_texture, v_texcoord);
       }
     </script>
 
     <script id="shader-vs" type="x-shader/x-vertex">
       attribute vec3 aVertexPosition;
       attribute vec4 aVertexColor;
+      attribute vec2 a_texcoord;
+
+      varying vec2 v_texcoord;
 
       uniform mat4 uMVMatrix;
       uniform mat4 uPMatrix;
@@ -25,15 +31,17 @@
 
       void main(void) {
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
-        vColor = aVertexColor;
+        // vColor = aVertexColor;
+        v_texcoord = a_texcoord;
       }
     </script>
-</head>
+  </head>
 
-<body >
-<canvas id="glcanvas" width="640" height="480">
-    Your browser doesn't appear to support the <code>&lt;canvas&gt;</code> element.
-</canvas>
-<script type="text/javascript" src="webgl-demo.js"></script>
-</body>
+  <body>
+    <canvas id="glcanvas" width="640" height="480">
+      Your browser doesn't appear to support the
+      <code>&lt;canvas&gt;</code> element.
+    </canvas>
+    <script type="text/javascript" src="webgl-demo.js"></script>
+  </body>
 </html>
