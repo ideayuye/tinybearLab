@@ -11,6 +11,9 @@ const camera = new THREE.PerspectiveCamera(
   1000
 );
 
+//加载纹理贴图
+const texture = new THREE.TextureLoader().load("images/water.png");
+
 const renderer = new THREE.WebGLRenderer();
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -18,11 +21,17 @@ document.body.appendChild(renderer.domElement);
 const controls = new OrbitControls(camera, renderer.domElement);
 
 const geometry = new THREE.BoxGeometry(1, 1, 1);
-const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+const material = new THREE.MeshBasicMaterial({
+  map: texture,
+  side: THREE.DoubleSide,
+});
 const cube = new THREE.Mesh(geometry, material);
 scene.add(cube);
 
-const materialLine = new THREE.LineBasicMaterial({ color: 0x0000ff });
+const materialLine = new THREE.LineBasicMaterial({
+  map: texture,
+  side: THREE.DoubleSide,
+});
 const points = [];
 points.push(new THREE.Vector3(-10, 0, 0));
 points.push(new THREE.Vector3(0, 10, 0));
@@ -31,7 +40,7 @@ points.push(new THREE.Vector3(10, 0, 0));
 const geometry1 = new THREE.BufferGeometry().setFromPoints(points);
 
 const line = new THREE.Line(geometry1, materialLine);
-// scene.add(line);
+scene.add(line);
 
 // const geo = new THREE.TextGeometry(text, {
 //   font: undefined, // 这里需要替换为加载的字体对象
@@ -44,7 +53,7 @@ const line = new THREE.Line(geometry1, materialLine);
 // controls = new THREE.OrbitControls(camera, renderer.domElement);
 
 // 监听鼠标左键按下事件
-document.addEventListener("mousemove", onDocumentMouseDown, false);
+document.addEventListener("mouseup", onDocumentMouseDown, false);
 function onDocumentMouseDown(event) {
   event.preventDefault();
 
@@ -52,18 +61,15 @@ function onDocumentMouseDown(event) {
     // 左键按下
     var intersectedObject = getIntersectionObject(event.clientX, event.clientY);
 
-    if (intersectedObject !== null) {
-      // 处理拾取到的对象
-      console.log("已拾取到对象", intersectedObject);
+    // if (intersectedObject !== null) {
+    //   // 清除之前高亮显示的对
+    //   clearHighlightedObject();
 
-      // 清除之前高亮显示的对象
-      clearHighlightedObject();
-
-      // 将当前拾取到的对象高亮显示
-      highlightSelectedObject(intersectedObject);
-    } else {
-      clearHighlightedObject();
-    }
+    //   // 将当前拾取到的对象高亮显示
+    //   highlightSelectedObject(intersectedObject);
+    // } else {
+    //   clearHighlightedObject();
+    // }
   }
 }
 
