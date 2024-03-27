@@ -11,7 +11,24 @@
   </head>
   <body>
     <div id="container"></div>
+    <button
+      id="view_model"
+      style="position: fixed; z-index: 10; left: 10px; top: 10px"
+    >
+      full view
+    </button>
+    <ul id="menu">
+      <li data-src="/main.js">基础</li>
+      <li data-src="/spline.js">样条曲线菜单</li>
+      <li data-src="/skybox.js">天空盒菜单</li>
+      <li data-src="/modelLoader.js">模型加载器菜单</li>
+      <li data-src="/morphTargets.js">变形目标菜单</li>
+    </ul>
     <style>
+      * {
+        padding: 0;
+        margin: 0;
+      }
       #info {
         position: absolute;
         top: 10px;
@@ -20,11 +37,43 @@
         z-index: 100;
         display: block;
       }
+
+      .selectBox {
+        border: 1px solid #55aaff;
+        background-color: rgba(75, 160, 255, 0.3);
+        position: fixed;
+      }
+      #menu {
+        position: fixed;
+        top: 30px;
+        left: 10px;
+        background: #fff;
+        border: 1px solid #ddd;
+        padding: 12px;
+      }
+      #menu li {
+        cursor: pointer;
+        list-style: none;
+      }
     </style>
     <!-- <div id="info">Description</div> -->
     <!-- <script type="module" src="/main.js"></script> -->
     <!-- <script type="module" src="/spline.js"></script> -->
     <!-- <script type="module" src="/skybox.js"></script> -->
-    <script type="module" src="/modelLoader.js"></script>
+    <!-- <script type="module" src="/modelLoader.js"></script> -->
+    <!-- <script type="module" src="/morphTargets.js"></script> -->
+    <script>
+      // 然后监听菜单点击事件
+      document
+        .getElementById("menu")
+        .addEventListener("click", function (event) {
+          if (event.target.tagName.toLowerCase() === "li") {
+            const src = event.target.dataset.src;
+            import(src)
+              .then(() => console.log(`${src} loaded successfully.`))
+              .catch((err) => console.error(`Failed to load ${src}:`, err));
+          }
+        });
+    </script>
   </body>
 </html>
