@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 
 // const raycaster = new THREE.Raycaster();
 const scene = new THREE.Scene();
@@ -105,10 +104,30 @@ function highlightSelectedObject(selectedObject) {
 
 camera.position.z = 5;
 
+function loadPoints() {
+  const vertices = [];
+  for (let i = 0; i < 10; i++) {
+    const x = Math.random() * 10 - 5;
+    const y = Math.random() * 10 - 5;
+    const z = Math.random() * 10 - 5;
+    vertices.push(x, y, z);
+  }
+  const geometry = new THREE.BufferGeometry();
+  geometry.setAttribute(
+    "position",
+    new THREE.Float32BufferAttribute(vertices, 3)
+  );
+  const material = new THREE.PointsMaterial({ color: 0x888888, size: 0.2 });
+  const points = new THREE.Points(geometry, material);
+  scene.add(points);
+}
+
 function animate() {
   requestAnimationFrame(animate);
   //   cube.rotation.x += 0.01;
   //   cube.rotation.y += 0.01;
   renderer.render(scene, camera);
 }
+
+loadPoints();
 animate();
