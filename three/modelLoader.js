@@ -119,6 +119,18 @@ function loadFBX() {
   });
 }
 
+function loadMichelle() {
+  const loader = new GLTFLoader();
+  loader.load("models/Michelle.glb", async function (gltf) {
+    const model = gltf.scene;
+    console.log("model", model);
+    scene.add(model);
+    modelCurrent = model;
+    modelList.push(model);
+    render();
+  });
+}
+
 function loadBox() {
   const geometry = new THREE.BoxGeometry(10, 10, 10);
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -219,8 +231,9 @@ function bindSelection() {
 
 init();
 // loadBox();
-loadModel();
+// loadModel();
 loadFBX();
+loadMichelle();
 render();
 bindButton();
 // controls.enabled = false;
