@@ -4,6 +4,7 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { FBXLoader } from "three/addons/loaders/FBXLoader.js";
 import { SelectionBox } from "three/addons/interactive/SelectionBox.js";
 import { SelectionHelper } from "three/addons/interactive/SelectionHelper.js";
+import { MMDLoader } from "three/addons/loaders/MMDLoader.js";
 
 let camera, scene, renderer, controls;
 let modelCurrent,
@@ -12,7 +13,7 @@ let modelCurrent,
 function init() {
   const container = document.getElementById("container");
   scene = new THREE.Scene();
-  scene.background = new THREE.Color(0xffffff);
+  scene.background = new THREE.Color(0x000000);
   camera = new THREE.PerspectiveCamera(
     100,
     window.innerWidth / window.innerHeight,
@@ -131,6 +132,15 @@ function loadMichelle() {
   });
 }
 
+function loadPmx() {
+  const loader = new MMDLoader();
+  loader.load("models/梦想一心/梦想一心.pmx", async function (mesh) {
+    modelList.push(mesh);
+    scene.add(mesh);
+    console.log(mesh, "mesh");
+  });
+}
+
 function loadBox() {
   const geometry = new THREE.BoxGeometry(10, 10, 10);
   const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
@@ -232,7 +242,8 @@ function bindSelection() {
 init();
 // loadBox();
 // loadModel();
-loadFBX();
+// loadFBX();
+loadPmx();
 loadMichelle();
 render();
 bindButton();

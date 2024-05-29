@@ -109,26 +109,27 @@ function initShaders() {
   }
 
   gl.useProgram(shaderProgram);
+}
 
+function initBufers() {
   vertexPositionAttribute = gl.getAttribLocation(
     shaderProgram,
     "aVertexPosition"
   );
   gl.enableVertexAttribArray(vertexPositionAttribute);
-
-  //   vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
-  //   gl.enableVertexAttribArray(vertexColorAttribute);
-}
-
-function initBufers() {
   squareVerticesBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
 
   var vertices = [
     1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0,
   ];
+  for (let i = 0; i < 100; i++) {
+    let data = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -0.5, 0.0];
+    vertices = vertices.concat(data);
+  }
 
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+  gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
   var colors = [
     1.0,
@@ -149,9 +150,13 @@ function initBufers() {
     1.0, // blue
   ];
 
+  vertexColorAttribute = gl.getAttribLocation(shaderProgram, "aVertexColor");
+  gl.enableVertexAttribArray(vertexColorAttribute);
+
   squareVerticesColorBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
   gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(colors), gl.STATIC_DRAW);
+  gl.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
 
   var texcoordLocation = gl.getAttribLocation(shaderProgram, "a_texcoord");
   var buffer = gl.createBuffer();
@@ -214,11 +219,11 @@ function drawScene() {
   loadIdentity();
   mvTranslate([-0.0, 0.0, -6.0]);
 
-  gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
-  gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+  // gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
+  // gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
-  //   gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
-  //   gl.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
+  // gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
+  // gl.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
 
   setMatrixUniforms();
   gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
