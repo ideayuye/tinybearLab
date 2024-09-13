@@ -5,6 +5,9 @@ async function init() {
 @group(0) @binding(0)
 var<storage, read_write> output: array<f32>;
 
+@group(0) @binding(1)
+var<storage, read> input: array<f32>;
+
 @compute @workgroup_size(64)
 fn main(
   @builtin(global_invocation_id)
@@ -16,7 +19,7 @@ fn main(
     return;
   }
 
-  output[global_id.x] = f32(global_id.x) * 1000. + f32(local_id.x);
+  output[global_id.x] = input[global_id.x] * 1000. + f32(local_id.x);
 }
 `;
 
@@ -36,6 +39,22 @@ fn main(
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_SRC,
   });
 
+  const input = device.createBuffer({
+    size: BUFFER_SIZE,
+    usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
+  });
+
+  const inputData = new Float32Array(BUFFER_SIZE).fill(2);
+  for (let i = 0; i < BUFFER_SIZE; i++) {
+    inputData[i] = i;
+  }
+
+  device.queue.writeBuffer(input, 0, inputData);
+
+  // input.mapAsync(GPUMapMode.WRITE, 0, BUFFER_SIZE * 4);
+  // new Float32Array(input.getMappedRange()).set(inputData);
+  // input.unmap();
+
   const stagingBuffer = device.createBuffer({
     size: BUFFER_SIZE,
     usage: GPUBufferUsage.MAP_READ | GPUBufferUsage.COPY_DST,
@@ -45,6 +64,13 @@ fn main(
     entries: [
       {
         binding: 0,
+        visibility: GPUShaderStage.COMPUTE,
+        buffer: {
+          type: "storage",
+        },
+      },
+      {
+        binding: 1,
         visibility: GPUShaderStage.COMPUTE,
         buffer: {
           type: "storage",
@@ -60,6 +86,12 @@ fn main(
         binding: 0,
         resource: {
           buffer: output,
+        },
+      },
+      {
+        binding: 1,
+        resource: {
+          buffer: input,
         },
       },
     ],
