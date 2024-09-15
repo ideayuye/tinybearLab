@@ -37,7 +37,7 @@ function addLight() {
   const ambientLight = new THREE.AmbientLight(0xffffff, 1);
   scene.add(ambientLight);
 
-  const dirLight = new THREE.DirectionalLight(0xffffff, 5);
+  const dirLight = new THREE.DirectionalLight(0xffffff, 15);
   dirLight.position.set(20, 20, 20);
   scene.add(dirLight);
 }
@@ -120,9 +120,9 @@ function loadFBX() {
   });
 }
 
-function loadMichelle() {
+function loadMichelle(file) {
   const loader = new GLTFLoader();
-  loader.load("models/Michelle.glb", async function (gltf) {
+  loader.load(file || "models/Michelle.glb", async function (gltf) {
     const model = gltf.scene;
     console.log("model", model);
     scene.add(model);
@@ -243,8 +243,8 @@ init();
 // loadBox();
 // loadModel();
 // loadFBX();
-loadPmx();
-loadMichelle();
+// loadPmx();
+loadMichelle("models/sword.glb");
 render();
 bindButton();
 // controls.enabled = false;

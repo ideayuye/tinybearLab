@@ -1,4 +1,4 @@
-const BUFFER_SIZE = 2048;
+const BUFFER_SIZE = 1024;
 
 async function init() {
   const shader = `
@@ -6,7 +6,7 @@ async function init() {
 var<storage, read_write> output: array<f32>;
 
 @group(0) @binding(1)
-var<storage, read> input: array<f32>;
+var<storage, read_write> input: array<f32>;
 
 @compute @workgroup_size(64)
 fn main(
@@ -44,8 +44,8 @@ fn main(
     usage: GPUBufferUsage.STORAGE | GPUBufferUsage.COPY_DST,
   });
 
-  const inputData = new Float32Array(BUFFER_SIZE).fill(2);
-  for (let i = 0; i < BUFFER_SIZE; i++) {
+  const inputData = new Float32Array(BUFFER_SIZE / 4);
+  for (let i = 0; i < BUFFER_SIZE / 4; i++) {
     inputData[i] = i;
   }
 
