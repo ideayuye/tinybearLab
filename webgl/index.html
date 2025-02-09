@@ -14,7 +14,8 @@
 
       void main(void) {
         //gl_FragColor = vColor;
-        gl_FragColor = texture2D(u_texture, v_texcoord);
+        //gl_FragColor = texture2D(u_texture, v_texcoord);
+        gl_FragColor = vec4(1.0, 1.0, 1.0, 1.0);
       }
     </script>
 
@@ -36,10 +37,20 @@
         v_texcoord = a_texcoord;
       }
     </script>
+    <style>
+      #glcanvas {
+        display: block;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+      }
+    </style>
   </head>
 
   <body>
-    <canvas id="glcanvas" width="640" height="480">
+    <canvas id="glcanvas">
       Your browser doesn't appear to support the
       <code>&lt;canvas&gt;</code> element.
     </canvas>

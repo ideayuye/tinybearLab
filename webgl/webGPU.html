@@ -11,12 +11,14 @@
 
       canvas {
         display: block;
+        width: 100vw;
+        height: 100vh;
       }
     </style>
   </head>
 
   <body>
-    <canvas id="webgpu-canvas" width="800" height="600"></canvas>
+    <canvas id="webgpu-canvas"></canvas>
     <script>
       document.addEventListener("DOMContentLoaded", async function () {
         // Clear color for GPURenderPassDescriptor
@@ -25,10 +27,18 @@
         // Vertex data for triangle
         // Each vertex has 8 values representing position and color: X Y Z W R G B A
 
-        const vertices = new Float32Array([
+        const tempArr = [
           0.1, 0.6, 0, 1, 1, 0, 0, 1, -0.5, -0.6, 0, 1, 0, 1, 0, 1, 0.5, -0.6,
           0, 1, 0, 0, 1, 1,
-        ]);
+        ];
+        const size = 100000;
+        const vertices = new Float32Array(tempArr.length * size);
+        for (let i = 0; i < size; i++) {
+          const start = i * tempArr.length;
+          for (let j = 0; j < tempArr.length; j++) {
+            vertices[start + j] = tempArr[j];
+          }
+        }
 
         // Vertex and fragment shaders
 
@@ -146,42 +156,65 @@
           const renderPipeline =
             device.createRenderPipeline(pipelineDescriptor);
 
-          // 7: Create GPUCommandEncoder to issue commands to the GPU
-          // Note: render pass descriptor, command encoder, etc. are destroyed after use, fresh one needed for each frame.
-          const commandEncoder = device.createCommandEncoder();
+          // 初始化帧数统计变量
+          let frameCount = 0;
+          let lastTime = performance.now();
 
-          // 8: Create GPURenderPassDescriptor to tell WebGPU which texture to draw into, then initiate render pass
+          // 创建渲染函数
+          function render(now) {
+            // 帧数统计
+            frameCount++;
+            const elapsed = now - lastTime;
+            if (elapsed >= 1000) {
+              // 每秒打印一次帧数
+              console.log(`FPS: ${Math.round((frameCount * 1000) / elapsed)}`);
+              lastTime = now;
+              frameCount = 0;
+            }
 
-          const renderPassDescriptor = {
-            colorAttachments: [
-              {
-                clearValue: clearColor,
-                loadOp: "clear",
-                storeOp: "store",
-                view: context.getCurrentTexture().createView(),
-              },
-            ],
-          };
+            // 7: Create GPUCommandEncoder to issue commands to the GPU
+            // Note: render pass descriptor, command encoder, etc. are destroyed after use, fresh one needed for each frame.
+            const commandEncoder = device.createCommandEncoder();
 
-          const passEncoder =
-            commandEncoder.beginRenderPass(renderPassDescriptor);
+            // 8: Create GPURenderPassDescriptor to tell WebGPU which texture to draw into, then initiate render pass
 
-          // 9: Draw the triangle
+            const renderPassDescriptor = {
+              colorAttachments: [
+                {
+                  clearValue: clearColor,
+                  loadOp: "clear",
+                  storeOp: "store",
+                  view: context.getCurrentTexture().createView(),
+                },
+              ],
+            };
 
-          passEncoder.setPipeline(renderPipeline);
-          passEncoder.setVertexBuffer(0, vertexBuffer);
-          passEncoder.draw(3);
+            const passEncoder =
+              commandEncoder.beginRenderPass(renderPassDescriptor);
 
-          // End the render pass
-          passEncoder.end();
+            // 9: Draw the triangle
 
-          // 10: End frame by passing array of command buffers to command queue for execution
-          device.queue.submit([commandEncoder.finish()]);
+            passEncoder.setPipeline(renderPipeline);
+            passEncoder.setVertexBuffer(0, vertexBuffer);
+            passEncoder.draw(3 * size);
+
+            // End the render pass
+            passEncoder.end();
+
+            // 10: End frame by passing array of command buffers to command queue for execution
+            device.queue.submit([commandEncoder.finish()]);
+
+            // 请求下一帧
+            requestAnimationFrame(render);
+          }
+
+          // 启动渲染循环
+          requestAnimationFrame(render);
         }
 
         init();
       });
     </script>
-    <script src="./js/compute.js"></script>
+    <!-- <script src="./js/compute.js"></script> -->
   </body>
 </html>

@@ -12,12 +12,11 @@ var vertexPositionAttribute;
 var vertexColorAttribute;
 var perspectiveMatrix;
 
-//
-// start
-//
-// Called when the canvas is created to get the ball rolling.
-// Figuratively, that is. There's nothing moving in this demo.
-//
+var lastMouseX = 0;
+var lastMouseY = 0;
+var rotationX = 0;
+var rotationY = 0;
+
 function start() {
   canvas = document.getElementById("glcanvas");
   initWebGL(canvas); // Initialize the GL context
@@ -33,6 +32,12 @@ function start() {
 
   initBufers();
 
+  // 添加鼠标事件监听器
+  canvas.addEventListener("mousedown", handleMouseDown, false);
+  canvas.addEventListener("mousemove", handleMouseMove, false);
+  canvas.addEventListener("mouseup", handleMouseUp, false);
+  canvas.addEventListener("mouseout", handleMouseUp, false);
+
   drawScene();
 }
 //
@@ -44,7 +49,7 @@ function start() {
 function initWebGL() {
   gl = null;
   try {
-    gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl");
+    gl = canvas.getContext("webgl2") || canvas.getContext("experimental-webgl");
   } catch (e) {}
   // If we don't have a GL context, give up now
   if (!gl) {
@@ -110,7 +115,7 @@ function initShaders() {
 
   gl.useProgram(shaderProgram);
 }
-
+const size = 200000;
 function initBufers() {
   vertexPositionAttribute = gl.getAttribLocation(
     shaderProgram,
@@ -120,16 +125,48 @@ function initBufers() {
   squareVerticesBuffer = gl.createBuffer();
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
 
-  var vertices = [
-    1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0,
-  ];
-  for (let i = 0; i < 100; i++) {
-    let data = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -0.5, 0.0];
-    vertices = vertices.concat(data);
+  // var vertices = [
+  //   1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -1.0, 0.0,
+  // ];
+  // for (let i = 0; i < 100; i++) {
+  //   let data = [1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -0.5, 0.0];
+  //   vertices = vertices.concat(data);
+  // }
+
+  var vertices = new Float32Array(12 * size);
+
+  for (let i = 0; i < size; i++) {
+    let data = new Float32Array([
+      1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -0.5, 0.0,
+    ]);
+
+    const start = 12 * i;
+    data.forEach((d, index) => {
+      vertices[start + index] = d;
+    });
   }
 
-  gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
+  gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
   gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
+
+  // var colors = [
+  //   1.0,
+  //   1.0,
+  //   1.0,
+  //   1.0, // white
+  //   1.0,
+  //   0.0,
+  //   0.0,
+  //   1.0, // red
+  //   0.0,
+  //   1.0,
+  //   0.0,
+  //   1.0, // green
+  //   0.0,
+  //   0.0,
+  //   1.0,
+  //   1.0, // blue
+  // ];
 
   var colors = [
     1.0,
@@ -137,15 +174,15 @@ function initBufers() {
     1.0,
     1.0, // white
     1.0,
-    0.0,
-    0.0,
-    1.0, // red
-    0.0,
     1.0,
-    0.0,
+    1.0,
+    1.0, // red
+    1.0,
+    1.0,
+    1.0,
     1.0, // green
-    0.0,
-    0.0,
+    1.0,
+    1.0,
     1.0,
     1.0, // blue
   ];
@@ -211,7 +248,20 @@ function setTexcoords(gl) {
   );
 }
 
+let frameCount = 0;
+let lastTime = performance.now();
 function drawScene() {
+  // 帧数统计
+  frameCount++;
+  const now = performance.now();
+  const elapsed = now - lastTime;
+  if (elapsed >= 1000) {
+    // 每秒打印一次帧数
+    console.log(`FPS: ${Math.round((frameCount * 1000) / elapsed)}`);
+    lastTime = now;
+    frameCount = 0;
+  }
+
   gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
 
   perspectiveMatrix = makePerspective(45, 640.0 / 480.0, 0.1, 100.0);
@@ -219,14 +269,12 @@ function drawScene() {
   loadIdentity();
   mvTranslate([-0.0, 0.0, -6.0]);
 
-  // gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesBuffer);
-  // gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
-
-  // gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
-  // gl.vertexAttribPointer(vertexColorAttribute, 4, gl.FLOAT, false, 0, 0);
+  // 应用旋转
+  mvRotate(rotationX, [1, 0, 0]);
+  mvRotate(rotationY, [0, 1, 0]);
 
   setMatrixUniforms();
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+  gl.drawArrays(gl.TRIANGLE_STRIP, 0, size);
 
   window.requestAnimationFrame(drawScene);
 }
@@ -241,6 +289,13 @@ function multMatrix(m) {
 
 function mvTranslate(v) {
   multMatrix(Matrix.Translation($V([v[0], v[1], v[2]])).ensure4x4());
+}
+
+function mvRotate(angle, v) {
+  var inRadians = (angle * Math.PI) / 180.0;
+
+  var m = Matrix.Rotation(inRadians, $V([v[0], v[1], v[2]])).ensure4x4();
+  multMatrix(m);
 }
 
 function setMatrixUniforms() {
@@ -258,5 +313,34 @@ function setMatrixUniforms() {
 // gl.uniformMatrix4fv 为顶点着色器赋投影矩阵、视图矩阵的值
 // gl.vertexAttribPointer //提取位置、颜色信息到着色器
 // gl.enableVertexAttribArray // 应用着色器里的 顶点信息
+
+var mouseDown = false;
+
+function handleMouseDown(event) {
+  mouseDown = true;
+  lastMouseX = event.clientX;
+  lastMouseY = event.clientY;
+}
+
+function handleMouseUp(event) {
+  mouseDown = false;
+}
+
+function handleMouseMove(event) {
+  if (!mouseDown) {
+    return;
+  }
+  var newX = event.clientX;
+  var newY = event.clientY;
+
+  var deltaX = newX - lastMouseX;
+  var deltaY = newY - lastMouseY;
+
+  rotationX += deltaX / 5;
+  rotationY += deltaY / 5;
+
+  lastMouseX = newX;
+  lastMouseY = newY;
+}
 
 window.onload = start();
