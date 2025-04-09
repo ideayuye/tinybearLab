@@ -1,0 +1,5 @@
+D:/lab/tinybearLab/vkTriangle/out/build/x64-debug/CMakeFiles/edit_cache.dir
+D:/lab/tinybearLab/vkTriangle/out/build/x64-debug/CMakeFiles/rebuild_cache.dir
+D:/lab/tinybearLab/vkTriangle/out/build/x64-debug/vkTriangle/CMakeFiles/vkTriangle.dir
+D:/lab/tinybearLab/vkTriangle/out/build/x64-debug/vkTriangle/CMakeFiles/edit_cache.dir
+D:/lab/tinybearLab/vkTriangle/out/build/x64-debug/vkTriangle/CMakeFiles/rebuild_cache.dir
