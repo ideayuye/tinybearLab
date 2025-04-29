@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <cstdlib>
 #include <vector>
+#include <optional>
 using namespace std;
 
 #define GLFW_INCLUDE_VULKAN
@@ -34,7 +35,7 @@ struct QueueFamilyIndices
     {
         return graphicsFamily.has_value();
     }
-}
+};
 
 class HelloTriangleApplication
 {
@@ -50,7 +51,8 @@ public:
 private:
     GLFWwindow *window;
     VkInstance instance;
-    VkDevice device;
+    VkDevice  device;
+    VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
     void initWindow()
     {
@@ -69,7 +71,7 @@ private:
 
     void pickPhysicalDevice()
     {
-        VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
+        
         uint32_t deviceCount = 0;
         vkEnumeratePhysicalDevices(instance, &deviceCount, nullptr);
         if (deviceCount == 0)
@@ -108,7 +110,7 @@ private:
         return indices.isComplete();
     }
 
-    unit32_t findQueueFamilies(VkPhysicalDevice device)
+    QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device)
     {
         QueueFamilyIndices indices;
         uint32_t queueFamilyCount = 0;
@@ -130,15 +132,35 @@ private:
 
     void createLogicalDevice()
     {
-        QueueFamilyIndices indices = findQueueFamilies(device);
+        QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
 
-        VkDeviceCreateInfo queueCreateInfo{};
+        VkDeviceQueueCreateInfo queueCreateInfo{};
         queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
         queueCreateInfo.queueFamilyIndex = indices.graphicsFamily.value();
         queueCreateInfo.queueCount = 1;
         float queuePriority = 1.0f;
         queueCreateInfo.pQueuePriorities = &queuePriority;
         VkPhysicalDeviceFeatures deviceFeatures{};
+
+        VkDeviceCreateInfo createInfo{};
+        createInfo.pQueueCreateInfos = &queueCreateInfo;
+        createInfo.queueCreateInfoCount = 1;
+
+        createInfo.pEnabledFeatures = &deviceFeatures;
+
+        createInfo.enabledExtensionCount = 0;
+
+        if (enableValidationLayers) {
+            createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
+            createInfo.ppEnabledExtensionNames = validationLayers.data();
+        }
+        else {
+            createInfo.enabledLayerCount = 0;
+        }
+
+        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
+            throw std::runtime_error("failed to create logical device");
+        }
     }
 
     void mainLoop()
@@ -151,6 +173,7 @@ private:
 
     void cleanup()
     {
+        vkDestroyDevice(device, nullptr);
         vkDestroyInstance(instance, nullptr);
         glfwDestroyWindow(window);
         glfwTerminate();
