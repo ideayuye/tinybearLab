@@ -1,3 +1,5 @@
 # ninja log v5
-15	1164	7658142309185831	vkTriangle/CMakeFiles/vkTriangle.dir/vkTriangle.cpp.obj	85e8bdb945708e26
-1164	2691	7658142322173239	vkTriangle/vkTriangle.exe	6a48181bf4f4d4e0
+2	1033	7692774624182147	vkTriangle/CMakeFiles/vkTriangle.dir/vkTriangle.cpp.obj	e39536fccec850e4
+1033	1244	7692774625749083	vkTriangle/vkTriangle.exe	a4d44acaf640d7d2
+11	2400	7692819006304373	vkTriangle/CMakeFiles/vkTriangle.dir/vkTriangle.cpp.obj	e39536fccec850e4
+2401	3036	7692819011307068	vkTriangle/vkTriangle.exe	a4d44acaf640d7d2

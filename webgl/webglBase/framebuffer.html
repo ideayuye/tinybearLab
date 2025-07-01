@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGL 多帧缓冲区渲染示例</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+        color: #fff;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+      }
+      header {
+        text-align: center;
+        margin: 20px 0 30px;
+        width: 100%;
+        max-width: 900px;
+      }
+      h1 {
+        font-size: 2.8rem;
+        margin-bottom: 10px;
+        text-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+        background: linear-gradient(to right, #ff7e5f, #feb47b);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+      .subtitle {
+        font-size: 1.2rem;
+        opacity: 0.9;
+        max-width: 700px;
+        margin: 0 auto 15px;
+      }
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 25px;
+        max-width: 1200px;
+        margin-bottom: 30px;
+      }
+      .panel {
+        background: rgba(0, 15, 36, 0.7);
+        border-radius: 15px;
+        padding: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(5px);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        flex: 1;
+        min-width: 300px;
+        max-width: 500px;
+      }
+      .panel h2 {
+        font-size: 1.6rem;
+        margin-bottom: 15px;
+        color: #4fc3f7;
+        text-align: center;
+      }
+      .canvas-container {
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        margin-top: 10px;
+      }
+      canvas {
+        display: block;
+        width: 100%;
+      }
+      .info-box {
+        background: rgba(0, 20, 40, 0.8);
+        border-left: 4px solid #4fc3f7;
+        padding: 15px;
+        border-radius: 0 8px 8px 0;
+        margin: 20px 0;
+        font-size: 0.95rem;
+      }
+      .legend {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 15px;
+        flex-wrap: wrap;
+        gap: 15px;
+      }
+      .legend-item {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .color-box {
+        width: 20px;
+        height: 20px;
+        border-radius: 4px;
+      }
+      .controls {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+        justify-content: center;
+        margin: 15px 0;
+      }
+      .control-group {
+        background: rgba(0, 20, 40, 0.7);
+        padding: 12px 20px;
+        border-radius: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      label {
+        margin-bottom: 8px;
+        font-size: 0.95rem;
+        opacity: 0.9;
+      }
+      input[type="range"] {
+        width: 180px;
+      }
+      .code-block {
+        background: rgba(0, 10, 20, 0.8);
+        border-radius: 8px;
+        padding: 15px;
+        font-family: "Courier New", monospace;
+        font-size: 0.85rem;
+        overflow-x: auto;
+        margin: 10px 0;
+        line-height: 1.5;
+      }
+      .highlight {
+        color: #ff9800;
+      }
+      footer {
+        text-align: center;
+        margin-top: 20px;
+        padding: 20px;
+        font-size: 0.9rem;
+        opacity: 0.8;
+        max-width: 900px;
+      }
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+          align-items: center;
+        }
+        .panel {
+          width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>WebGL 多帧缓冲区渲染</h1>
+      <p class="subtitle">
+        此示例展示如何创建多个帧缓冲区(FBO)，渲染不同内容，然后将它们混合显示到屏幕上
+      </p>
+    </header>
+
+    <div class="controls">
+      <div class="control-group">
+        <label for="blendMode">混合模式:</label>
+        <select id="blendMode">
+          <option value="add">相加混合</option>
+          <option value="multiply">相乘混合</option>
+          <option value="overlay">叠加混合</option>
+          <option value="screen">屏幕混合</option>
+        </select>
+      </div>
+
+      <div class="control-group">
+        <label for="fbo1Opacity"
+          >FBO1 不透明度: <span id="opacity1Value">0.5</span></label
+        >
+        <input
+          type="range"
+          id="fbo1Opacity"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0.5"
+        />
+      </div>
+
+      <div class="control-group">
+        <label for="fbo2Opacity"
+          >FBO2 不透明度: <span id="opacity2Value">0.5</span></label
+        >
+        <input
+          type="range"
+          id="fbo2Opacity"
+          min="0"
+          max="1"
+          step="0.01"
+          value="0.5"
+        />
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="panel">
+        <h2>帧缓冲区1 (FBO1)</h2>
+        <p>渲染动态旋转的彩色三角形</p>
+        <div class="canvas-container">
+          <canvas id="fbo1Canvas"></canvas>
+        </div>
+
+        <div class="info-box">
+          <p>此帧缓冲区使用一个简单的顶点/片元着色器渲染彩色几何体。</p>
+          <div class="code-block">
+            <span class="highlight">gl.bindFramebuffer</span>(gl.FRAMEBUFFER,
+            fbo1);<br />
+            <span class="highlight">// 渲染彩色三角形</span><br />
+            drawScene(program1);
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>帧缓冲区2 (FBO2)</h2>
+        <p>渲染动态圆形图案</p>
+        <div class="canvas-container">
+          <canvas id="fbo2Canvas"></canvas>
+        </div>
+
+        <div class="info-box">
+          <p>此帧缓冲区使用基于距离场的片元着色器渲染圆形图案。</p>
+          <div class="code-block">
+            <span class="highlight">gl.bindFramebuffer</span>(gl.FRAMEBUFFER,
+            fbo2);<br />
+            <span class="highlight">// 渲染圆形图案</span><br />
+            drawScene(program2);
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>最终混合输出</h2>
+        <p>将两个FBO的内容混合渲染到屏幕</p>
+        <div class="canvas-container">
+          <canvas id="outputCanvas"></canvas>
+        </div>
+
+        <div class="info-box">
+          <p>使用混合着色器将两个帧缓冲区的纹理渲染到默认帧缓冲区：</p>
+          <div class="code-block">
+            <span class="highlight">gl.bindFramebuffer</span>(gl.FRAMEBUFFER,
+            null);<br />
+            <span class="highlight">// 激活两个纹理</span><br />
+            gl.activeTexture(gl.TEXTURE0);<br />
+            gl.bindTexture(gl.TEXTURE_2D, texture1);<br />
+            gl.activeTexture(gl.TEXTURE1);<br />
+            gl.bindTexture(gl.TEXTURE_2D, texture2);<br />
+            <span class="highlight">// 使用混合着色器渲染</span><br />
+            drawFullscreenQuad(blendProgram);
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item">
+        <div class="color-box" style="background: #ff5252"></div>
+        <span>帧缓冲区1 (FBO1)</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box" style="background: #4fc3f7"></div>
+        <span>帧缓冲区2 (FBO2)</span>
+      </div>
+      <div class="legend-item">
+        <div class="color-box" style="background: #69f0ae"></div>
+        <span>混合区域</span>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        此示例展示了WebGL中多帧缓冲区的创建和使用，包括离屏渲染和纹理混合技术
+      </p>
+      <p>使用鼠标悬停在最终输出画布上可暂停动画，再次悬停恢复动画</p>
+    </footer>
+
+    <script type="module" src="./js/framebuffer.js"></script>
+  </body>
+</html>

@@ -20,9 +20,13 @@
       "VerticalTabListWidth": 256,
       "DocumentGroups": [
         {
-          "DockedWidth": 226,
-          "SelectedChildIndex": 1,
+          "DockedWidth": 313,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 2,
@@ -31,7 +35,6 @@
               "RelativeDocumentMoniker": "..\\..\\..\\tool\\vcpkg\\packages\\glfw3_x64-windows\\include\\GLFW\\glfw3.h",
               "ToolTip": "D:\\tool\\vcpkg\\packages\\glfw3_x64-windows\\include\\GLFW\\glfw3.h",
               "RelativeToolTip": "..\\..\\..\\tool\\vcpkg\\packages\\glfw3_x64-windows\\include\\GLFW\\glfw3.h",
-              "ViewState": "AgIAAF0AAAAAAAAAAAAywG4AAAAcAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
               "WhenOpened": "2025-04-07T10:32:34.785Z"
             },
@@ -43,7 +46,7 @@
               "RelativeDocumentMoniker": "vkTriangle\\vkTriangle.cpp",
               "ToolTip": "D:\\lab\\tinybearLab\\vkTriangle\\vkTriangle\\vkTriangle.cpp",
               "RelativeToolTip": "vkTriangle\\vkTriangle.cpp",
-              "ViewState": "AgIAACkAAAAAAAAAAADwvzkAAAA7AAAAAAAAAA==",
+              "ViewState": "AQIAADsAAAAAAAAAAADwv0YAAAAZAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2025-04-07T10:22:35.153Z",
               "EditorCaption": ""
@@ -51,7 +54,7 @@
           ]
         },
         {
-          "DockedWidth": 174,
+          "DockedWidth": 87,
           "SelectedChildIndex": 0,
           "Children": [
             {
@@ -62,7 +65,7 @@
               "RelativeDocumentMoniker": "vkTriangle\\CMakeLists.txt",
               "ToolTip": "D:\\lab\\tinybearLab\\vkTriangle\\vkTriangle\\CMakeLists.txt",
               "RelativeToolTip": "vkTriangle\\CMakeLists.txt",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAYwB8AAAAAAAAAAAAAAA==",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABoAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003109|",
               "WhenOpened": "2025-04-07T10:15:22.658Z",
               "EditorCaption": ""
