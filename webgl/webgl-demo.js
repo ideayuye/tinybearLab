@@ -26,11 +26,12 @@ function start() {
     gl.clearDepth(1.0); // Clear everything
     gl.enable(gl.DEPTH_TEST); // Enable depth testing
     gl.depthFunc(gl.LEQUAL); // Near things obscure far things
+    gl.lineWidth(1);
   }
 
   initShaders();
 
-  initBufers();
+  initBuffers();
 
   // 添加鼠标事件监听器
   canvas.addEventListener("mousedown", handleMouseDown, false);
@@ -115,8 +116,8 @@ function initShaders() {
 
   gl.useProgram(shaderProgram);
 }
-const size = 200000;
-function initBufers() {
+const size = 1;
+function initBuffers() {
   vertexPositionAttribute = gl.getAttribLocation(
     shaderProgram,
     "aVertexPosition"
@@ -137,7 +138,8 @@ function initBufers() {
 
   for (let i = 0; i < size; i++) {
     let data = new Float32Array([
-      1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -0.5, 0.0,
+      // 1.0, 1.0, 0.0, -1.0, 1.0, 0.0, 1.0, -1.0, 0.0, -1.0, -0.5, 0.0,
+      0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0,
     ]);
 
     const start = 12 * i;
@@ -149,40 +151,21 @@ function initBufers() {
   gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
   gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
 
-  // var colors = [
-  //   1.0,
-  //   1.0,
-  //   1.0,
-  //   1.0, // white
-  //   1.0,
-  //   0.0,
-  //   0.0,
-  //   1.0, // red
-  //   0.0,
-  //   1.0,
-  //   0.0,
-  //   1.0, // green
-  //   0.0,
-  //   0.0,
-  //   1.0,
-  //   1.0, // blue
-  // ];
-
   var colors = [
     1.0,
     1.0,
     1.0,
     1.0, // white
     1.0,
-    1.0,
-    1.0,
+    0.0,
+    0.0,
     1.0, // red
+    0.0,
     1.0,
-    1.0,
-    1.0,
+    0.0,
     1.0, // green
-    1.0,
-    1.0,
+    0.0,
+    0.0,
     1.0,
     1.0, // blue
   ];
@@ -267,14 +250,14 @@ function drawScene() {
   perspectiveMatrix = makePerspective(45, 640.0 / 480.0, 0.1, 100.0);
 
   loadIdentity();
-  mvTranslate([-0.0, 0.0, -6.0]);
+  mvTranslate([-0.0, 0.0, -3.0]);
 
   // 应用旋转
-  mvRotate(rotationX, [1, 0, 0]);
-  mvRotate(rotationY, [0, 1, 0]);
+  // mvRotate(rotationX, [1, 0, 0]);
+  // mvRotate(rotationY, [0, 1, 0]);
 
   setMatrixUniforms();
-  gl.drawArrays(gl.TRIANGLE_STRIP, 0, size);
+  gl.drawArrays(gl.LINE_LOOP, 0, size * 4);
 
   window.requestAnimationFrame(drawScene);
 }

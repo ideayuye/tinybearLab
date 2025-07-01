@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>WebGPU透视投影坐标轴 | Blender风格</title>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      body {
+        background: linear-gradient(135deg, #1a2a6c, #2c3e50);
+        color: #ecf0f1;
+        min-height: 100vh;
+        overflow-x: hidden;
+        display: flex;
+        flex-direction: column;
+        padding: 20px;
+      }
+
+      header {
+        text-align: center;
+        padding: 30px 0;
+        margin-bottom: 20px;
+      }
+
+      h1 {
+        font-size: 3.2rem;
+        margin-bottom: 10px;
+        text-shadow: 0 0 10px rgba(46, 204, 113, 0.5);
+        background: linear-gradient(to right, #3498db, #2ecc71);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+
+      .subtitle {
+        font-size: 1.3rem;
+        max-width: 800px;
+        margin: 0 auto;
+        line-height: 1.6;
+        color: #bdc3c7;
+      }
+
+      .container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 30px;
+        max-width: 1400px;
+        margin: 0 auto;
+        justify-content: center;
+      }
+
+      .canvas-section {
+        flex: 1;
+        min-width: 500px;
+        max-width: 800px;
+      }
+
+      .canvas-container {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1/1;
+        background: #121212;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+        border: 1px solid rgba(52, 152, 219, 0.4);
+      }
+
+      canvas {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .controls {
+        margin-top: 20px;
+        background: rgba(20, 20, 30, 0.8);
+        padding: 20px;
+        border-radius: 15px;
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+      }
+
+      .control-group {
+        background: rgba(30, 30, 40, 0.6);
+        padding: 15px;
+        border-radius: 10px;
+        border: 1px solid rgba(52, 152, 219, 0.3);
+      }
+
+      .control-group h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        color: #3498db;
+      }
+
+      .slider-container {
+        margin-bottom: 15px;
+      }
+
+      .slider-container label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2ecc71;
+        font-weight: 500;
+      }
+
+      input[type="range"] {
+        width: 100%;
+        height: 8px;
+        background: #2c3e50;
+        border-radius: 4px;
+        outline: none;
+        -webkit-appearance: none;
+      }
+
+      input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #3498db;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 0 8px rgba(52, 152, 219, 0.8);
+        transition: all 0.2s;
+      }
+
+      input[type="range"]::-webkit-slider-thumb:hover {
+        background: #2980b9;
+        transform: scale(1.1);
+      }
+
+      .value-display {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 5px;
+        font-size: 0.9rem;
+        color: #bdc3c7;
+      }
+
+      .info-section {
+        flex: 1;
+        min-width: 300px;
+        max-width: 500px;
+      }
+
+      .info-box {
+        background: rgba(20, 20, 30, 0.8);
+        padding: 25px;
+        border-radius: 15px;
+        margin-bottom: 25px;
+        border: 1px solid rgba(52, 152, 219, 0.3);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+
+      .info-box h2 {
+        color: #f39c12;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .info-box ul {
+        padding-left: 25px;
+        margin-bottom: 20px;
+      }
+
+      .info-box li {
+        margin-bottom: 12px;
+        line-height: 1.6;
+      }
+
+      .info-box p {
+        margin-bottom: 15px;
+        line-height: 1.6;
+      }
+
+      .key-point {
+        color: #2ecc71;
+        font-weight: bold;
+      }
+
+      .axis-info {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      .axis-card {
+        flex: 1;
+        min-width: 120px;
+        background: rgba(30, 30, 40, 0.6);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        border-top: 4px solid;
+      }
+
+      .axis-card.x-axis {
+        border-top-color: #e74c3c;
+      }
+
+      .axis-card.y-axis {
+        border-top-color: #2ecc71;
+      }
+
+      .axis-card.z-axis {
+        border-top-color: #3498db;
+      }
+
+      .axis-card h3 {
+        margin-bottom: 10px;
+        font-size: 1.1rem;
+      }
+
+      .axis-card .axis-color {
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        margin: 0 auto 10px;
+      }
+
+      .x-axis .axis-color {
+        background: #e74c3c;
+      }
+
+      .y-axis .axis-color {
+        background: #2ecc71;
+      }
+
+      .z-axis .axis-color {
+        background: #3498db;
+      }
+
+      footer {
+        text-align: center;
+        margin-top: 40px;
+        padding: 20px;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          flex-direction: column;
+        }
+
+        .canvas-section,
+        .info-section {
+          width: 100%;
+        }
+
+        h1 {
+          font-size: 2.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1><i class="fas fa-cube"></i> WebGPU透视投影坐标轴</h1>
+      <p class="subtitle">
+        使用WebGPU实现Blender风格的3D坐标轴系统，支持透视投影与交互控制
+      </p>
+    </header>
+
+    <div class="container">
+      <div class="canvas-section">
+        <div class="canvas-container">
+          <canvas id="webgpu-canvas"></canvas>
+        </div>
+
+        <div class="controls">
+          <div class="control-group">
+            <h3><i class="fas fa-rotate"></i> 相机控制</h3>
+            <div class="slider-container">
+              <label for="horizontal-rotation">水平旋转</label>
+              <input
+                type="range"
+                id="horizontal-rotation"
+                min="0"
+                max="360"
+                value="45"
+              />
+              <div class="value-display">
+                <span>0°</span>
+                <span id="horizontal-value">45°</span>
+                <span>360°</span>
+              </div>
+            </div>
+
+            <div class="slider-container">
+              <label for="vertical-rotation">垂直旋转</label>
+              <input
+                type="range"
+                id="vertical-rotation"
+                min="-90"
+                max="90"
+                value="30"
+              />
+              <div class="value-display">
+                <span>-90°</span>
+                <span id="vertical-value">30°</span>
+                <span>90°</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <h3><i class="fas fa-camera"></i> 透视控制</h3>
+            <div class="slider-container">
+              <label for="camera-distance">相机距离</label>
+              <input
+                type="range"
+                id="camera-distance"
+                min="2"
+                max="15"
+                step="0.5"
+                value="5"
+              />
+              <div class="value-display">
+                <span>2</span>
+                <span id="distance-value">5.0</span>
+                <span>15</span>
+              </div>
+            </div>
+
+            <div class="slider-container">
+              <label for="field-of-view">视野(FOV)</label>
+              <input
+                type="range"
+                id="field-of-view"
+                min="30"
+                max="120"
+                value="60"
+              />
+              <div class="value-display">
+                <span>30°</span>
+                <span id="fov-value">60°</span>
+                <span>120°</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="control-group">
+            <h3><i class="fas fa-expand"></i> 坐标轴设置</h3>
+            <div class="slider-container">
+              <label for="axis-length">坐标轴长度</label>
+              <input
+                type="range"
+                id="axis-length"
+                min="0.5"
+                max="3"
+                step="0.1"
+                value="1.5"
+              />
+              <div class="value-display">
+                <span>0.5</span>
+                <span id="length-value">1.5</span>
+                <span>3.0</span>
+              </div>
+            </div>
+
+            <div class="slider-container">
+              <label for="arrow-size">箭头大小</label>
+              <input
+                type="range"
+                id="arrow-size"
+                min="0.1"
+                max="0.5"
+                step="0.05"
+                value="0.2"
+              />
+              <div class="value-display">
+                <span>0.1</span>
+                <span id="arrow-value">0.2</span>
+                <span>0.5</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="info-section">
+        <div class="info-box">
+          <h2><i class="fas fa-info-circle"></i> WebGPU透视投影坐标轴</h2>
+          <p>此实现展示了如何使用WebGPU渲染类似Blender中的3D坐标轴系统：</p>
+          <ul>
+            <li>
+              使用<strong class="key-point">透视投影矩阵</strong>创建3D效果
+            </li>
+            <li>
+              每个坐标轴包含<strong class="key-point">主轴和箭头</strong
+              >（X:红色, Y:绿色, Z:蓝色）
+            </li>
+            <li>
+              支持<strong class="key-point">交互式相机控制</strong
+              >（旋转、距离、视野）
+            </li>
+            <li>
+              可调整<strong class="key-point">坐标轴长度和箭头大小</strong>
+            </li>
+            <li>
+              使用<strong class="key-point">WebGPU现代图形API</strong
+              >实现高性能渲染
+            </li>
+          </ul>
+          <p>
+            透视投影模拟真实世界中人眼的视觉效果，物体距离相机越远，看起来越小。这种效果在3D建模软件（如Blender）中被广泛使用。
+          </p>
+        </div>
+
+        <div class="info-box">
+          <h2><i class="fas fa-code"></i> 技术实现</h2>
+          <p>此WebGPU实现的核心技术：</p>
+          <ul>
+            <li><strong>顶点着色器</strong>：应用透视投影和视图变换</li>
+            <li><strong>透视投影矩阵</strong>：根据视野(FOV)和宽高比计算</li>
+            <li><strong>视图矩阵</strong>：通过相机位置和方向计算</li>
+            <li><strong>坐标轴几何生成</strong>：动态创建主轴和箭头顶点</li>
+            <li>
+              <strong>统一缓冲区(Uniform Buffer)</strong>：存储视图投影矩阵
+            </li>
+            <li><strong>渲染管线配置</strong>：使用线图元(line-list)渲染</li>
+          </ul>
+          <p>
+            坐标轴几何结构由每个轴的主线段和两个箭头斜线组成，所有顶点包含位置和颜色信息。
+          </p>
+        </div>
+
+        <div class="axis-info">
+          <div class="axis-card x-axis">
+            <div class="axis-color"></div>
+            <h3>X 轴</h3>
+            <p>红色 (1, 0, 0)</p>
+          </div>
+          <div class="axis-card y-axis">
+            <div class="axis-color"></div>
+            <h3>Y 轴</h3>
+            <p>绿色 (0, 1, 0)</p>
+          </div>
+          <div class="axis-card z-axis">
+            <div class="axis-color"></div>
+            <h3>Z 轴</h3>
+            <p>蓝色 (0, 0, 1)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <footer>
+      <p>
+        WebGPU透视投影坐标轴实现 | 类似Blender的3D坐标系统 | 使用现代Web图形API
+      </p>
+    </footer>
+
+    <script>
+      async function initWebGPU() {
+        // 获取Canvas元素
+        const canvas = document.getElementById("webgpu-canvas");
+
+        // 设置Canvas尺寸
+        canvas.width = canvas.clientWidth * devicePixelRatio;
+        canvas.height = canvas.clientHeight * devicePixelRatio;
+
+        // 获取WebGPU适配器和设备
+        if (!navigator.gpu) {
+          throw new Error("WebGPU is not supported in this browser");
+        }
+
+        const adapter = await navigator.gpu.requestAdapter();
+        if (!adapter) {
+          throw new Error("Failed to get GPU adapter");
+        }
+
+        const device = await adapter.requestDevice();
+
+        // 配置WebGPU上下文
+        const context = canvas.getContext("webgpu");
+        const format = navigator.gpu.getPreferredCanvasFormat();
+        context.configure({
+          device: device,
+          format: format,
+          alphaMode: "opaque",
+        });
+
+        // 创建渲染管线
+        const pipeline = device.createRenderPipeline({
+          layout: "auto",
+          vertex: {
+            module: device.createShaderModule({
+              code: `
+                        struct VertexOutput {
+                            @builtin(position) position: vec4f,
+                            @location(0) color: vec4f
+                        };
+
+                        struct Uniforms {
+                            viewProjection: mat4x4f
+                        };
+
+                        @group(0) @binding(0) var<uniform> uniforms: Uniforms;
+
+                        @vertex
+                        fn main(
+                            @location(0) position: vec3f,
+                            @location(1) color: vec3f
+                        ) -> VertexOutput {
+                            var output: VertexOutput;
+                            output.position = uniforms.viewProjection * vec4f(position, 1.0);
+                            output.color = vec4f(color, 1.0);
+                            return output;
+                        }`,
+            }),
+            entryPoint: "main",
+            buffers: [
+              {
+                arrayStride: 6 * 4, // position(3) + color(3)
+                attributes: [
+                  { shaderLocation: 0, offset: 0, format: "float32x3" },
+                  { shaderLocation: 1, offset: 12, format: "float32x3" },
+                ],
+              },
+            ],
+          },
+          fragment: {
+            module: device.createShaderModule({
+              code: `
+                        @fragment
+                        fn main(@location(0) color: vec4f) -> @location(0) vec4f {
+                            return color;
+                        }`,
+            }),
+            entryPoint: "main",
+            targets: [{ format }],
+          },
+          primitive: {
+            topology: "line-list",
+          },
+          depthStencil: {
+            format: "depth24plus",
+            depthWriteEnabled: true,
+            depthCompare: "less",
+          },
+        });
+
+        // 创建统一缓冲区
+        const uniformBuffer = device.createBuffer({
+          size: 16 * 4, // 矩阵大小
+          usage: GPUBufferUsage.UNIFORM | GPUBufferUsage.COPY_DST,
+        });
+
+        // 创建绑定组
+        const bindGroup = device.createBindGroup({
+          layout: pipeline.getBindGroupLayout(0),
+          entries: [
+            {
+              binding: 0,
+              resource: { buffer: uniformBuffer },
+            },
+          ],
+        });
+
+        // 创建深度纹理
+        const depthTexture = device.createTexture({
+          size: [canvas.width, canvas.height],
+          format: "depth24plus",
+          usage: GPUTextureUsage.RENDER_ATTACHMENT,
+        });
+
+        // 相机参数
+        let cameraDistance = 5.0;
+        let horizontalAngle = 45; // 水平角度(度)
+        let verticalAngle = 30; // 垂直角度(度)
+        let fov = 60; // 视野(度)
+        let axisLength = 1.5; // 坐标轴长度
+        let arrowSize = 0.2; // 箭头大小
+
+        // 创建坐标轴顶点数据
+        function createAxisVertices() {
+          // 顶点数组: 位置(x,y,z) + 颜色(r,g,b)
+          const vertices = [];
+
+          // X轴 (红色)
+          addAxis(vertices, [1, 0, 0], [1, 0, 0], axisLength, arrowSize);
+          // Y轴 (绿色)
+          addAxis(vertices, [0, 1, 0], [0, 1, 0], axisLength, arrowSize);
+          // Z轴 (蓝色)
+          addAxis(vertices, [0, 0, 1], [0, 0, 1], axisLength, arrowSize);
+
+          return new Float32Array(vertices);
+        }
+
+        // 添加坐标轴几何数据
+        function addAxis(vertices, direction, color, length, arrowSize) {
+          // 主轴
+          addVertex(vertices, [0, 0, 0], color);
+          addVertex(
+            vertices,
+            [
+              direction[0] * length,
+              direction[1] * length,
+              direction[2] * length,
+            ],
+            color
+          );
+
+          // 箭头部分 (两个斜线)
+          const end = [
+            direction[0] * length,
+            direction[1] * length,
+            direction[2] * length,
+          ];
+
+          // 计算垂直向量
+          let perp;
+          if (direction[0] !== 0) {
+            perp = [0, 1, 0]; // 如果方向不是垂直的，使用Y轴作为垂直向量
+          } else {
+            perp = [1, 0, 0]; // 否则使用X轴
+          }
+
+          // 箭头点1
+          addVertex(vertices, end, color);
+          addVertex(
+            vertices,
+            [
+              end[0] - direction[0] * arrowSize + perp[0] * arrowSize * 0.5,
+              end[1] - direction[1] * arrowSize + perp[1] * arrowSize * 0.5,
+              end[2] - direction[2] * arrowSize + perp[2] * arrowSize * 0.5,
+            ],
+            color
+          );
+
+          // 箭头点2
+          addVertex(vertices, end, color);
+          addVertex(
+            vertices,
+            [
+              end[0] - direction[0] * arrowSize - perp[0] * arrowSize * 0.5,
+              end[1] - direction[1] * arrowSize - perp[1] * arrowSize * 0.5,
+              end[2] - direction[2] * arrowSize - perp[2] * arrowSize * 0.5,
+            ],
+            color
+          );
+        }
+
+        // 添加顶点数据
+        function addVertex(vertices, position, color) {
+          vertices.push(
+            position[0],
+            position[1],
+            position[2],
+            color[0],
+            color[1],
+            color[2]
+          );
+        }
+
+        // 创建顶点缓冲区
+        let vertices = createAxisVertices();
+        let vertexBuffer = device.createBuffer({
+          size: vertices.byteLength,
+          usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+          mappedAtCreation: true,
+        });
+        new Float32Array(vertexBuffer.getMappedRange()).set(vertices);
+        vertexBuffer.unmap();
+
+        // 更新顶点缓冲区
+        function updateVertexBuffer() {
+          vertices = createAxisVertices();
+          vertexBuffer.destroy();
+          vertexBuffer = device.createBuffer({
+            size: vertices.byteLength,
+            usage: GPUBufferUsage.VERTEX | GPUBufferUsage.COPY_DST,
+            mappedAtCreation: true,
+          });
+          new Float32Array(vertexBuffer.getMappedRange()).set(vertices);
+          vertexBuffer.unmap();
+        }
+
+        // 创建透视投影矩阵
+        function createPerspectiveMatrix() {
+          const aspect = canvas.width / canvas.height;
+          const fovRad = (fov * Math.PI) / 180;
+          const f = 1.0 / Math.tan(fovRad / 2);
+          const near = 0.1;
+          const far = 100.0;
+
+          return new Float32Array([
+            f / aspect,
+            0,
+            0,
+            0,
+            0,
+            f,
+            0,
+            0,
+            0,
+            0,
+            (far + near) / (near - far),
+            -1,
+            0,
+            0,
+            (2 * far * near) / (near - far),
+            0,
+          ]);
+        }
+
+        // 创建视图矩阵
+        function createViewMatrix() {
+          const horRad = (horizontalAngle * Math.PI) / 180;
+          const verRad = (verticalAngle * Math.PI) / 180;
+
+          // 计算相机位置
+          const camX = Math.sin(horRad) * Math.cos(verRad) * cameraDistance;
+          const camY = Math.sin(verRad) * cameraDistance;
+          const camZ = Math.cos(horRad) * Math.cos(verRad) * cameraDistance;
+
+          // 目标点 (原点)
+          const targetX = 0;
+          const targetY = 0;
+          const targetZ = 0;
+
+          // 上向量
+          const upX = 0;
+          const upY = 1;
+          const upZ = 0;
+
+          // 计算视图矩阵
+          const zx = camX - targetX;
+          const zy = camY - targetY;
+          const zz = camZ - targetZ;
+          const zLength = Math.sqrt(zx * zx + zy * zy + zz * zz);
+          const zxNorm = zx / zLength;
+          const zyNorm = zy / zLength;
+          const zzNorm = zz / zLength;
+
+          // 右向量
+          const xx = upY * zzNorm - upZ * zyNorm;
+          const xy = upZ * zxNorm - upX * zzNorm;
+          const xz = upX * zyNorm - upY * zxNorm;
+          const xLength = Math.sqrt(xx * xx + xy * xy + xz * xz);
+          const xxNorm = xx / xLength;
+          const xyNorm = xy / xLength;
+          const xzNorm = xz / xLength;
+
+          // 上向量
+          const yx = zyNorm * xzNorm - zzNorm * xyNorm;
+          const yy = zzNorm * xxNorm - zxNorm * xzNorm;
+          const yz = zxNorm * xyNorm - zyNorm * xxNorm;
+
+          return new Float32Array([
+            xxNorm,
+            yx,
+            zxNorm,
+            0,
+            xyNorm,
+            yy,
+            zyNorm,
+            0,
+            xzNorm,
+            yz,
+            zzNorm,
+            0,
+            -(xxNorm * camX + xyNorm * camY + xzNorm * camZ),
+            -(yx * camX + yy * camY + yz * camZ),
+            -(zxNorm * camX + zyNorm * camY + zzNorm * camZ),
+            1,
+          ]);
+        }
+
+        // 更新统一缓冲区
+        function updateUniformBuffer() {
+          const perspectiveMatrix = createPerspectiveMatrix();
+          const viewMatrix = createViewMatrix();
+
+          // 合并视图投影矩阵: 投影矩阵 * 视图矩阵
+          const viewProjectionMatrix = new Float32Array(16);
+          for (let i = 0; i < 4; i++) {
+            for (let j = 0; j < 4; j++) {
+              let sum = 0;
+              for (let k = 0; k < 4; k++) {
+                sum += perspectiveMatrix[i * 4 + k] * viewMatrix[k * 4 + j];
+              }
+              viewProjectionMatrix[i * 4 + j] = sum;
+            }
+          }
+
+          device.queue.writeBuffer(uniformBuffer, 0, viewProjectionMatrix);
+        }
+
+        // 渲染函数
+        function render() {
+          // 更新矩阵
+          updateUniformBuffer();
+
+          // 创建命令编码器
+          const commandEncoder = device.createCommandEncoder();
+          const renderPass = commandEncoder.beginRenderPass({
+            colorAttachments: [
+              {
+                view: context.getCurrentTexture().createView(),
+                clearValue: [0.05, 0.05, 0.08, 1],
+                loadOp: "clear",
+                storeOp: "store",
+              },
+            ],
+            depthStencilAttachment: {
+              view: depthTexture.createView(),
+              depthClearValue: 1.0,
+              depthLoadOp: "clear",
+              depthStoreOp: "store",
+            },
+          });
+
+          // 设置渲染状态并绘制
+          renderPass.setPipeline(pipeline);
+          renderPass.setVertexBuffer(0, vertexBuffer);
+          renderPass.setBindGroup(0, bindGroup);
+          renderPass.draw(vertices.length / 6); // 每个顶点6个值
+          renderPass.end();
+
+          // 提交命令
+          device.queue.submit([commandEncoder.finish()]);
+
+          // 继续渲染循环
+          requestAnimationFrame(render);
+        }
+
+        // 初始化并开始渲染
+        updateUniformBuffer();
+        render();
+
+        // 设置事件监听器
+        setupEventListeners();
+
+        function setupEventListeners() {
+          // 水平旋转
+          const horizontalSlider = document.getElementById(
+            "horizontal-rotation"
+          );
+          const horizontalValue = document.getElementById("horizontal-value");
+          horizontalSlider.addEventListener("input", function () {
+            horizontalAngle = parseFloat(this.value);
+            horizontalValue.textContent = horizontalAngle + "°";
+          });
+
+          // 垂直旋转
+          const verticalSlider = document.getElementById("vertical-rotation");
+          const verticalValue = document.getElementById("vertical-value");
+          verticalSlider.addEventListener("input", function () {
+            verticalAngle = parseFloat(this.value);
+            verticalValue.textContent = verticalAngle + "°";
+          });
+
+          // 相机距离
+          const distanceSlider = document.getElementById("camera-distance");
+          const distanceValue = document.getElementById("distance-value");
+          distanceSlider.addEventListener("input", function () {
+            cameraDistance = parseFloat(this.value);
+            distanceValue.textContent = cameraDistance.toFixed(1);
+          });
+
+          // 视野(FOV)
+          const fovSlider = document.getElementById("field-of-view");
+          const fovValue = document.getElementById("fov-value");
+          fovSlider.addEventListener("input", function () {
+            fov = parseFloat(this.value);
+            fovValue.textContent = fov + "°";
+          });
+
+          // 坐标轴长度
+          const lengthSlider = document.getElementById("axis-length");
+          const lengthValue = document.getElementById("length-value");
+          lengthSlider.addEventListener("input", function () {
+            axisLength = parseFloat(this.value);
+            lengthValue.textContent = axisLength.toFixed(1);
+            updateVertexBuffer();
+          });
+
+          // 箭头大小
+          const arrowSlider = document.getElementById("arrow-size");
+          const arrowValue = document.getElementById("arrow-value");
+          arrowSlider.addEventListener("input", function () {
+            arrowSize = parseFloat(this.value);
+            arrowValue.textContent = arrowSize.toFixed(2);
+            updateVertexBuffer();
+          });
+        }
+      }
+
+      // 启动WebGPU
+      initWebGPU().catch((e) => {
+        console.error(e);
+        document.body.innerHTML = `<div style="color: white; text-align: center; padding: 50px;">
+                <h2>WebGPU初始化错误</h2>
+                <p>${e.message}</p>
+                <p>请确保使用支持WebGPU的浏览器（如Chrome 113+）</p>
+            </div>`;
+      });
+    </script>
+  </body>
+</html>
