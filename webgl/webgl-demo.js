@@ -167,7 +167,8 @@ function initBuffers() {
   // gl.bufferData(gl.ARRAY_BUFFER, vertices, gl.STATIC_DRAW);
   gl.bufferData(
     gl.ARRAY_BUFFER,
-    new Float32Array(axisData.positions),
+    // new Float32Array(axisData.positions),
+    vertices,
     gl.STATIC_DRAW
   );
   gl.vertexAttribPointer(vertexPositionAttribute, 3, gl.FLOAT, false, 0, 0);
@@ -175,19 +176,15 @@ function initBuffers() {
   var colors = [
     1.0,
     1.0,
-    1.0,
     1.0, // white
     1.0,
     0.0,
-    0.0,
-    1.0, // red
-    0.0,
-    1.0,
-    0.0,
-    1.0, // green
-    0.0,
+    0.0, // red
     0.0,
     1.0,
+    0.0, // green
+    0.0,
+    0.0,
     1.0, // blue
   ];
 
@@ -198,7 +195,8 @@ function initBuffers() {
   gl.bindBuffer(gl.ARRAY_BUFFER, squareVerticesColorBuffer);
   gl.bufferData(
     gl.ARRAY_BUFFER,
-    new Float32Array(axisData.colors),
+    // new Float32Array(axisData.colors),
+    new Float32Array(colors),
     gl.STATIC_DRAW
   );
   gl.vertexAttribPointer(vertexColorAttribute, 3, gl.FLOAT, false, 0, 0);
@@ -282,7 +280,8 @@ function drawScene() {
   // mvRotate(rotationY, [0, 1, 0]);
 
   setMatrixUniforms();
-  gl.drawArrays(gl.LINES, 0, axisData.positions.length / 3);
+  // gl.drawArrays(gl.LINES, 0, axisData.positions.length / 3);
+  gl.drawArrays(gl.LINES, 0, size * 4);
 
   window.requestAnimationFrame(drawScene);
 }
