@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>WebGL坐标轴实现 | Blender风格</title>
+    <title>WebGL坐标轴实现 | 修复版</title>
     <style>
       * {
         margin: 0;
@@ -21,17 +21,18 @@
         align-items: center;
         justify-content: center;
         overflow: hidden;
+        padding: 20px;
       }
 
       .header {
         text-align: center;
-        padding: 30px 0;
+        padding: 20px 0;
         margin-bottom: 20px;
         z-index: 10;
       }
 
       h1 {
-        font-size: 2.8rem;
+        font-size: 2.5rem;
         margin-bottom: 15px;
         text-shadow: 0 0 15px rgba(46, 204, 113, 0.7);
         background: linear-gradient(to right, #3498db, #2ecc71);
@@ -41,7 +42,7 @@
       }
 
       .subtitle {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         max-width: 600px;
         margin: 0 auto;
         line-height: 1.6;
@@ -52,8 +53,8 @@
         position: relative;
         width: 90vmin;
         height: 70vmin;
-        max-width: 800px;
-        max-height: 600px;
+        max-width: 700px;
+        max-height: 500px;
         margin: 0 auto;
         box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
         border-radius: 12px;
@@ -69,9 +70,9 @@
       }
 
       .info {
-        max-width: 800px;
+        max-width: 700px;
         margin: 30px auto;
-        padding: 25px;
+        padding: 20px;
         background: rgba(20, 25, 40, 0.7);
         border-radius: 15px;
         text-align: center;
@@ -89,16 +90,16 @@
       .axis-info {
         display: flex;
         justify-content: center;
-        gap: 25px;
+        gap: 20px;
         margin-top: 20px;
         flex-wrap: wrap;
       }
 
       .axis-card {
-        min-width: 120px;
+        min-width: 100px;
         background: rgba(30, 40, 60, 0.8);
-        padding: 15px;
-        border-radius: 10px;
+        padding: 12px;
+        border-radius: 8px;
         text-align: center;
         border-top: 4px solid;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -117,30 +118,30 @@
       }
 
       .axis-card h3 {
-        margin-bottom: 10px;
-        font-size: 1.1rem;
+        margin-bottom: 8px;
+        font-size: 1rem;
       }
 
       .axis-card .axis-color {
-        width: 25px;
-        height: 25px;
+        width: 20px;
+        height: 20px;
         border-radius: 50%;
-        margin: 0 auto 10px;
+        margin: 0 auto 8px;
       }
 
       .x-axis .axis-color {
         background: #e74c3c;
-        box-shadow: 0 0 10px #e74c3c;
+        box-shadow: 0 0 8px #e74c3c;
       }
 
       .y-axis .axis-color {
         background: #2ecc71;
-        box-shadow: 0 0 10px #2ecc71;
+        box-shadow: 0 0 8px #2ecc71;
       }
 
       .z-axis .axis-color {
         background: #3498db;
-        box-shadow: 0 0 10px #3498db;
+        box-shadow: 0 0 8px #3498db;
       }
 
       .background-elements {
@@ -160,24 +161,24 @@
       }
 
       .bg-circle:nth-child(1) {
-        width: 300px;
-        height: 300px;
+        width: 250px;
+        height: 250px;
         background: #3498db;
         top: 10%;
         left: 10%;
       }
 
       .bg-circle:nth-child(2) {
-        width: 400px;
-        height: 400px;
+        width: 350px;
+        height: 350px;
         background: #e74c3c;
         bottom: 10%;
         right: 15%;
       }
 
       .bg-circle:nth-child(3) {
-        width: 250px;
-        height: 250px;
+        width: 200px;
+        height: 200px;
         background: #2ecc71;
         top: 50%;
         left: 40%;
@@ -185,8 +186,8 @@
 
       footer {
         text-align: center;
-        margin-top: 40px;
-        padding: 20px;
+        margin-top: 30px;
+        padding: 15px;
         color: #7f8c8d;
         font-size: 0.9rem;
         z-index: 10;
@@ -194,7 +195,7 @@
 
       @media (max-width: 768px) {
         h1 {
-          font-size: 2.2rem;
+          font-size: 2rem;
         }
 
         .container {
@@ -203,11 +204,12 @@
         }
 
         .axis-info {
-          gap: 15px;
+          gap: 12px;
         }
 
         .axis-card {
-          min-width: 100px;
+          min-width: 90px;
+          padding: 10px;
         }
       }
     </style>
@@ -223,6 +225,28 @@
       <canvas id="webgl-canvas"></canvas>
     </div>
 
+    <div class="info">
+      <p>此实现使用WebGL渲染透视投影的3D坐标轴，每个轴包含主轴和箭头标识</p>
+
+      <div class="axis-info">
+        <div class="axis-card x-axis">
+          <div class="axis-color"></div>
+          <h3>X 轴</h3>
+          <p>红色</p>
+        </div>
+        <div class="axis-card y-axis">
+          <div class="axis-color"></div>
+          <h3>Y 轴</h3>
+          <p>绿色</p>
+        </div>
+        <div class="axis-card z-axis">
+          <div class="axis-color"></div>
+          <h3>Z 轴</h3>
+          <p>蓝色</p>
+        </div>
+      </div>
+    </div>
+
     <script>
       // 初始化WebGL
       function initWebGL() {
@@ -236,182 +260,35 @@
         }
 
         // 设置画布尺寸
-        canvas.width = canvas.clientWidth * devicePixelRatio;
-        canvas.height = canvas.clientHeight * devicePixelRatio;
-        gl.viewport(0, 0, canvas.width, canvas.height);
+        function resizeCanvas() {
+          const displayWidth = canvas.clientWidth;
+          const displayHeight = canvas.clientHeight;
 
-        // 创建着色器程序
-        const shaderProgram = initShaderProgram(gl);
-
-        // 创建坐标轴数据
-        const { vertices, colors } = createAxisData();
-
-        // 创建缓冲区
-        const vertexBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.bufferData(
-          gl.ARRAY_BUFFER,
-          new Float32Array(vertices),
-          gl.STATIC_DRAW
-        );
-
-        const colorBuffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.bufferData(
-          gl.ARRAY_BUFFER,
-          new Float32Array(colors),
-          gl.STATIC_DRAW
-        );
-
-        // 设置透视矩阵
-        const aspect = canvas.width / canvas.height;
-        const projectionMatrix = mat4.create();
-        mat4.perspective(projectionMatrix, Math.PI / 3, aspect, 0.1, 100.0);
-
-        // 设置视图矩阵 (从(3,3,3)看向原点)
-        const viewMatrix = mat4.create();
-        mat4.lookAt(viewMatrix, [3, 3, 3], [0, 0, 0], [0, 1, 0]);
-
-        // 合并视图投影矩阵
-        const viewProjectionMatrix = mat4.create();
-        mat4.multiply(viewProjectionMatrix, projectionMatrix, viewMatrix);
-
-        // 设置统一变量
-        const matrixLocation = gl.getUniformLocation(shaderProgram, "u_matrix");
-        gl.uniformMatrix4fv(matrixLocation, false, viewProjectionMatrix);
-
-        // 设置顶点属性
-        const positionAttributeLocation = gl.getAttribLocation(
-          shaderProgram,
-          "a_position"
-        );
-        gl.bindBuffer(gl.ARRAY_BUFFER, vertexBuffer);
-        gl.vertexAttribPointer(
-          positionAttributeLocation,
-          3,
-          gl.FLOAT,
-          false,
-          0,
-          0
-        );
-        gl.enableVertexAttribArray(positionAttributeLocation);
-
-        const colorAttributeLocation = gl.getAttribLocation(
-          shaderProgram,
-          "a_color"
-        );
-        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
-        gl.vertexAttribPointer(
-          colorAttributeLocation,
-          3,
-          gl.FLOAT,
-          false,
-          0,
-          0
-        );
-        gl.enableVertexAttribArray(colorAttributeLocation);
-
-        // 启用深度测试
-        gl.enable(gl.DEPTH_TEST);
-
-        // 渲染循环
-        function render() {
-          // 清除画布
-          gl.clearColor(0.05, 0.05, 0.1, 1.0);
-          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-
-          // 绘制坐标轴
-          gl.useProgram(shaderProgram);
-          gl.drawArrays(gl.LINES, 0, vertices.length / 3);
-
-          requestAnimationFrame(render);
+          if (
+            canvas.width !== displayWidth ||
+            canvas.height !== displayHeight
+          ) {
+            canvas.width = displayWidth;
+            canvas.height = displayHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+          }
         }
 
-        render();
-      }
+        resizeCanvas();
+        window.addEventListener("resize", resizeCanvas);
 
-      // 创建坐标轴数据
-      function createAxisData() {
-        const vertices = [];
-        const colors = [];
-
-        // 添加坐标轴 (X: 红色, Y: 绿色, Z: 蓝色)
-        addAxis(vertices, colors, [1, 0, 0], [1, 0, 0]); // X轴
-        addAxis(vertices, colors, [0, 1, 0], [0, 1, 0]); // Y轴
-        addAxis(vertices, colors, [0, 0, 1], [0, 0, 1]); // Z轴
-
-        return { vertices, colors };
-      }
-
-      // 添加单个坐标轴
-      function addAxis(vertices, colors, direction, color) {
-        const axisLength = 1.5;
-        const arrowSize = 0.2;
-
-        // 主轴 (从原点到方向)
-        // 起点 (0,0,0)
-        vertices.push(0, 0, 0);
-        colors.push(...color);
-
-        // 终点
-        vertices.push(
-          direction[0] * axisLength,
-          direction[1] * axisLength,
-          direction[2] * axisLength
-        );
-        colors.push(...color);
-
-        // 箭头部分 (两个斜线)
-        const end = [
-          direction[0] * axisLength,
-          direction[1] * axisLength,
-          direction[2] * axisLength,
-        ];
-
-        // 计算垂直向量
-        let perp;
-        if (direction[0] !== 0) {
-          perp = [0, 1, 0]; // 如果方向不是垂直的，使用Y轴作为垂直向量
-        } else {
-          perp = [1, 0, 0]; // 否则使用X轴
-        }
-
-        // 箭头点1
-        vertices.push(...end);
-        colors.push(...color);
-
-        vertices.push(
-          end[0] - direction[0] * arrowSize + perp[0] * arrowSize * 0.5,
-          end[1] - direction[1] * arrowSize + perp[1] * arrowSize * 0.5,
-          end[2] - direction[2] * arrowSize + perp[2] * arrowSize * 0.5
-        );
-        colors.push(...color);
-
-        // 箭头点2
-        vertices.push(...end);
-        colors.push(...color);
-
-        vertices.push(
-          end[0] - direction[0] * arrowSize - perp[0] * arrowSize * 0.5,
-          end[1] - direction[1] * arrowSize - perp[1] * arrowSize * 0.5,
-          end[2] - direction[2] * arrowSize - perp[2] * arrowSize * 0.5
-        );
-        colors.push(...color);
-      }
-
-      // 初始化着色器程序
-      function initShaderProgram(gl) {
         // 顶点着色器
         const vsSource = `
                 attribute vec3 a_position;
                 attribute vec3 a_color;
                 
-                uniform mat4 u_matrix;
+                uniform mat4 u_modelViewMatrix;
+                uniform mat4 u_projectionMatrix;
                 
                 varying vec3 v_color;
                 
                 void main() {
-                    gl_Position = u_matrix * vec4(a_position, 1.0);
+                    gl_Position = u_projectionMatrix * u_modelViewMatrix * vec4(a_position, 1.0);
                     v_color = a_color;
                 }
             `;
@@ -427,9 +304,144 @@
                 }
             `;
 
-        // 创建着色器
-        const vertexShader = loadShader(gl, gl.VERTEX_SHADER, vsSource);
-        const fragmentShader = loadShader(gl, gl.FRAGMENT_SHADER, fsSource);
+        // 创建着色器程序
+        const shaderProgram = createShaderProgram(gl, vsSource, fsSource);
+        gl.useProgram(shaderProgram);
+
+        // 获取属性位置
+        const positionAttributeLocation = gl.getAttribLocation(
+          shaderProgram,
+          "a_position"
+        );
+        const colorAttributeLocation = gl.getAttribLocation(
+          shaderProgram,
+          "a_color"
+        );
+
+        // 获取uniform位置
+        const modelViewMatrixLocation = gl.getUniformLocation(
+          shaderProgram,
+          "u_modelViewMatrix"
+        );
+        const projectionMatrixLocation = gl.getUniformLocation(
+          shaderProgram,
+          "u_projectionMatrix"
+        );
+
+        // 创建坐标轴数据
+        const axisData = createAxisData();
+
+        // 创建位置缓冲区
+        const positionBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+        gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array(axisData.positions),
+          gl.STATIC_DRAW
+        );
+
+        // 创建颜色缓冲区
+        const colorBuffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+        gl.bufferData(
+          gl.ARRAY_BUFFER,
+          new Float32Array(axisData.colors),
+          gl.STATIC_DRAW
+        );
+
+        // 设置透视投影矩阵
+        const projectionMatrix = createPerspectiveMatrix(gl, canvas);
+        gl.uniformMatrix4fv(projectionMatrixLocation, false, projectionMatrix);
+
+        // 启用深度测试
+        gl.enable(gl.DEPTH_TEST);
+
+        // 设置清除颜色
+        gl.clearColor(0.05, 0.05, 0.1, 1.0);
+
+        // 旋转角度
+        let rotationX = 0.5;
+        let rotationY = 0.7;
+
+        // 渲染循环
+        function render() {
+          resizeCanvas();
+
+          // 清除画布
+          gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
+          // 更新模型视图矩阵
+          const modelViewMatrix = createModelViewMatrix(rotationX, rotationY);
+          gl.uniformMatrix4fv(modelViewMatrixLocation, false, modelViewMatrix);
+
+          // 设置位置属性
+          gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+          gl.vertexAttribPointer(
+            positionAttributeLocation,
+            3,
+            gl.FLOAT,
+            false,
+            0,
+            0
+          );
+          gl.enableVertexAttribArray(positionAttributeLocation);
+
+          // 设置颜色属性
+          gl.bindBuffer(gl.ARRAY_BUFFER, colorBuffer);
+          gl.vertexAttribPointer(
+            colorAttributeLocation,
+            3,
+            gl.FLOAT,
+            false,
+            0,
+            0
+          );
+          gl.enableVertexAttribArray(colorAttributeLocation);
+
+          // 绘制坐标轴
+          gl.drawArrays(gl.LINES, 0, axisData.positions.length / 3);
+
+          // 更新旋转角度
+          rotationX += 0.005;
+          rotationY += 0.003;
+
+          requestAnimationFrame(render);
+        }
+
+        render();
+      }
+
+      // 创建着色器程序
+      function createShaderProgram(gl, vsSource, fsSource) {
+        // 创建顶点着色器
+        const vertexShader = gl.createShader(gl.VERTEX_SHADER);
+        gl.shaderSource(vertexShader, vsSource);
+        gl.compileShader(vertexShader);
+
+        // 检查编译状态
+        if (!gl.getShaderParameter(vertexShader, gl.COMPILE_STATUS)) {
+          console.error(
+            "顶点着色器编译错误:",
+            gl.getShaderInfoLog(vertexShader)
+          );
+          gl.deleteShader(vertexShader);
+          return null;
+        }
+
+        // 创建片段着色器
+        const fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
+        gl.shaderSource(fragmentShader, fsSource);
+        gl.compileShader(fragmentShader);
+
+        // 检查编译状态
+        if (!gl.getShaderParameter(fragmentShader, gl.COMPILE_STATUS)) {
+          console.error(
+            "片段着色器编译错误:",
+            gl.getShaderInfoLog(fragmentShader)
+          );
+          gl.deleteShader(fragmentShader);
+          return null;
+        }
 
         // 创建着色器程序
         const shaderProgram = gl.createProgram();
@@ -437,180 +449,220 @@
         gl.attachShader(shaderProgram, fragmentShader);
         gl.linkProgram(shaderProgram);
 
+        // 检查链接状态
         if (!gl.getProgramParameter(shaderProgram, gl.LINK_STATUS)) {
-          alert("无法初始化着色器程序: " + gl.getProgramInfoLog(shaderProgram));
+          console.error(
+            "着色器程序链接错误:",
+            gl.getProgramInfoLog(shaderProgram)
+          );
           return null;
         }
 
         return shaderProgram;
       }
 
-      // 加载着色器
-      function loadShader(gl, type, source) {
-        const shader = gl.createShader(type);
+      // 创建坐标轴数据
+      function createAxisData() {
+        const positions = [];
+        const colors = [];
 
-        gl.shaderSource(shader, source);
-        gl.compileShader(shader);
+        // 坐标轴长度和箭头大小
+        const axisLength = 1.5;
+        const arrowSize = 0.2;
 
-        if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
-          alert("编译着色器时出错: " + gl.getShaderInfoLog(shader));
-          gl.deleteShader(shader);
-          return null;
-        }
+        // 添加X轴（红色）
+        addAxis(positions, colors, [1, 0, 0], [1, 0, 0], axisLength, arrowSize);
 
-        return shader;
+        // 添加Y轴（绿色）
+        addAxis(positions, colors, [0, 1, 0], [0, 1, 0], axisLength, arrowSize);
+
+        // 添加Z轴（蓝色）
+        addAxis(positions, colors, [0, 0, 1], [0, 0, 1], axisLength, arrowSize);
+
+        return { positions, colors };
       }
 
-      // 使用glMatrix库进行矩阵操作
-      const mat4 = {
-        create: function () {
-          return new Float32Array(16);
-        },
-        perspective: function (out, fovy, aspect, near, far) {
-          const f = 1.0 / Math.tan(fovy / 2);
-          out[0] = f / aspect;
-          out[1] = 0;
-          out[2] = 0;
-          out[3] = 0;
-          out[4] = 0;
-          out[5] = f;
-          out[6] = 0;
-          out[7] = 0;
-          out[8] = 0;
-          out[9] = 0;
-          out[10] = (far + near) / (near - far);
-          out[11] = -1;
-          out[12] = 0;
-          out[13] = 0;
-          out[14] = (2 * far * near) / (near - far);
-          out[15] = 0;
-          return out;
-        },
-        lookAt: function (out, eye, center, up) {
-          let x0, x1, x2, y0, y1, y2, z0, z1, z2, len;
+      // 添加单个坐标轴
+      function addAxis(positions, colors, direction, color, length, arrowSize) {
+        // 主轴（从原点到方向）
+        // 起点 (0, 0, 0)
+        positions.push(0, 0, 0);
+        colors.push(...color);
 
-          // 计算方向向量
-          z0 = eye[0] - center[0];
-          z1 = eye[1] - center[1];
-          z2 = eye[2] - center[2];
+        // 终点
+        const endX = direction[0] * length;
+        const endY = direction[1] * length;
+        const endZ = direction[2] * length;
+        positions.push(endX, endY, endZ);
+        colors.push(...color);
 
-          // 归一化
-          len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
-          z0 *= len;
-          z1 *= len;
-          z2 *= len;
+        // 箭头部分（两个斜线）
+        // 计算垂直向量
+        let perp;
+        if (direction[0] !== 0) {
+          perp = [0, 1, 0]; // 如果方向不是垂直的，使用Y轴作为垂直向量
+        } else {
+          perp = [1, 0, 0]; // 否则使用X轴
+        }
 
-          // 计算右向量
-          x0 = up[1] * z2 - up[2] * z1;
-          x1 = up[2] * z0 - up[0] * z2;
-          x2 = up[0] * z1 - up[1] * z0;
+        // 箭头点1
+        positions.push(endX, endY, endZ);
+        colors.push(...color);
 
-          // 归一化
-          len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
-          if (!len) {
-            x0 = 0;
-            x1 = 0;
-            x2 = 0;
-          } else {
-            len = 1 / len;
-            x0 *= len;
-            x1 *= len;
-            x2 *= len;
-          }
+        positions.push(
+          endX - direction[0] * arrowSize + perp[0] * arrowSize * 0.5,
+          endY - direction[1] * arrowSize + perp[1] * arrowSize * 0.5,
+          endZ - direction[2] * arrowSize + perp[2] * arrowSize * 0.5
+        );
+        colors.push(...color);
 
-          // 计算上向量
-          y0 = z1 * x2 - z2 * x1;
-          y1 = z2 * x0 - z0 * x2;
-          y2 = z0 * x1 - z1 * x0;
+        // 箭头点2
+        positions.push(endX, endY, endZ);
+        colors.push(...color);
 
-          // 归一化
-          len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
-          if (!len) {
-            y0 = 0;
-            y1 = 0;
-            y2 = 0;
-          } else {
-            len = 1 / len;
-            y0 *= len;
-            y1 *= len;
-            y2 *= len;
-          }
+        positions.push(
+          endX - direction[0] * arrowSize - perp[0] * arrowSize * 0.5,
+          endY - direction[1] * arrowSize - perp[1] * arrowSize * 0.5,
+          endZ - direction[2] * arrowSize - perp[2] * arrowSize * 0.5
+        );
+        colors.push(...color);
+      }
 
-          out[0] = x0;
-          out[1] = y0;
-          out[2] = z0;
-          out[3] = 0;
-          out[4] = x1;
-          out[5] = y1;
-          out[6] = z1;
-          out[7] = 0;
-          out[8] = x2;
-          out[9] = y2;
-          out[10] = z2;
-          out[11] = 0;
-          out[12] = -(x0 * eye[0] + x1 * eye[1] + x2 * eye[2]);
-          out[13] = -(y0 * eye[0] + y1 * eye[1] + y2 * eye[2]);
-          out[14] = -(z0 * eye[0] + z1 * eye[1] + z2 * eye[2]);
-          out[15] = 1;
+      // 创建透视投影矩阵
+      function createPerspectiveMatrix(gl, canvas) {
+        const fieldOfView = (45 * Math.PI) / 180; // 45度视角
+        const aspect = canvas.clientWidth / canvas.clientHeight;
+        const zNear = 0.1;
+        const zFar = 100.0;
 
-          return out;
-        },
-        multiply: function (out, a, b) {
-          const a00 = a[0],
-            a01 = a[1],
-            a02 = a[2],
-            a03 = a[3];
-          const a10 = a[4],
-            a11 = a[5],
-            a12 = a[6],
-            a13 = a[7];
-          const a20 = a[8],
-            a21 = a[9],
-            a22 = a[10],
-            a23 = a[11];
-          const a30 = a[12],
-            a31 = a[13],
-            a32 = a[14],
-            a33 = a[15];
+        const projectionMatrix = new Float32Array(16);
+        const f = 1.0 / Math.tan(fieldOfView / 2);
 
-          let b0 = b[0],
-            b1 = b[1],
-            b2 = b[2],
-            b3 = b[3];
-          out[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-          out[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-          out[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-          out[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+        projectionMatrix[0] = f / aspect;
+        projectionMatrix[1] = 0;
+        projectionMatrix[2] = 0;
+        projectionMatrix[3] = 0;
 
-          b0 = b[4];
-          b1 = b[5];
-          b2 = b[6];
-          b3 = b[7];
-          out[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-          out[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-          out[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-          out[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+        projectionMatrix[4] = 0;
+        projectionMatrix[5] = f;
+        projectionMatrix[6] = 0;
+        projectionMatrix[7] = 0;
 
-          b0 = b[8];
-          b1 = b[9];
-          b2 = b[10];
-          b3 = b[11];
-          out[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-          out[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-          out[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-          out[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+        projectionMatrix[8] = 0;
+        projectionMatrix[9] = 0;
+        projectionMatrix[10] = (zFar + zNear) / (zNear - zFar);
+        projectionMatrix[11] = -1;
 
-          b0 = b[12];
-          b1 = b[13];
-          b2 = b[14];
-          b3 = b[15];
-          out[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
-          out[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
-          out[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
-          out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
-          return out;
-        },
-      };
+        projectionMatrix[12] = 0;
+        projectionMatrix[13] = 0;
+        projectionMatrix[14] = (2 * zFar * zNear) / (zNear - zFar);
+        projectionMatrix[15] = 0;
+
+        return projectionMatrix;
+      }
+
+      // 创建模型视图矩阵
+      function createModelViewMatrix(rotationX, rotationY) {
+        const modelViewMatrix = new Float32Array(16);
+
+        // 初始化为单位矩阵
+        for (let i = 0; i < 16; i++) {
+          modelViewMatrix[i] = 0;
+        }
+        modelViewMatrix[0] = 1;
+        modelViewMatrix[5] = 1;
+        modelViewMatrix[10] = 1;
+        modelViewMatrix[15] = 1;
+
+        // 平移（将坐标轴移入视图中）
+        modelViewMatrix[14] = -4.0;
+
+        // 绕Y轴旋转
+        const cosY = Math.cos(rotationY);
+        const sinY = Math.sin(rotationY);
+
+        const temp = new Float32Array(16);
+        temp[0] = cosY;
+        temp[2] = sinY;
+        temp[5] = 1;
+        temp[8] = -sinY;
+        temp[10] = cosY;
+        temp[15] = 1;
+
+        multiplyMatrices(modelViewMatrix, modelViewMatrix, temp);
+
+        // 绕X轴旋转
+        const cosX = Math.cos(rotationX);
+        const sinX = Math.sin(rotationX);
+
+        const temp2 = new Float32Array(16);
+        temp2[0] = 1;
+        temp2[5] = cosX;
+        temp2[6] = -sinX;
+        temp2[9] = sinX;
+        temp2[10] = cosX;
+        temp2[15] = 1;
+
+        multiplyMatrices(modelViewMatrix, modelViewMatrix, temp2);
+
+        return modelViewMatrix;
+      }
+
+      // 矩阵乘法
+      function multiplyMatrices(out, a, b) {
+        const a00 = a[0],
+          a01 = a[1],
+          a02 = a[2],
+          a03 = a[3];
+        const a10 = a[4],
+          a11 = a[5],
+          a12 = a[6],
+          a13 = a[7];
+        const a20 = a[8],
+          a21 = a[9],
+          a22 = a[10],
+          a23 = a[11];
+        const a30 = a[12],
+          a31 = a[13],
+          a32 = a[14],
+          a33 = a[15];
+
+        let b0 = b[0],
+          b1 = b[1],
+          b2 = b[2],
+          b3 = b[3];
+        out[0] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+        out[1] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+        out[2] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+        out[3] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+
+        b0 = b[4];
+        b1 = b[5];
+        b2 = b[6];
+        b3 = b[7];
+        out[4] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+        out[5] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+        out[6] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+        out[7] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+
+        b0 = b[8];
+        b1 = b[9];
+        b2 = b[10];
+        b3 = b[11];
+        out[8] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+        out[9] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+        out[10] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+        out[11] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+
+        b0 = b[12];
+        b1 = b[13];
+        b2 = b[14];
+        b3 = b[15];
+        out[12] = b0 * a00 + b1 * a10 + b2 * a20 + b3 * a30;
+        out[13] = b0 * a01 + b1 * a11 + b2 * a21 + b3 * a31;
+        out[14] = b0 * a02 + b1 * a12 + b2 * a22 + b3 * a32;
+        out[15] = b0 * a03 + b1 * a13 + b2 * a23 + b3 * a33;
+      }
 
       // 启动WebGL
       window.onload = initWebGL;
